@@ -1,3 +1,6 @@
+#include <vector>
+#include "Piece.hpp"
+
 /**
  * Header definition for class Board. 
  * This class represents a virtual checkers board. 
@@ -10,7 +13,13 @@ class Board
 {
 
 private: 
+    std::vector<std::vector<Piece>> board;
+    int numRedPieces;
+    int numBlackPieces;
 
 public: 
+    int getNumRedPieces();
+    int getNumBlackPieces();
+    void printBoard();
 
 };

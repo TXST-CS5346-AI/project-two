@@ -1,3 +1,6 @@
+#include "Player.hpp"
+#include "Board.hpp"
+
 /**
  * Header definition for class Game. 
  * The Game class represents a checkers Game. 
@@ -13,7 +16,10 @@ class Game
 {
 
 private: 
+    Board state;
+    Player redPlayer;
+    Player blackPlayer;
 
 public: 
-
+    void startGame();
 };
