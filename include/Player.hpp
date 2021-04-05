@@ -1,3 +1,5 @@
+#include "Piece.hpp"
+
 /** 
  * Header definition for class Player. 
  * The Player class defines a virtual player, in the case of this program an AI. 

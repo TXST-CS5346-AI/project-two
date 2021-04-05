@@ -18,13 +18,17 @@
 
 enum class Color { RED, BLACK };
 
+struct Position {
+    int row;
+    int col;
+};
+
 class Piece 
 {
 
 private: 
     Color color; 
-    int row;
-    int col;
+    Position position; 
     bool isKing;
 
 public: 
