@@ -3,6 +3,7 @@
 
 /**
  * Header definition for class Board. 
+ * 
  * This class represents a virtual checkers board. 
  * Each player should have a white square on the bottom right corner. 
  * Each player puts pieces on the 12 dark squares in the first three closest rows. 
@@ -20,6 +21,7 @@ private:
 public: 
     int getNumRedPieces();
     int getNumBlackPieces();
+    // prints an ASCII representation of the 2D 8x8 checkers board
     void printBoard();
 
 };
