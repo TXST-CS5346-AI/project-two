@@ -1,3 +1,6 @@
+#ifndef GAME_H
+#define GAME_H
+
 #include "Player.hpp"
 #include "Board.hpp"
 
@@ -17,32 +20,7 @@
  * The pieces will be appropriately placed on the board. 
  * Each player will execute their strategy. 
  * 
- * There are THREE (3) evaluation functions, one for each team member; two algorithms (minimax and Alpha-Beta). 
- * The simulation will execute each in turn. 
- * 
- * Nine runs with depth 2:
- *    1. MinMax-A-B with Evl. Function #1  Verses Alpha-Beta with Evl. Function #1
- *    2. MinMax-A-B with Evl. Function #2  Verses Alpha-Beta with Evl. Function #2
- *    3. MinMax-A-B with Evl. Function #3  Verses Alpha-Beta with Evl. Function #3
- *    4. MinMax-A-B with Evl. Function #1  Verses MinMax-A-B with Evl. Function #2
- *    5. MinMax-A-B with Evl. Function #1  Verses MinMax-A-B with Evl. Function #3
- *    6. MinMax-A-B with Evl. Function #2  Verses MinMax-A-B with Evl. Function #3
- *    7. Alpha-Beta with Evl. Function #1  Verses Alpha-Beta with Evl. Function #2
- *    8. Alpha-Beta with Evl. Function #1  Verses Alpha-Beta with Evl. Function #3
- *    9. Alpha-Beta with Evl. Function #2  Verses Alpha-Beta with Evl. Function #3
- * 
- * Nine runs with depth 4:
- *    1. MinMax-A-B with Evl. Function #1  Verses Alpha-Beta with Evl. Function #1
- *    2. MinMax-A-B with Evl. Function #2  Verses Alpha-Beta with Evl. Function #2
- *    3. MinMax-A-B with Evl. Function #3  Verses Alpha-Beta with Evl. Function #3
- *    4. MinMax-A-B with Evl. Function #1  Verses MinMax-A-B with Evl. Function #2
- *    5. MinMax-A-B with Evl. Function #1  Verses MinMax-A-B with Evl. Function #3
- *    6. MinMax-A-B with Evl. Function #2  Verses MinMax-A-B with Evl. Function #3
- *    7. Alpha-Beta with Evl. Function #1  Verses Alpha-Beta with Evl. Function #2
- *    8. Alpha-Beta with Evl. Function #1  Verses Alpha-Beta with Evl. Function #3
- *    9. Alpha-Beta with Evl. Function #2  Verses Alpha-Beta with Evl. Function #3
- *
- * TOTAL 18 RUNS WILL EXECUTE BY SIMULATION. 
+
  */ 
 
 class Game
@@ -54,7 +32,12 @@ private:
     Player blackPlayer;
 
 public: 
+    Game(); // constructor
+    ~Game(); // destructor
+
     // The only initialization function needed, as the game will 
     // be played automatically by 2 AI players (MIN and MAX). 
     void startGame();
 };
+
+#endif // !GAME_H

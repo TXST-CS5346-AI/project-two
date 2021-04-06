@@ -1,6 +1,13 @@
 #include <iostream> 
 #include <string.h>  // used by strcmp method
 
+#include "Simulation.hpp"
+#include "Game.hpp"
+#include "Board.hpp"
+#include "Player.hpp"
+#include "Piece.hpp"
+#include "Algorithm.hpp"
+
 /**
 * Main function, which serves as an entry point to the Checkers application. 
 * User may invoke a help menu by passing in either -h or -help as a CLI parameter when launching the program. 

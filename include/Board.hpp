@@ -1,4 +1,9 @@
+#ifndef BOARD_H
+#define BOARD_H
+
 #include <vector>
+#include <string> 
+
 #include "Piece.hpp"
 
 /**
@@ -19,9 +24,21 @@ private:
     int numBlackPieces;
 
 public: 
+    Board(); // constructor
+    ~Board(); // destructor
+    
     int getNumRedPieces();
     int getNumBlackPieces();
+    
     // prints an ASCII representation of the 2D 8x8 checkers board
     void printBoard();
 
+    /* provides a string describing the move(s), which needs to be parsed
+    * E.g. - "1>2 5>10" means Piece in position 1 moves to position 2. Piece in 
+    * position 5 moves to position 10. It can be sequential too: "1>5>9" means Piece 1
+    * jumps to 5 then to 9
+    */
+   void updateBoard(std::string moveset); 
 };
+
+#endif // !BOARD_H

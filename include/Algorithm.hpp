@@ -1,5 +1,11 @@
+#ifndef ALGORITHM_H
+#define ALGORITHM_H
+
 #include <vector> 
+#include <string> 
+
 #include "Player.hpp"
+#include "Board.hpp"
 
 /**
  * Header definition for class Algorithm. 
@@ -23,22 +29,45 @@ class Algorithm
 {
 
 private: 
+    struct Result {
+        int value;
+        std::string path; 
+    };
+    int numNodesGenerated; 
+    int evalVersion; 
+
     // support functions for minimax
     
-    // plausible move generator, returns a list of positions that can be made by player in Position
-    std::vector<Position> movegen(Position position, Player player);
+    // plausible move generator, returns a list of positions that can be made by player
+    std::vector<int> movegen(Board board, Player player);
     
-    // static evaluation function returns a number representing the 
-    // goodness of Position from the standpoint of Player
-    int staticEvaluation(Position pos, Player p);
+    /* static evaluation functions return a number representing the 
+    * goodness of Position from the standpoint of Player
+    * A helper function staticEval is used to determine which evalFunction to use
+    */
+
+    int evaluationFunctionOne(int position, Player p);
+    int evaluationFunctionTwo(int position, Player p);
+    int evaluationFunctionThree(int position, Player p);
+
+    int staticEval(Board board, Player p, int evalVersion);
 
     // if true, return the structure
     bool deepEnough();
     
 public: 
+    Algorithm(); // constructor
+    ~Algorithm(); // destructor 
+
     // main function for minimax alg
 
-    // minimax search algorithm returns the position of the best move
-    Position minimax(Position pos, int depth, Player p);
+    // minimax algorithm returns the position of the best move
+    Result minimax_a_b(Board board, int depth, Player p);
 
+    // AB Prune algorithm
+    Result abPrune();
+    
+    void evalVersion(int evalVersion); 
 };
+
+#endif // !ALGORITHM_H
