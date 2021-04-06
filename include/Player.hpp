@@ -19,7 +19,9 @@ private:
     Color color; // represents player's color in the game, either RED or BLACK
     int numPieces; // how many pieces does Player have left
     int numPiecesTaken; // Player's current score based on captured enemy pieces
+    int numTurnsTaken; // counter for Player's turns taken
     bool isMinimax; // if false use AB Prune, if true use Minimax. Allows control over alg player uses
+    
 public: 
     Player(); // constructor
     ~Player(); // destructor

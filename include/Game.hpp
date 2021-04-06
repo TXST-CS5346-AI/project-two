@@ -31,6 +31,13 @@ private:
     Player redPlayer;
     Player blackPlayer;
 
+    enum class GameOver { 
+        BLACK_WINS = 0,
+        WHITE_WINS = 1,
+        DRAW = 2, 
+        NOT_DONE = 3
+    };
+
 public: 
     Game(); // constructor
     ~Game(); // destructor
@@ -38,6 +45,10 @@ public:
     // The only initialization function needed, as the game will 
     // be played automatically by 2 AI players (MIN and MAX). 
     void startGame();
+
+    // simple function to invert the enum value, thus determine who's turn is it next. 
+    // E.g., if currentPlayer is RED (1), function returns BLACK (-1)
+    Color changePlayer(Color currentPlayer); 
 };
 
 #endif // !GAME_H

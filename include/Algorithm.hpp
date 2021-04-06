@@ -46,11 +46,11 @@ private:
     * A helper function staticEval is used to determine which evalFunction to use
     */
 
-    int evaluationFunctionOne(int position, Player p);
-    int evaluationFunctionTwo(int position, Player p);
-    int evaluationFunctionThree(int position, Player p);
+    int evalFunctOne(Board position, Player p);
+    int evalFunctTwo(Board position, Player p);
+    int evalFunctThree(Board position, Player p);
 
-    int staticEval(Board board, Player p, int evalVersion);
+    int staticEval(Board position, Player p, int evalVersion);
 
     // if true, return the structure
     bool deepEnough();
@@ -65,9 +65,9 @@ public:
     Result minimax_a_b(Board board, int depth, Player p);
 
     // AB Prune algorithm
-    Result abPrune();
+    Result abPrune(Board state);
     
-    void evalVersion(int evalVersion); 
+    void setEvalVersion(int evalVersion); 
 };
 
 #endif // !ALGORITHM_H

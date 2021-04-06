@@ -1,6 +1,7 @@
 #ifndef PIECE_H
 #define PIECE_H
 
+#include <string> 
 
 /**
  * Header definition for class Piece. 
@@ -29,6 +30,7 @@ private:
     Color color; 
     int position; 
     bool isKing;
+    std::string possibleMoves; // E.g.: '1>3  5>9>25"; maintains list of this piece's possible moves
 
 public: 
     Piece(); // constructor

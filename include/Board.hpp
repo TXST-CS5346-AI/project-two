@@ -19,14 +19,14 @@ class Board
 {
 
 private: 
-    std::vector<std::vector<Piece>> board;
+    std::vector<Piece> board;
     int numRedPieces;
     int numBlackPieces;
 
 public: 
     Board(); // constructor
     ~Board(); // destructor
-    
+
     int getNumRedPieces();
     int getNumBlackPieces();
     
