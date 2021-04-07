@@ -5,7 +5,7 @@
 #include "Game.hpp"
 #include "Board.hpp"
 #include "Player.hpp"
-#include "Piece.hpp"
+#include "Pieces.hpp"
 #include "Algorithm.hpp"
 
 /**

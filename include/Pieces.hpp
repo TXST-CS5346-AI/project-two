@@ -20,8 +20,7 @@
  * A jump may be continuous - the piece must continue capturing enemy pieces if more are available for capture. 
  */
 
-
-
+enum class Color { RED = 1, BLACK = -1 };
 
 class Pieces 
 {

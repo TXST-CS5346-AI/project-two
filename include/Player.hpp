@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include "Pieces.hpp"
+#include "Board.hpp"
 
 /** 
  * Header definition for class Player. 
@@ -14,8 +15,6 @@
 
 class Player
 {
-
-enum class Color { RED = 1, BLACK = -1 };
 
 private: 
     Color color; // represents player's color in the game, either RED or BLACK
