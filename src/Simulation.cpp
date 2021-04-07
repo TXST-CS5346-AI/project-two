@@ -58,7 +58,7 @@ void Simulation::runFullSimulation()
     for (int depth = 2; depth <= 4; depth += 2)
     {
         std::cout << "Depth: " << depth << std::endl; 
-        
+
         for (int p1_alg = 0; p1_alg < 2; p1_alg++)
         {
             for (int p2_alg = 0; p2_alg < 2; p2_alg++)
@@ -95,11 +95,11 @@ void Simulation::runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct,
     std::cout << "\033[0;32mRunning a SINGLE game, specific simulation!\033[0m" << std::endl;
 
     // Validate algorithm selections
-    if ((playerOneAlg < 0 || playerOneAlg > 3) && (playerTwoAlg < 0 && playerTwoAlg > 3))
+    if ((playerOneAlg < 0 || playerOneAlg > 3) && (playerTwoAlg < 0 || playerTwoAlg > 3))
         throw std::runtime_error("Error: algorithm may only be 1 (minimax-a-b) or 2 (ab-prune)!");
 
     // Validate evaluation function selections
-    if ((playerOneEvalFunct < 0 || playerOneEvalFunct > 3) && (playerTwoEvalFunct < 0 && playerTwoEvalFunct > 3))
+    if ((playerOneEvalFunct < 0 || playerOneEvalFunct > 3) && (playerTwoEvalFunct < 0 || playerTwoEvalFunct > 3))
         throw std::runtime_error("Error: evalFunction may only be 1, 2, or 3!");
 }
 
