@@ -63,6 +63,12 @@ class Simulation
 private: 
     int numGamesPlayed; 
 
+    // runs only games using Minimax algorithm
+    void runMinimaxOnly();
+   
+    // runs only games using AB Prune algorithm
+    void runABPruneOnly();
+
 public: 
     Simulation(); // constructor
     ~Simulation(); // destructor
@@ -70,11 +76,8 @@ public:
     // runs all games runs as delineated above
     void runFullSimulation();
     
-    // runs only games using Minimax algorithm
-    void runMinimaxOnly();
-   
-    // runs only games using AB Prune algorithm
-    void runABPruneOnly();
+    // public method for specific simulations
+    void runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct, int playerTwoAlg, int PlayerTwoEvalFunct);
     
     // returns a count of the number of games played in a simulation
     // each of the 3 run functions. 
