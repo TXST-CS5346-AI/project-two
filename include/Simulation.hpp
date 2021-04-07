@@ -3,6 +3,7 @@
 
 /**
  * Header definition for class Simulation. 
+ * @author Borislav Sabotinov
  * 
  * This class is responsible for managing the series of Games that AI players will play for Project Two. 
  * It persists during the execution of the program and keeps track of the number of games played. 
@@ -11,32 +12,49 @@
  * There are THREE (3) evaluation functions, one for each team member; two algorithms (minimax and Alpha-Beta). 
  * The simulation will execute each in turn. 
  * 
- * Nine runs with depth 2:
+ * Fifteen runs with depth 2:
  *    1. MinMax-A-B with Evl. Function #1  Verses Alpha-Beta with Evl. Function #1
- *    2. MinMax-A-B with Evl. Function #2  Verses Alpha-Beta with Evl. Function #2
- *    3. MinMax-A-B with Evl. Function #3  Verses Alpha-Beta with Evl. Function #3
- *    4. MinMax-A-B with Evl. Function #1  Verses MinMax-A-B with Evl. Function #2
- *    5. MinMax-A-B with Evl. Function #1  Verses MinMax-A-B with Evl. Function #3
- *    6. MinMax-A-B with Evl. Function #2  Verses MinMax-A-B with Evl. Function #3
- *    7. Alpha-Beta with Evl. Function #1  Verses Alpha-Beta with Evl. Function #2
- *    8. Alpha-Beta with Evl. Function #1  Verses Alpha-Beta with Evl. Function #3
- *    9. Alpha-Beta with Evl. Function #2  Verses Alpha-Beta with Evl. Function #3
- *    10.
- *    11.
- *    12. 
+ *    2. MinMax-A-B with Evl. Function #1  Verses Alpha-Beta with Evl. Function #2
+ *    3. MinMax-A-B with Evl. Function #1  Verses Alpha-Beta with Evl. Function #3
  * 
- * Nine runs with depth 4:
+ *    4. MinMax-A-B with Evl. Function #2  Verses Alpha-Beta with Evl. Function #1
+ *    5. MinMax-A-B with Evl. Function #2  Verses Alpha-Beta with Evl. Function #2
+ *    6. MinMax-A-B with Evl. Function #2  Verses Alpha-Beta with Evl. Function #3
+ * 
+ *    7. MinMax-A-B with Evl. Function #3  Verses Alpha-Beta with Evl. Function #1
+ *    8. MinMax-A-B with Evl. Function #3  Verses Alpha-Beta with Evl. Function #2
+ *    9. MinMax-A-B with Evl. Function #3  Verses Alpha-Beta with Evl. Function #3
+ * 
+ *   10. MinMax-A-B with Evl. Function #1  Verses MinMax-A-B with Evl. Function #2
+ *   11. MinMax-A-B with Evl. Function #1  Verses MinMax-A-B with Evl. Function #3
+ *   12. MinMax-A-B with Evl. Function #2  Verses MinMax-A-B with Evl. Function #3
+ * 
+ *   13. Alpha-Beta with Evl. Function #1  Verses Alpha-Beta with Evl. Function #2
+ *   14. Alpha-Beta with Evl. Function #1  Verses Alpha-Beta with Evl. Function #3
+ *   15. Alpha-Beta with Evl. Function #2  Verses Alpha-Beta with Evl. Function #3
+ * 
+ * Fifteen runs with depth 4:
  *    1. MinMax-A-B with Evl. Function #1  Verses Alpha-Beta with Evl. Function #1
- *    2. MinMax-A-B with Evl. Function #2  Verses Alpha-Beta with Evl. Function #2
- *    3. MinMax-A-B with Evl. Function #3  Verses Alpha-Beta with Evl. Function #3
- *    4. MinMax-A-B with Evl. Function #1  Verses MinMax-A-B with Evl. Function #2
- *    5. MinMax-A-B with Evl. Function #1  Verses MinMax-A-B with Evl. Function #3
- *    6. MinMax-A-B with Evl. Function #2  Verses MinMax-A-B with Evl. Function #3
- *    7. Alpha-Beta with Evl. Function #1  Verses Alpha-Beta with Evl. Function #2
- *    8. Alpha-Beta with Evl. Function #1  Verses Alpha-Beta with Evl. Function #3
- *    9. Alpha-Beta with Evl. Function #2  Verses Alpha-Beta with Evl. Function #3
+ *    2. MinMax-A-B with Evl. Function #1  Verses Alpha-Beta with Evl. Function #2
+ *    3. MinMax-A-B with Evl. Function #1  Verses Alpha-Beta with Evl. Function #3
+ * 
+ *    4. MinMax-A-B with Evl. Function #2  Verses Alpha-Beta with Evl. Function #1
+ *    5. MinMax-A-B with Evl. Function #2  Verses Alpha-Beta with Evl. Function #2
+ *    6. MinMax-A-B with Evl. Function #2  Verses Alpha-Beta with Evl. Function #3
+ * 
+ *    7. MinMax-A-B with Evl. Function #3  Verses Alpha-Beta with Evl. Function #1
+ *    8. MinMax-A-B with Evl. Function #3  Verses Alpha-Beta with Evl. Function #2
+ *    9. MinMax-A-B with Evl. Function #3  Verses Alpha-Beta with Evl. Function #3
+ * 
+ *   10. MinMax-A-B with Evl. Function #1  Verses MinMax-A-B with Evl. Function #2
+ *   11. MinMax-A-B with Evl. Function #1  Verses MinMax-A-B with Evl. Function #3
+ *   12. MinMax-A-B with Evl. Function #2  Verses MinMax-A-B with Evl. Function #3
+ * 
+ *   13. Alpha-Beta with Evl. Function #1  Verses Alpha-Beta with Evl. Function #2
+ *   14. Alpha-Beta with Evl. Function #1  Verses Alpha-Beta with Evl. Function #3
+ *   15. Alpha-Beta with Evl. Function #2  Verses Alpha-Beta with Evl. Function #3
  *
- * TOTAL 18 RUNS WILL EXECUTE BY SIMULATION. 
+ * TOTAL 30 RUNS/GAMES WILL BE SIMULATED. 
  */ 
 
 class Simulation 
@@ -49,13 +67,13 @@ public:
     Simulation(); // constructor
     ~Simulation(); // destructor
 
-    // runs all 18 runs as delineated above
+    // runs all games runs as delineated above
     void runFullSimulation();
     
-    // runs only 6 games using only Minimax algorithm
+    // runs only games using Minimax algorithm
     void runMinimaxOnly();
    
-    // runs only 6 games using only AB Prune algorithm
+    // runs only games using AB Prune algorithm
     void runABPruneOnly();
     
     // returns a count of the number of games played in a simulation
