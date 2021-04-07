@@ -21,6 +21,9 @@
  *    7. Alpha-Beta with Evl. Function #1  Verses Alpha-Beta with Evl. Function #2
  *    8. Alpha-Beta with Evl. Function #1  Verses Alpha-Beta with Evl. Function #3
  *    9. Alpha-Beta with Evl. Function #2  Verses Alpha-Beta with Evl. Function #3
+ *    10.
+ *    11.
+ *    12. 
  * 
  * Nine runs with depth 4:
  *    1. MinMax-A-B with Evl. Function #1  Verses Alpha-Beta with Evl. Function #1

@@ -21,27 +21,21 @@
  */
 
 
-enum class Color { RED = 1, BLACK = -1 };
 
-class Piece 
+
+class Pieces 
 {
 
 private: 
-    Color color; 
-    int position; 
-    bool isKing;
-    std::string possibleMoves; // E.g.: '1>3  5>9>25"; maintains list of this piece's possible moves
-
+    // 64 bits; lower 32 used for board position. Upper 32 bits used to determine if a piece is king
+    long long pieces; 
 public: 
-    Piece(); // constructor
-    ~Piece(); // destructor 
+    Pieces(); // constructor
+    ~Pieces(); // destructor 
 
-    Piece(Color color); // overleaded constructor to set color. Color is IMMUTABLE
-
-    bool isKing();
-    Color getColor();  // can only ever get color, can never set/change it
-    void setPosition(int position);  // sets the number of the square the checker is in
-    void makeKing(); // sets member variable isKing to true
+    bool isKing(int position); // takes position, adds 32 and returns if what is in position is king (or not)
+    void makeKing(int poisition); // sets member variable isKing to true. Takes position adds 32 and sets the bit it to 1
+    int getCount(); // counts the num of 1s in the lower 32 bits
 };
 
 #endif // !PIECE_H

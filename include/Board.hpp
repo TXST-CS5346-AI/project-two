@@ -4,7 +4,7 @@
 #include <vector>
 #include <string> 
 
-#include "Piece.hpp"
+#include "Pieces.hpp"
 
 /**
  * Header definition for class Board. 
@@ -19,17 +19,14 @@ class Board
 {
 
 private: 
-    std::vector<Piece> board;
-    int numRedPieces;
-    int numBlackPieces;
+    Pieces blackPieces;
+    Pieces redPieces;
+    static std::vector<std::vector<int>> BoardMoves; 
 
 public: 
     Board(); // constructor
     ~Board(); // destructor
 
-    int getNumRedPieces();
-    int getNumBlackPieces();
-    
     // prints an ASCII representation of the 2D 8x8 checkers board
     void printBoard();
 
@@ -38,7 +35,10 @@ public:
     * position 5 moves to position 10. It can be sequential too: "1>5>9" means Piece 1
     * jumps to 5 then to 9
     */
-   void updateBoard(std::string moveset); 
+    void updateBoard(std::string moveset); 
+
+    std::string moveGen(Color color); // returns all possible moves for all pieces of a color
+
 };
 
 #endif // !BOARD_H
