@@ -49,4 +49,22 @@ crashlytics-build.properties
 
 #project specific
 *.log
+*.tlog
 all
+
+# object files current and previous (in case of pollution from past project) 
+VehicleRepairAndDiagnosis
+CheckersAI
+a.out 
+
+Debug/*
+Debug 
+*.vcxproj
+*.pdb
+*.user
+*.sln
+*.db 
+
+*.h 
+*.c 
+*.cd 
