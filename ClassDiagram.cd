@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Game">
+    <Position X="7.75" Y="1" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="Game::GameOver" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>include\Game.hpp</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAAAACAgAAAAAQiAAAAEAAAAAAAAAIA=</HashCode>
+      <FileName>include\Game.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Board">
+    <Position X="4.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAKAAAAAAAAAAEAEAAAAAIAAAAAAAACAQAAA=</HashCode>
+      <FileName>include\Board.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Algorithm">
+    <Position X="6" Y="1" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="Algorithm::Result" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>include\Algorithm.hpp</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAIAAAACAABCAgAAAAAAQAAACAEAQAIAA=</HashCode>
+      <FileName>include\Algorithm.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pieces">
+    <Position X="2.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAIAAAAAAAAAAACAAAAAAAAAAgAAAAIAAEAAA=</HashCode>
+      <FileName>include\Pieces.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Player">
+    <Position X="9.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAEAAAAEAAAAAAAAAAAAAAAAAAAAKAAAAAARAAABE=</HashCode>
+      <FileName>include\Player.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Simulation">
+    <Position X="11.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAACAAAgAAACAAAAAAAAAAAAAAAAAoAIAABAAAAAA=</HashCode>
+      <FileName>include\Simulation.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="Color">
+    <Position X="0.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAAAAAAAABAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>include\Pieces.hpp</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
