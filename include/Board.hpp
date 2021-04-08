@@ -31,11 +31,11 @@ public:
 	static void InitializeMoveTable();
 	bool movePiece(int player, std::string move);
 	std::string moveGen(int player);
-	std::string getMovesForPiece(int player, int square, Pieces* playerPieces, Pieces* opponentPieces) const;
+	std::string getMovesForPiece(int player, int square, Pieces* playerPieces, Pieces* opponentPieces);
 	int getSquareJumped(int sourceSquare, int destinationSquare);
 
 	void printBoard() const;
-	void updateBoard(std::string move);
+	Board updateBoard(std::string move);
 
 
 	int getNumRedPieces() const { return numRedPieces; }

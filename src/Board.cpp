@@ -1,4 +1,5 @@
 #include "Board.hpp"
+#include "Pieces.hpp"
 #include <iostream>
 
 // Forward declare the static data member.
@@ -55,7 +56,7 @@ std::string Board::moveGen(int player)
 
 
 // Knows it has a proper piece by the time it gets here.
-std::string Board::getMovesForPiece(int player, int piece, Pieces* playerPieces, Pieces* opponentPieces) const
+std::string Board::getMovesForPiece(int player, int piece, Pieces* playerPieces, Pieces* opponentPieces)
 {
 	std::string jumpList = "";
 	std::string moveList = "";
@@ -96,7 +97,7 @@ std::string Board::getMovesForPiece(int player, int piece, Pieces* playerPieces,
 			{
 				// If it is open, get the space between. We will need to check it.
 				squareJumped = getSquareJumped(piece, Board::boardMoveTable[piece].jumps.at(jumpIter));
-
+				
 				if ((opponentPieces->pieces >> squareJumped) % 2 != 0)
 				{
 					//yup, we are good!!!! this means that an opponent was in this spot.
@@ -115,7 +116,9 @@ std::string Board::getMovesForPiece(int player, int piece, Pieces* playerPieces,
 // It already knows that the spot it wants to jump to is clear.
 int Board::getSquareJumped(int sourceSquare, int destinationSquare)
 {
-	int square;
+	
+	int squareP = 0;
+	/*
 	int evenRowOffset = 0;
 
 	if ((sourceSquare - 1) % 2 == 0)
@@ -124,8 +127,8 @@ int Board::getSquareJumped(int sourceSquare, int destinationSquare)
 	}
 
 	if (destinationSquare > sourceSquare)
-
-		return
+	*/
+		return squareP;
 }
 
 
@@ -205,8 +208,12 @@ void Board::printBoard() const
 
 }
 
-void Board::updateBoard(std::string move)
+Board Board::updateBoard(std::string move)
 {
+	Board updatedBoard;
+	updatedBoard.blackPieces = blackPieces;
+	updatedBoard.redPieces = redPieces;
+
 	std::string subString = "";
 
 	int sourceSquare;
@@ -223,7 +230,7 @@ void Board::updateBoard(std::string move)
 	//One piece is relocated from a square to a square.
 	//Remove the opposite pieces that were removed.
 
-
+	return updatedBoard;
 }
 
 void Board::InitializeMoveTable()
