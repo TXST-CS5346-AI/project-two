@@ -29,7 +29,7 @@ public:
     Pieces(Color color);
 
     bool isKing(int position) const; // takes position, adds 32 and returns if what is in position is king (or not)
-    void makeKing(int poisition); // sets member variable isKing to true. Takes position adds 32 and sets the bit it to 1
+    void setKing(int poisition, bool toKing); // sets member variable isKing to true. Takes position adds 32 and sets the bit it to 1
     
     long long pieces;
 };

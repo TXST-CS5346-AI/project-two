@@ -263,14 +263,42 @@ void Board::printBoard() const
 Board Board::updateBoard(Move move, Color color)
 {
 
-	// Remove start pos
-	// Position in final destination spot - probably check if it needs to be kinged here.
-	// Remove all jumped pieces
 	Board updatedBoard;
 	updatedBoard.blackPieces = blackPieces;
 	updatedBoard.redPieces = redPieces;
-	
 
+	Pieces * playerPieces;
+	Pieces * opponentPieces;
+
+
+	if (color == RED)
+	{
+		playerPieces = &updatedBoard.redPieces;
+		opponentPieces = &updatedBoard.blackPieces;
+	}
+	else
+	{
+		playerPieces = &updatedBoard.blackPieces;
+		opponentPieces = &updatedBoard.redPieces;
+	}
+
+	// Position in final destination spot - probably check if it needs to be kinged here.
+	// Do this first since you will need to clear the king flag. 
+	playerPieces->pieces = playerPieces->pieces | (1ULL << (move.destinationSquare.back() - 1));
+	if (playerPieces->isKing(move.startSquare))
+	{
+		playerPieces->setKing(move.destinationSquare.back(), true);
+		playerPieces->setKing(move.startSquare, false);
+	}
+	// Remove start pos
+	playerPieces->pieces = playerPieces->pieces & ~(1 << (move.startSquare - 1));
+	
+	// Remove all jumped spots and set them back to not a king.
+	for (int jumpedSpaceIter = 0; jumpedSpaceIter < move.removalSquare.size(); jumpedSpaceIter++)
+	{
+		opponentPieces->pieces = opponentPieces->pieces & ~(1ULL << (move.removalSquare.at(jumpedSpaceIter) - 1));
+		opponentPieces->pieces = opponentPieces->pieces & ~(1ULL << (move.removalSquare.at(jumpedSpaceIter) + 31));
+	}
 
 	return updatedBoard;
 }
