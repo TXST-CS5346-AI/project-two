@@ -7,8 +7,8 @@ BoardMoveTable Board::boardMoveTable[33];
 
 Board::Board()
 {
-	redPieces = Pieces(-1);
-	blackPieces = Pieces(1);
+	redPieces = Pieces(RED);
+	blackPieces = Pieces(BLACK);
 }
 
 Board::~Board()
@@ -16,7 +16,7 @@ Board::~Board()
 
 }
 
-std::string Board::moveGen(int player)
+std::string Board::moveGen(Color color)
 {
 	std::string moveList = "";
 	Pieces* playerPieces;
@@ -24,7 +24,7 @@ std::string Board::moveGen(int player)
 
 	int bitOffset = 0;
 
-	if (player == -1)
+	if (color == RED)
 	{
 		playerPieces = &redPieces;
 		opponentPieces = &blackPieces;
@@ -44,10 +44,10 @@ std::string Board::moveGen(int player)
 		// the board in checkers is 1 - 32. Use an offset
 		// here to align to the position bits properly.
 		bitOffset = pieceIter - 1;
-
+		
 		if (playerPieces->pieces >> bitOffset % 2 != 0)
 		{
-			moveList += getMovesForPiece(player, pieceIter, playerPieces, opponentPieces);
+			moveList += getMovesForPiece(color, pieceIter, playerPieces, opponentPieces);
 		}
 	}
 
@@ -56,7 +56,7 @@ std::string Board::moveGen(int player)
 
 
 // Knows it has a proper piece by the time it gets here.
-std::string Board::getMovesForPiece(int player, int piece, Pieces* playerPieces, Pieces* opponentPieces)
+std::string Board::getMovesForPiece(Color color, int piece, Pieces* playerPieces, Pieces* opponentPieces)
 {
 	std::string jumpList = "";
 	std::string moveList = "";
@@ -89,7 +89,7 @@ std::string Board::getMovesForPiece(int player, int piece, Pieces* playerPieces,
 
 		// Check to see which direction it is going, and if it can go that direction.
 		// King goes both ways		Red not a king goes "down"            Black not a king goes up
-		if (isKing || ((piece - bitOffset) < 0 && player == -1) || ((piece - bitOffset) > 0 && player == 1))
+		if (isKing || ((piece - bitOffset) < 0 && color == RED) || ((piece - bitOffset) > 0 && color == BLACK))
 		{
 
 			// Combine both bit fields into one and check if the space is empty.
@@ -152,7 +152,7 @@ int Board::squareToColumn(int square) const
 	return column;
 }
 
-bool Board::movePiece(int player, std::string move)
+bool Board::movePiece(Color color, std::string move)
 {
 
 	return true;

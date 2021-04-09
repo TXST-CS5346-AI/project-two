@@ -19,14 +19,14 @@
  * A jump may be continuous - the piece must continue capturing enemy pieces if more are available for capture. 
  */
 
-enum class Color { RED = 1, BLACK = -1 };
+enum Color { RED = 1, BLACK = -1 };
 
 class Pieces 
 {
 public: 
     
     Pieces(); // constructor
-    Pieces(int player);
+    Pieces(Color color);
 
     bool isKing(int position) const; // takes position, adds 32 and returns if what is in position is king (or not)
     void makeKing(int poisition); // sets member variable isKing to true. Takes position adds 32 and sets the bit it to 1

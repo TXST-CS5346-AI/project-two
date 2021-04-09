@@ -7,7 +7,7 @@ Pieces::Pieces()
 
 }
 
-Pieces::Pieces(int player)
+Pieces::Pieces(Color color)
 {
 
 	// The following are bit fields to be used for the board. Each value
@@ -19,7 +19,7 @@ Pieces::Pieces(int player)
 	// but in spaces 21 - 32, hence, the large number. Neither start with
 	// kings, so bits 33 - 64 are all zeros on both sides.
 
-	if (player == -1) // red
+	if (color == RED) // red
 		pieces = 4095;
 	else // black
 		pieces = 4293918720;

@@ -29,9 +29,9 @@ public:
 	Board();
 	~Board();
 	static void InitializeMoveTable();
-	bool movePiece(int player, std::string move);
-	std::string moveGen(int player);
-	std::string getMovesForPiece(int player, int square, Pieces* playerPieces, Pieces* opponentPieces);
+	bool movePiece(Color color, std::string move);
+	std::string moveGen(Color color);
+	std::string getMovesForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces);
 	int getSquareJumped(int sourceSquare, int destinationSquare);
 
 	void printBoard() const;
