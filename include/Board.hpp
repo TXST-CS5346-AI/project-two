@@ -46,7 +46,7 @@ public:
 	std::vector<Move> getMovesForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces);
 
 	void printBoard() const;
-	Board updateBoard(Move move);
+	Board updateBoard(Move move, Color color);
 
 
 	int getNumRedPieces() const { return numRedPieces; }

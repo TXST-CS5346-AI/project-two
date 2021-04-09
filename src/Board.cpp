@@ -260,19 +260,17 @@ void Board::printBoard() const
 
 // Note that this updates the complete board for both sides.
 // This will always only be a single move. It will need to be processed before this.
-Board Board::updateBoard(Move move)
+Board Board::updateBoard(Move move, Color color)
 {
+
+	// Remove start pos
+	// Position in final destination spot - probably check if it needs to be kinged here.
+	// Remove all jumped pieces
 	Board updatedBoard;
 	updatedBoard.blackPieces = blackPieces;
 	updatedBoard.redPieces = redPieces;
 	
-	// We only need the first part of the move, so chop 
-	// off the rest.
 
-	//while subString()
-	//string will be like 1>2>3
-	//One piece is relocated from a square to a square.
-	//Remove the opposite pieces that were removed.
 
 	return updatedBoard;
 }
