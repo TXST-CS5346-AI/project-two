@@ -21,6 +21,7 @@ struct BoardMoveTable
 	// values are the jumps, the odd values are the 
 	// spaces jumped. 
 	std::vector<int> jumps;
+	std::vector<int> removals;
 	std::vector<int> moves;
 };
 
@@ -28,6 +29,7 @@ struct Move
 {
 	int startSquare;
 	std::vector<int> destinationSquare;
+	std::vector<int> removalSquare;
 };
 
 class Board
@@ -40,8 +42,9 @@ public:
 	static void InitializeMoveTable();
 	bool movePiece(Color color, std::string move);
 	std::vector<Move> moveGen(Color color);
+	std::vector<Move> getJumpsForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces);
 	std::vector<Move> getMovesForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces);
-	
+
 	void printBoard() const;
 	Board updateBoard(Move move);
 

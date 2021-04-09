@@ -20,7 +20,6 @@ Board::~Board()
 
 std::vector<Move> Board::moveGen(Color color)
 {
-
 	std::vector<Move> totalMoves;
 	std::vector<Move> returnedMoves;
 	
@@ -52,23 +51,38 @@ std::vector<Move> Board::moveGen(Color color)
 		
 		if (((playerPieces->pieces) >> bitOffset) % 2 != 0)
 		{
-			returnedMoves = getMovesForPiece(color, pieceIter, playerPieces, opponentPieces);
+			// Check for possible jump mpves first.
+			returnedMoves = getJumpsForPiece(color, pieceIter, playerPieces, opponentPieces);
 			totalMoves.insert(totalMoves.end(), returnedMoves.begin(), returnedMoves.end());
 		}
 	}
 
+	// Go through all 32 squares and see if it is one
+	// of the appropriate pieces belonging to player.
+	if (totalMoves.size() == 0)
+	{
+		for (int pieceIter = 1; pieceIter <= 32; pieceIter++)
+		{
+			// The offset is used to align to 0 - 31, but 
+			// the board in checkers is 1 - 32. Use an offset
+			// here to align to the position bits properly.
+			bitOffset = pieceIter - 1;
+
+			if (((playerPieces->pieces) >> bitOffset) % 2 != 0)
+			{
+				// Check for non jump moves here.
+				returnedMoves = getMovesForPiece(color, pieceIter, playerPieces, opponentPieces);
+				totalMoves.insert(totalMoves.end(), returnedMoves.begin(), returnedMoves.end());
+			}
+		}
+	}
 	return totalMoves;
 }
-
-
-// Knows it has a proper piece by the time it gets here. It will return the moves
-// for the piece in this square.
-std::vector<Move> Board::getMovesForPiece(Color color, int piece, Pieces* playerPieces, Pieces* opponentPieces)
+std::vector<Move> Board::getJumpsForPiece(Color color, int piece, Pieces* playerPieces, Pieces* opponentPieces)
 {
 	std::vector<Move> moves;
 	Move move;
 
-	int x;
 	bool isKing = false;
 
 	int squareJumped = 0;
@@ -85,6 +99,7 @@ std::vector<Move> Board::getMovesForPiece(Color color, int piece, Pieces* player
 	{
 		isKing = false;
 	}
+
 
 	// Check if a jump position is open for this piece. This goes through all of the jumps.
 	for (int jumpIter = 0; jumpIter < Board::boardMoveTable[piece].jumps.size(); jumpIter++)
@@ -117,10 +132,37 @@ std::vector<Move> Board::getMovesForPiece(Color color, int piece, Pieces* player
 			}
 		}
 	}
+
+	return moves;
+}
+
+
+// Knows it has a proper piece by the time it gets here. It will return the moves
+// for the piece in this square.
+std::vector<Move> Board::getMovesForPiece(Color color, int piece, Pieces* playerPieces, Pieces* opponentPieces)
+{
+	std::vector<Move> moves;
+	Move move;
+
+	bool isKing = false;
+
+	int squareJumped = 0;
+
+	int bitOffset = 0;
+
+	// First, determine if it is a king. This is needed to see which moves
+	// are valid for this piece/player. Move either up/down at first.
+	if (playerPieces->isKing(piece))
+	{
+	isKing = true;
+	}
+	else
+	{
+		isKing = false;
+	}
+
 	// If there were possible jumps, they need to be taken. Do not generate
 	// any non jumping moves as per checkers rules.
-	if (moves.size() == 0)
-	{
 		for (int moveIter = 0; moveIter < Board::boardMoveTable[piece].moves.size(); moveIter++)
 		{
 			bitOffset = Board::boardMoveTable[piece].moves.at(moveIter) - 1;
@@ -135,7 +177,6 @@ std::vector<Move> Board::getMovesForPiece(Color color, int piece, Pieces* player
 				}
 			}
 		}
-	}
 
 	return moves;
 }
