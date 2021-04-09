@@ -7,6 +7,8 @@ BoardMoveTable Board::boardMoveTable[33];
 
 Board::Board()
 {
+
+	// Assign the proper pieces to the player, either red or black.
 	redPieces = Pieces(RED);
 	blackPieces = Pieces(BLACK);
 }
@@ -45,8 +47,9 @@ std::string Board::moveGen(Color color)
 		// here to align to the position bits properly.
 		bitOffset = pieceIter - 1;
 		
-		if (playerPieces->pieces >> bitOffset % 2 != 0)
+		if (((playerPieces->pieces) >> bitOffset) % 2 != 0)
 		{
+			//This returns the moves for one piece in one square as a string.
 			moveList += getMovesForPiece(color, pieceIter, playerPieces, opponentPieces);
 		}
 	}
@@ -55,7 +58,8 @@ std::string Board::moveGen(Color color)
 }
 
 
-// Knows it has a proper piece by the time it gets here.
+// Knows it has a proper piece by the time it gets here. It will return the moves
+// for the piece in this square.
 std::string Board::getMovesForPiece(Color color, int piece, Pieces* playerPieces, Pieces* opponentPieces)
 {
 	std::string jumpList = "";
@@ -79,7 +83,7 @@ std::string Board::getMovesForPiece(Color color, int piece, Pieces* playerPieces
 	}
 
 	// Check if a jump position is open for this piece. This goes through all of the jumps.
-	for (int jumpIter = 0; jumpIter < Board::boardMoveTable[piece].jumps.size(); jumpIter++)
+	for (int jumpIter = 0; jumpIter < Board::boardMoveTable[piece].jumps.size(); jumpIter = jumpIter + 2)
 	{
 		// Get the position of the jump, reduce it by one for an offset. Note
 		// that while it is one less than the position, the direction check still works
@@ -96,28 +100,46 @@ std::string Board::getMovesForPiece(Color color, int piece, Pieces* playerPieces
 			if (((playerPieces->pieces | opponentPieces->pieces) >> bitOffset) % 2 != 0)
 			{
 				// If it is open, get the space between. We will need to check it.
-				squareJumped = getSquareJumped(piece, Board::boardMoveTable[piece].jumps.at(jumpIter));
-				
+				// Again with the -1 to help with the offset
+				squareJumped = Board::boardMoveTable[piece].jumps.at(jumpIter + 1) - 1;
+
 				if ((opponentPieces->pieces >> squareJumped) % 2 != 0)
 				{
 					//yup, we are good!!!! this means that an opponent was in this spot.
+					moveList = moveList + " " + std::to_string(piece) + ">" + std::to_string(bitOffset + 1);
 				}
 			}
 		}
-	}
 
+		// If there were possible jumps, they need to be taken. Do not generate
+		// any non jumping moves as per checkers rules.
+		if (moveList == "")
+		{
+			for (int moveIter = 0; moveIter < Board::boardMoveTable[piece].moves.size(); moveIter++)
+			{
+				bitOffset = Board::boardMoveTable[piece].moves.at(moveIter) - 1;
+
+				if (((playerPieces->pieces | opponentPieces->pieces) >> bitOffset) % 2 == 0)
+				{
+					moveList = moveList + " " + std::to_string(piece) + ">" + std::to_string(bitOffset + 1);
+				}
+			}
+		}
+
+	}
 
 
 	return moveList;
 }
 
 
-// Returns the squasre that was jumped or will be attempted to be jumped.
+// Returns the square that was jumped or will be attempted to be jumped.
 // It already knows that the spot it wants to jump to is clear.
+// It also only tries to jump the proper king or not king jump 
+// by the time it gets here.
 int Board::getSquareJumped(int sourceSquare, int destinationSquare)
 {
-	
-	int squareP = 0;
+	int jumpedSquare = 0;
 	/*
 	int evenRowOffset = 0;
 
@@ -128,7 +150,7 @@ int Board::getSquareJumped(int sourceSquare, int destinationSquare)
 
 	if (destinationSquare > sourceSquare)
 	*/
-		return squareP;
+		return jumpedSquare;
 }
 
 
@@ -244,204 +266,276 @@ void Board::InitializeMoveTable()
 	// The table is big, but never changes.
 
 	boardMoveTable[1].jumps.push_back(10);
+	boardMoveTable[1].jumps.push_back(6);
 	boardMoveTable[1].moves.push_back(5);
 	boardMoveTable[1].moves.push_back(6);
 
 	boardMoveTable[2].jumps.push_back(9);
+	boardMoveTable[2].jumps.push_back(6);
 	boardMoveTable[2].jumps.push_back(11);
+	boardMoveTable[2].jumps.push_back(7);
 	boardMoveTable[2].moves.push_back(6);
 	boardMoveTable[2].moves.push_back(7);
 
 	boardMoveTable[3].jumps.push_back(10);
+	boardMoveTable[3].jumps.push_back(7);
 	boardMoveTable[3].jumps.push_back(12);
+	boardMoveTable[3].jumps.push_back(8);
 	boardMoveTable[3].moves.push_back(7);
 	boardMoveTable[3].moves.push_back(8);
 
 	boardMoveTable[4].jumps.push_back(11);
+	boardMoveTable[4].jumps.push_back(8);
 	boardMoveTable[4].moves.push_back(8);
 
 	boardMoveTable[5].jumps.push_back(14);
+	boardMoveTable[5].jumps.push_back(9);
 	boardMoveTable[5].moves.push_back(1);
 	boardMoveTable[5].moves.push_back(9);
 
 	boardMoveTable[6].jumps.push_back(13);
+	boardMoveTable[6].jumps.push_back(9);
 	boardMoveTable[6].jumps.push_back(15);
+	boardMoveTable[6].jumps.push_back(10);
 	boardMoveTable[6].moves.push_back(1);
 	boardMoveTable[6].moves.push_back(2);
 	boardMoveTable[6].moves.push_back(9);
 	boardMoveTable[6].moves.push_back(10);
 
 	boardMoveTable[7].jumps.push_back(14);
+	boardMoveTable[7].jumps.push_back(10);
 	boardMoveTable[7].jumps.push_back(16);
+	boardMoveTable[7].jumps.push_back(11);
 	boardMoveTable[7].moves.push_back(2);
 	boardMoveTable[7].moves.push_back(3);
 	boardMoveTable[7].moves.push_back(10);
 	boardMoveTable[7].moves.push_back(11);
 
 	boardMoveTable[8].jumps.push_back(15);
+	boardMoveTable[8].jumps.push_back(11);
 	boardMoveTable[8].moves.push_back(3);
 	boardMoveTable[8].moves.push_back(4);
 	boardMoveTable[8].moves.push_back(11);
 	boardMoveTable[8].moves.push_back(12);
 
 	boardMoveTable[9].jumps.push_back(2);
+	boardMoveTable[9].jumps.push_back(6);
 	boardMoveTable[9].jumps.push_back(18);
+	boardMoveTable[9].jumps.push_back(14);
 	boardMoveTable[9].moves.push_back(5);
 	boardMoveTable[9].moves.push_back(6);
 	boardMoveTable[9].moves.push_back(13);
 	boardMoveTable[9].moves.push_back(14);
 
 	boardMoveTable[10].jumps.push_back(1);
+	boardMoveTable[10].jumps.push_back(6);
 	boardMoveTable[10].jumps.push_back(3);
+	boardMoveTable[10].jumps.push_back(7);
 	boardMoveTable[10].jumps.push_back(17);
+	boardMoveTable[10].jumps.push_back(14);
 	boardMoveTable[10].jumps.push_back(19);
+	boardMoveTable[10].jumps.push_back(15);
 	boardMoveTable[10].moves.push_back(6);
 	boardMoveTable[10].moves.push_back(7);
 	boardMoveTable[10].moves.push_back(14);
 	boardMoveTable[10].moves.push_back(15);
 
 	boardMoveTable[11].jumps.push_back(2);
+	boardMoveTable[11].jumps.push_back(7);
 	boardMoveTable[11].jumps.push_back(4);
+	boardMoveTable[11].jumps.push_back(8);
 	boardMoveTable[11].jumps.push_back(18);
+	boardMoveTable[11].jumps.push_back(15);
 	boardMoveTable[11].jumps.push_back(20);
+	boardMoveTable[11].jumps.push_back(16);
 	boardMoveTable[11].moves.push_back(7);
 	boardMoveTable[11].moves.push_back(8);
 	boardMoveTable[11].moves.push_back(15);
 	boardMoveTable[11].moves.push_back(16);
 
 	boardMoveTable[12].jumps.push_back(3);
+	boardMoveTable[12].jumps.push_back(8);
 	boardMoveTable[12].jumps.push_back(19);
-	boardMoveTable[12].moves.push_back(6);
+	boardMoveTable[12].jumps.push_back(16);
 	boardMoveTable[12].moves.push_back(8);
+	boardMoveTable[12].moves.push_back(16);
 
 	boardMoveTable[13].jumps.push_back(6);
+	boardMoveTable[13].jumps.push_back(9);
 	boardMoveTable[13].jumps.push_back(22);
+	boardMoveTable[13].jumps.push_back(17);
 	boardMoveTable[13].moves.push_back(9);
 	boardMoveTable[13].moves.push_back(17);
 
 	boardMoveTable[14].jumps.push_back(5);
+	boardMoveTable[14].jumps.push_back(9);
 	boardMoveTable[14].jumps.push_back(7);
+	boardMoveTable[14].jumps.push_back(10);
 	boardMoveTable[14].jumps.push_back(21);
+	boardMoveTable[14].jumps.push_back(17);
 	boardMoveTable[14].jumps.push_back(23);
+	boardMoveTable[14].jumps.push_back(18);
 	boardMoveTable[14].moves.push_back(9);
 	boardMoveTable[14].moves.push_back(10);
 	boardMoveTable[14].moves.push_back(17);
 	boardMoveTable[14].moves.push_back(18);
 
 	boardMoveTable[15].jumps.push_back(6);
+	boardMoveTable[15].jumps.push_back(10);
 	boardMoveTable[15].jumps.push_back(8);
+	boardMoveTable[15].jumps.push_back(11);
 	boardMoveTable[15].jumps.push_back(22);
+	boardMoveTable[15].jumps.push_back(18);
 	boardMoveTable[15].jumps.push_back(24);
+	boardMoveTable[15].jumps.push_back(19);
 	boardMoveTable[15].moves.push_back(10);
 	boardMoveTable[15].moves.push_back(11);
 	boardMoveTable[15].moves.push_back(18);
 	boardMoveTable[15].moves.push_back(19);
 
 	boardMoveTable[16].jumps.push_back(7);
+	boardMoveTable[16].jumps.push_back(11);
 	boardMoveTable[16].jumps.push_back(23);
+	boardMoveTable[16].jumps.push_back(19);
 	boardMoveTable[16].moves.push_back(11);
 	boardMoveTable[16].moves.push_back(12);
 	boardMoveTable[16].moves.push_back(19);
 	boardMoveTable[16].moves.push_back(20);
 
 	boardMoveTable[17].jumps.push_back(10);
+	boardMoveTable[17].jumps.push_back(14);
 	boardMoveTable[17].jumps.push_back(26);
+	boardMoveTable[17].jumps.push_back(22);
 	boardMoveTable[17].moves.push_back(13);
 	boardMoveTable[17].moves.push_back(14);
 	boardMoveTable[17].moves.push_back(21);
 	boardMoveTable[17].moves.push_back(22);
 
 	boardMoveTable[18].jumps.push_back(9);
+	boardMoveTable[18].jumps.push_back(14);
 	boardMoveTable[18].jumps.push_back(11);
+	boardMoveTable[18].jumps.push_back(15);
 	boardMoveTable[18].jumps.push_back(25);
+	boardMoveTable[18].jumps.push_back(22);
 	boardMoveTable[18].jumps.push_back(27);
+	boardMoveTable[18].jumps.push_back(23);
 	boardMoveTable[18].moves.push_back(14);
 	boardMoveTable[18].moves.push_back(15);
 	boardMoveTable[18].moves.push_back(22);
 	boardMoveTable[18].moves.push_back(23);
 
 	boardMoveTable[19].jumps.push_back(10);
+	boardMoveTable[19].jumps.push_back(15);
 	boardMoveTable[19].jumps.push_back(12);
+	boardMoveTable[19].jumps.push_back(16);
 	boardMoveTable[19].jumps.push_back(26);
+	boardMoveTable[19].jumps.push_back(23);
 	boardMoveTable[19].jumps.push_back(28);
+	boardMoveTable[19].jumps.push_back(24);
 	boardMoveTable[19].moves.push_back(15);
 	boardMoveTable[19].moves.push_back(16);
 	boardMoveTable[19].moves.push_back(23);
 	boardMoveTable[19].moves.push_back(24);
 
 	boardMoveTable[20].jumps.push_back(11);
+	boardMoveTable[20].jumps.push_back(16);
 	boardMoveTable[20].jumps.push_back(27);
+	boardMoveTable[20].jumps.push_back(24);
 	boardMoveTable[20].moves.push_back(16);
 	boardMoveTable[20].moves.push_back(24);
 
 	boardMoveTable[21].jumps.push_back(14);
+	boardMoveTable[21].jumps.push_back(17);
 	boardMoveTable[21].jumps.push_back(30);
+	boardMoveTable[21].jumps.push_back(25);
 	boardMoveTable[21].moves.push_back(17);
 	boardMoveTable[21].moves.push_back(25);
 
 	boardMoveTable[22].jumps.push_back(13);
+	boardMoveTable[22].jumps.push_back(17);
 	boardMoveTable[22].jumps.push_back(15);
+	boardMoveTable[22].jumps.push_back(18);
 	boardMoveTable[22].jumps.push_back(29);
+	boardMoveTable[22].jumps.push_back(25);
 	boardMoveTable[22].jumps.push_back(31);
+	boardMoveTable[22].jumps.push_back(26);
 	boardMoveTable[22].moves.push_back(17);
 	boardMoveTable[22].moves.push_back(18);
 	boardMoveTable[22].moves.push_back(25);
 	boardMoveTable[22].moves.push_back(26);
 
 	boardMoveTable[23].jumps.push_back(14);
+	boardMoveTable[23].jumps.push_back(18);
 	boardMoveTable[23].jumps.push_back(16);
+	boardMoveTable[23].jumps.push_back(19);
 	boardMoveTable[23].jumps.push_back(30);
+	boardMoveTable[23].jumps.push_back(26);
 	boardMoveTable[23].jumps.push_back(32);
+	boardMoveTable[23].jumps.push_back(27);
 	boardMoveTable[23].moves.push_back(18);
 	boardMoveTable[23].moves.push_back(19);
 	boardMoveTable[23].moves.push_back(26);
 	boardMoveTable[23].moves.push_back(27);
 
 	boardMoveTable[24].jumps.push_back(15);
+	boardMoveTable[24].jumps.push_back(19);
 	boardMoveTable[24].jumps.push_back(31);
+	boardMoveTable[24].jumps.push_back(27);
 	boardMoveTable[24].moves.push_back(19);
 	boardMoveTable[24].moves.push_back(20);
 	boardMoveTable[24].moves.push_back(27);
 	boardMoveTable[24].moves.push_back(28);
 
-	boardMoveTable[25].jumps.push_back(19);
+	boardMoveTable[25].jumps.push_back(18);
+	boardMoveTable[25].jumps.push_back(22);
 	boardMoveTable[25].moves.push_back(21);
 	boardMoveTable[25].moves.push_back(22);
 	boardMoveTable[25].moves.push_back(29);
 	boardMoveTable[25].moves.push_back(30);
 
 	boardMoveTable[26].jumps.push_back(17);
+	boardMoveTable[26].jumps.push_back(22);
 	boardMoveTable[26].jumps.push_back(19);
+	boardMoveTable[26].jumps.push_back(23);
 	boardMoveTable[26].moves.push_back(22);
 	boardMoveTable[26].moves.push_back(23);
 	boardMoveTable[26].moves.push_back(30);
 	boardMoveTable[26].moves.push_back(31);
 
 	boardMoveTable[27].jumps.push_back(18);
+	boardMoveTable[27].jumps.push_back(23);
 	boardMoveTable[27].jumps.push_back(20);
+	boardMoveTable[27].jumps.push_back(24);
 	boardMoveTable[27].moves.push_back(23);
 	boardMoveTable[27].moves.push_back(24);
 	boardMoveTable[27].moves.push_back(31);
 	boardMoveTable[27].moves.push_back(32);
 
 	boardMoveTable[28].jumps.push_back(19);
+	boardMoveTable[28].jumps.push_back(24);
 	boardMoveTable[28].moves.push_back(24);
 	boardMoveTable[28].moves.push_back(32);
 
 	boardMoveTable[29].jumps.push_back(22);
+	boardMoveTable[29].jumps.push_back(25);
 	boardMoveTable[29].moves.push_back(25);
 
 	boardMoveTable[30].jumps.push_back(21);
+	boardMoveTable[30].jumps.push_back(25);
 	boardMoveTable[30].jumps.push_back(23);
+	boardMoveTable[30].jumps.push_back(26);
 	boardMoveTable[30].moves.push_back(25);
 	boardMoveTable[30].moves.push_back(26);
 
 	boardMoveTable[31].jumps.push_back(22);
+	boardMoveTable[31].jumps.push_back(26);
 	boardMoveTable[31].jumps.push_back(24);
+	boardMoveTable[31].jumps.push_back(27);
 	boardMoveTable[31].moves.push_back(26);
 	boardMoveTable[31].moves.push_back(27);
 
 	boardMoveTable[32].jumps.push_back(23);
+	boardMoveTable[32].jumps.push_back(27);
 	boardMoveTable[32].moves.push_back(27);
 	boardMoveTable[32].moves.push_back(28);
 

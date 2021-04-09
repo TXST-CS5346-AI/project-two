@@ -17,6 +17,9 @@
 
 struct BoardMoveTable
 {
+	// Jumps will always come in pairs. The even
+	// values are the jumps, the odd values are the 
+	// spaces jumped. 
 	std::vector<int> jumps;
 	std::vector<int> moves;
 };
