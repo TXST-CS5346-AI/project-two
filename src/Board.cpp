@@ -18,9 +18,12 @@ Board::~Board()
 
 }
 
-std::string Board::moveGen(Color color)
+std::vector<Move> Board::moveGen(Color color)
 {
-	std::string moveList = "";
+
+	std::vector<Move> totalMoves;
+	std::vector<Move> returnedMoves;
+	
 	Pieces* playerPieces;
 	Pieces* opponentPieces;
 
@@ -49,22 +52,23 @@ std::string Board::moveGen(Color color)
 		
 		if (((playerPieces->pieces) >> bitOffset) % 2 != 0)
 		{
-			//This returns the moves for one piece in one square as a string.
-			moveList += getMovesForPiece(color, pieceIter, playerPieces, opponentPieces);
+			returnedMoves = getMovesForPiece(color, pieceIter, playerPieces, opponentPieces);
+			totalMoves.insert(totalMoves.end(), returnedMoves.begin(), returnedMoves.end());
 		}
 	}
 
-	return moveList;
+	return totalMoves;
 }
 
 
 // Knows it has a proper piece by the time it gets here. It will return the moves
 // for the piece in this square.
-std::string Board::getMovesForPiece(Color color, int piece, Pieces* playerPieces, Pieces* opponentPieces)
+std::vector<Move> Board::getMovesForPiece(Color color, int piece, Pieces* playerPieces, Pieces* opponentPieces)
 {
-	std::string jumpList = "";
-	std::string moveList = "";
+	std::vector<Move> moves;
+	Move move;
 
+	int x;
 	bool isKing = false;
 
 	int squareJumped = 0;
@@ -106,14 +110,17 @@ std::string Board::getMovesForPiece(Color color, int piece, Pieces* playerPieces
 				if ((opponentPieces->pieces >> squareJumped) % 2 != 0)
 				{
 					//yup, we are good!!!! this means that an opponent was in this spot.
-					moveList = moveList + " " + std::to_string(piece) + ">" + std::to_string(bitOffset + 1);
+					move.startSquare = piece;
+					move.destinationSquare.push_back( bitOffset + 1);
+					moves.push_back(move);
+					move.destinationSquare.clear();
 				}
 			}
 		}
 
 		// If there were possible jumps, they need to be taken. Do not generate
 		// any non jumping moves as per checkers rules.
-		if (moveList == "")
+		if (moves.empty())
 		{
 			for (int moveIter = 0; moveIter < Board::boardMoveTable[piece].moves.size(); moveIter++)
 			{
@@ -121,7 +128,11 @@ std::string Board::getMovesForPiece(Color color, int piece, Pieces* playerPieces
 
 				if (((playerPieces->pieces | opponentPieces->pieces) >> bitOffset) % 2 == 0)
 				{
-					moveList = moveList + " " + std::to_string(piece) + ">" + std::to_string(bitOffset + 1);
+					move.startSquare = piece;
+					move.destinationSquare.push_back(bitOffset + 1);
+					moves.push_back(move);
+					move.destinationSquare.clear();
+					x = 5;
 				}
 			}
 		}
@@ -129,30 +140,8 @@ std::string Board::getMovesForPiece(Color color, int piece, Pieces* playerPieces
 	}
 
 
-	return moveList;
+	return moves;
 }
-
-
-// Returns the square that was jumped or will be attempted to be jumped.
-// It already knows that the spot it wants to jump to is clear.
-// It also only tries to jump the proper king or not king jump 
-// by the time it gets here.
-int Board::getSquareJumped(int sourceSquare, int destinationSquare)
-{
-	int jumpedSquare = 0;
-	/*
-	int evenRowOffset = 0;
-
-	if ((sourceSquare - 1) % 2 == 0)
-	{
-		evenRowOffset = 1;
-	}
-
-	if (destinationSquare > sourceSquare)
-	*/
-		return jumpedSquare;
-}
-
 
 int Board::squareToRow(int square) const
 {
@@ -230,22 +219,17 @@ void Board::printBoard() const
 
 }
 
-Board Board::updateBoard(std::string move)
+
+// Note that this updates the complete board for both sides.
+// This will always only be a single move. It will need to be processed before this.
+Board Board::updateBoard(Move move)
 {
 	Board updatedBoard;
 	updatedBoard.blackPieces = blackPieces;
 	updatedBoard.redPieces = redPieces;
-
-	std::string subString = "";
-
-	int sourceSquare;
-	int destinationSquare;
-
-	int tokenLocation;
-
-	tokenLocation = move.find(">");
-	//subString = move.substr
-
+	
+	// We only need the first part of the move, so chop 
+	// off the rest.
 
 	//while subString()
 	//string will be like 1>2>3

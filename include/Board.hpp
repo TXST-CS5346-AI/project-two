@@ -24,6 +24,12 @@ struct BoardMoveTable
 	std::vector<int> moves;
 };
 
+struct Move
+{
+	int startSquare;
+	std::vector<int> destinationSquare;
+};
+
 class Board
 {
 
@@ -33,12 +39,11 @@ public:
 	~Board();
 	static void InitializeMoveTable();
 	bool movePiece(Color color, std::string move);
-	std::string moveGen(Color color);
-	std::string getMovesForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces);
-	int getSquareJumped(int sourceSquare, int destinationSquare);
-
+	std::vector<Move> moveGen(Color color);
+	std::vector<Move> getMovesForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces);
+	
 	void printBoard() const;
-	Board updateBoard(std::string move);
+	Board updateBoard(Move move);
 
 
 	int getNumRedPieces() const { return numRedPieces; }
