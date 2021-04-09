@@ -290,6 +290,15 @@ Board Board::updateBoard(Move move, Color color)
 		playerPieces->setKing(move.destinationSquare.back(), true);
 		playerPieces->setKing(move.startSquare, false);
 	}
+	else
+	{
+		// Check to see if we've landed in the kinging row, the back row opposite the starting side.
+		if (color == RED && (move.destinationSquare.back() >= 29) || (color == BLACK && (move.destinationSquare.back() <= 4)))
+		{
+			playerPieces->setKing(move.destinationSquare.back(), true);
+		}
+	}
+
 	// Remove start pos
 	playerPieces->pieces = playerPieces->pieces & ~(1 << (move.startSquare - 1));
 	
