@@ -1,48 +1,54 @@
-#include "Game.hpp"
+#include "../Include/Game.hpp"
 
 
-Game::Game() // constructor
+Game::Game()
 {
-
-
-}
-Game::~Game()  // destructor
-{
-
-
-
 }
 
-// The only initialization function needed, as the game will 
-// be played automatically by 2 AI players (MIN and MAX). 
-// while gameOver == NOT_DONE keep playing
-
-void Game::startGame()
+Game::~Game()
 {
-
-
-
 }
 
-// simple function to invert the enum value, thus determine who's turn is it next. 
-// E.g., if currentPlayer is RED (1), function returns BLACK (-1)
+Game::Game( bool player1MinMax, int evalVersionP1, bool player2MinMax, int evalVersionP2, int depth )
+{
+    state =  Board();
+    redPlayer = Player( player1MinMax, Color::RED );
+    blackPlayer = Player( player2MinMax, Color::BLACK );
+    useEvalP1 = evalVersionP1;
+    useEvalP2 = evalVersionP2;
+    this->depth = depth;
+}
+
+Game::GameOver Game::startGame()
+{
+    Color currentPlayer = Color::BLACK;
+    GameOver gameStatus = GameOver::NOT_DONE;
+    while ( gameStatus == GameOver::NOT_DONE )
+    {
+
+
+        currentPlayer = changePlayer( currentPlayer);
+        gameStatus = gameOver();
+    }
+return  gameStatus;
+}
 
 Color Game::changePlayer(Color currentPlayer)
 {
-  
-
+if (currentPlayer == Color::BLACK)
     return Color::RED;
-
+else
+    return  Color::BLACK;
 }
-
 
 Game::GameOver Game::gameOver()
 {
-
- 
-
-
-    return GameOver::DRAW;
-
+    int UtilityValue = 0;
+    if ( UtilityValue == 0 )
+        return GameOver::BLACK_WINS;
+    else if ( UtilityValue == 1 )
+        return GameOver::DRAW;
+    else
+        return GameOver::RED_WINS;
 }
 

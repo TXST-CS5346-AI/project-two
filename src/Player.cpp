@@ -1,47 +1,45 @@
-#include "Player.hpp"
+#include "../Include/Player.hpp"
 
-Player::Player() // constructor
+Player::Player()
 {
-
 
 }
-Player::~Player() // destructor
+Player::~Player()
 {
-
 
 }
 
-Player::Player(Color color) // overloaded constructor to set player color, which is IMMUTABLE
+Player::Player(bool minMaxState, Color color)
 {
     this->color = color;
-
+    numPieces = 12; // how many pieces does Player have left
+    numPiecesTaken = 0; // Player's current score based on captured enemy pieces
+    numTurnsTaken = 0; // counter for Player's turns taken
+    isMinimax = minMaxState;
 }
 
 Board Player::takeTurn()
 {
-    Board board;
 
-
-    return board;
 
 }
 
 int Player::getNumPieces()
 {
-
-    return 0;
+    return numPieces;
 }
 int Player::getNumPiecesTaken()
 {
+    return numPiecesTaken;
+}
 
-    return 0;
+Color Player::getColor()
+{
+    return color;
 }
 // player can not gain additional pieces during the game, only lose them
 void Player::decreasePlayerPieces(int piecesToSubtract)
 {
-
-
-
+    numPieces -= piecesToSubtract;
+    numPiecesTaken += piecesToSubtract;
 }
-
-
