@@ -15,30 +15,56 @@
  * Each of the three rows should have 4 pieces. 
  */
 
+struct BoardMoveTable
+{
+	// Jumps will always come in pairs. The even
+	// values are the jumps, the odd values are the 
+	// spaces jumped. 
+	std::vector<int> jumps;
+	std::vector<int> removals;
+	std::vector<int> moves;
+};
+
+struct Move
+{
+	int startSquare;
+	std::vector<int> destinationSquare;
+	std::vector<int> removalSquare;
+};
+
 class Board
 {
 
-private: 
-    Pieces blackPieces;
-    Pieces redPieces;
-    static std::vector<std::vector<int>> BoardMoves; 
+public:
 
-public: 
-    Board(); // constructor
-    ~Board(); // destructor
+	Board();
+	~Board();
+	static void InitializeMoveTable();
+	bool movePiece(Color color, std::string move);
+	std::vector<Move> moveGen(Color color);
+	std::vector<Move> getJumpsForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces);
+	std::vector<Move> getMovesForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces);
 
-    // prints an ASCII representation of the 2D 8x8 checkers board
-    void printBoard();
+	void printBoard() const;
+	Board updateBoard(Move move, Color color);
 
-    /* provides a string describing the move(s), which needs to be parsed
-    * E.g. - "1>2 5>10" means Piece in position 1 moves to position 2. Piece in 
-    * position 5 moves to position 10. It can be sequential too: "1>5>9" means Piece 1
-    * jumps to 5 then to 9
-    */
-    void updateBoard(std::string moveset); 
 
-    std::string moveGen(Color color); // returns all possible moves for all pieces of a color
+	int getNumRedPieces() const { return numRedPieces; }
+	int getNumBlackPieces() const { return numBlackPieces; }
+
+	int squareToRow(int square) const;
+	int squareToColumn(int square) const;
+
+private:
+
+	Pieces blackPieces;
+	Pieces redPieces;
+
+	int numRedPieces;
+	int numBlackPieces;
+
+	static BoardMoveTable boardMoveTable[33];
 
 };
 
-#endif // !BOARD_H
+#endif
