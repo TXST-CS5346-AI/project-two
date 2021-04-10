@@ -1,5 +1,5 @@
-#ifndef PIECE_H
-#define PIECE_H
+#ifndef PIECES_H
+#define PIECES_H
 
 #include <string> 
 
@@ -11,7 +11,6 @@
  * 
  * A standard checkers piece may move only forwards in a diagonal manner. If the piece reaches the 
  * opposite end of the board, it becomes a "king" piece. This means it may now move backwards diagonally. 
- * A piece's position is determined by it's board placement - row and column number.  
  * 
  * A piece from player A may take a piece from player B by "jumping" over it diagonally if the square 
  * on the opposite side is empty. Jumps are MANDATORY - a player must make a jump if one is available to them. 
@@ -24,17 +23,17 @@ enum class Color { RED = 1, BLACK = -1 };
 
 class Pieces 
 {
-
-private: 
-    // 64 bits; lower 32 used for board position. Upper 32 bits used to determine if a piece is king
-    long long pieces; 
 public: 
+    
     Pieces(); // constructor
-    ~Pieces(); // destructor 
+    Pieces(Color color);
 
-    bool isKing(int position); // takes position, adds 32 and returns if what is in position is king (or not)
-    void makeKing(int poisition); // sets member variable isKing to true. Takes position adds 32 and sets the bit it to 1
-    int getCount(); // counts the num of 1s in the lower 32 bits
+    bool isKing(int position) const; // takes position, adds 32 and returns if what is in position is king (or not)
+    void setKing(int poisition, bool toKing); // sets member variable isKing to true. Takes position adds 32 and sets the bit it to 1
+    
+    long long pieces;
 };
 
-#endif // !PIECE_H
+#endif // !PIECES_H
+
+
