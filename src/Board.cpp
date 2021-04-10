@@ -126,8 +126,10 @@ std::vector<Move> Board::getJumpsForPiece(Color color, int piece, Pieces* player
 					//yup, we are good!!!! this means that an opponent was in this spot.
 					move.startSquare = piece;
 					move.destinationSquare.push_back(bitOffset + 1);
+					move.removalSquare.push_back(squareJumped + 1);
 					moves.push_back(move);
 					move.destinationSquare.clear();
+					move.removalSquare.clear();
 				}
 			}
 		}
@@ -209,6 +211,7 @@ bool Board::movePiece(Color color, std::string move)
 
 void Board::printBoard() const
 {
+	int squareOffset = 0;
 
 	// The board toggles back and forth in regards to the positioning 
 	// of pieces. This either adds the offset to the beginning of the 
@@ -230,14 +233,31 @@ void Board::printBoard() const
 			{
 				std::cout << "_|";
 			}
+			
+			squareOffset = (rowIter * 4 + colIter);
 
-			if ((redPieces.pieces >> (rowIter * 4 + colIter)) % 2 != 0)
+			if ((redPieces.pieces >> squareOffset) % 2 != 0)
 			{
-				std::cout << "X|";
+				if (redPieces.isKing(squareOffset + 1))
+				{
+					std::cout << "R|";
+				}
+				else
+				{
+					std::cout << "r|";
+				}
 			}
-			else if ((blackPieces.pieces >> (rowIter * 4 + colIter)) % 2 != 0)
+			else if ((blackPieces.pieces >> squareOffset) % 2 != 0)
 			{
-				std::cout << "O|";
+				if (blackPieces.isKing(squareOffset + 1))
+				{
+					std::cout << "B|";
+				}
+				else
+				{
+					std::cout << "b|";
+				}
+				
 			}
 			else
 			{
