@@ -77,11 +77,15 @@ Algorithm::Result Algorithm::alphaBetaSearch(Board state)
 Algorithm::Result Algorithm::maxValue(Board state, int alpha, int beta)
 {
     Algorithm::Result result;
-    
+    int value; 
+
     if (Algorithm::terminalTest(state))
     {
-
+        return Algorithm::utility(state);
     }
+
+    value = std::numeric_limits<int>::min(); 
+
 
     return result;
 }
@@ -115,15 +119,48 @@ Algorithm::Result Algorithm::minValue(Board state, int alpha, int beta)
  */ 
 bool Algorithm::terminalTest(Board state) 
 {
-    return false;
+    bool isTerminalState = false; 
+    if (state.getNumRedPieces() == 0 || state.getNumBlackPieces() == 0)
+    {
+        isTerminalState = true;
+    } 
+    else if (this->currentDepth == this->currentDepth) 
+    {
+        isTerminalState = true; 
+    }
+
+    return isTerminalState;
 }
 
+/**
+ * 
+ */
+Algorithm::Result Algorithm::utility(Board state)
+{
+    return staticEval(state, this->callingPlayer, this->evalVersion);
+} 
+
+/**
+ * 
+ */ 
+std::vector<Move> Algorithm::actions(Board state)
+{
+    // change to this->callingPlayer.getColor(); 
+    state.moveGen(Color::RED);
+} 
 
 
 /**
- * @author Borislav Sabotinov
+ * 
  */ 
 void Algorithm::setEvalVersion(int evalVersion)
 {
     this->evalVersion = evalVersion;
+}
+
+/**
+ * 
+ */ 
+void Algorithm::setMaxDepth(int maxDepth) {
+    this->maxDepth = maxDepth; 
 }

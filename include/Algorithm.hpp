@@ -34,8 +34,11 @@ private:
         int value;
         Move move; 
     };
+
     int numNodesGenerated; 
     int evalVersion; 
+    int currentDepth, maxDepth;
+    Player callingPlayer; 
     
     // plausible move generator, returns a list of positions that can be made by player
     std::vector<Move> movegen(Board board, Player player);
@@ -57,6 +60,8 @@ private:
     bool terminalTest(Board state); // terminal test for alpha-beta-search
     Result maxValue(Board state, int alpha, int beta); 
     Result minValue(Board state, int alpha, int beta);
+    Result utility(Board state);
+    std::vector<Move> actions(Board state);
 
 public: 
     Algorithm(); // constructor
@@ -69,6 +74,7 @@ public:
     Result alphaBetaSearch(Board state);
 
     void setEvalVersion(int evalVersion); 
+    void setMaxDepth(int maxDepth);
 };
 
 #endif // !ALGORITHM_H
