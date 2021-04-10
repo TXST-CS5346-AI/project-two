@@ -19,7 +19,7 @@ Pieces::Pieces(Color color)
 	// but in spaces 21 - 32, hence, the large number. Neither start with
 	// kings, so bits 33 - 64 are all zeros on both sides.
 
-	if (color == RED) // red
+	if (color == Color::RED) // red
 		//pieces = 19455;
 		pieces = 4095; // Initial board state
 	else // black

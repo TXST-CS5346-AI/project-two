@@ -9,8 +9,8 @@ Board::Board()
 {
 
 	// Assign the proper pieces to the player, either red or black.
-	redPieces = Pieces(RED);
-	blackPieces = Pieces(BLACK);
+	redPieces = Pieces(Color::RED);
+	blackPieces = Pieces(Color::BLACK);
 }
 
 Board::~Board()
@@ -28,7 +28,7 @@ std::vector<Move> Board::moveGen(Color color)
 
 	int bitOffset = 0;
 
-	if (color == RED)
+	if (color == Color::RED)
 	{
 		playerPieces = &redPieces;
 		opponentPieces = &blackPieces;
@@ -112,7 +112,7 @@ std::vector<Move> Board::getJumpsForPiece(Color color, int piece, Pieces* player
 
 		// Check to see which direction it is going, and if it can go that direction.
 		// King goes both ways		Red not a king goes "down"            Black not a king goes up
-		if (isKing || ((piece - bitOffset) < 0 && color == RED) || ((piece - bitOffset) > 0 && color == BLACK))
+		if (isKing || ((piece - bitOffset) < 0 && color == Color::RED) || ((piece - bitOffset) > 0 && color == Color::BLACK))
 		{
 			// Combine both bit fields into one and check if the space is empty.
 			if (((playerPieces->pieces | opponentPieces->pieces) >> bitOffset) % 2 == 0)
@@ -166,7 +166,7 @@ std::vector<Move> Board::getMovesForPiece(Color color, int piece, Pieces* player
 		for (int moveIter = 0; moveIter < Board::boardMoveTable[piece].moves.size(); moveIter++)
 		{
 			bitOffset = Board::boardMoveTable[piece].moves.at(moveIter) - 1;
-			if (isKing || ((piece - bitOffset) < 0 && color == RED) || ((piece - bitOffset) > 0 && color == BLACK))
+			if (isKing || ((piece - bitOffset) < 0 && color == Color::RED) || ((piece - bitOffset) > 0 && color == Color::BLACK))
 			{
 				if (((playerPieces->pieces | opponentPieces->pieces) >> bitOffset) % 2 == 0)
 				{
@@ -271,7 +271,7 @@ Board Board::updateBoard(Move move, Color color)
 	Pieces * opponentPieces;
 
 
-	if (color == RED)
+	if (color == Color::RED)
 	{
 		playerPieces = &updatedBoard.redPieces;
 		opponentPieces = &updatedBoard.blackPieces;
@@ -293,7 +293,7 @@ Board Board::updateBoard(Move move, Color color)
 	else
 	{
 		// Check to see if we've landed in the kinging row, the back row opposite the starting side.
-		if (color == RED && (move.destinationSquare.back() >= 29) || (color == BLACK && (move.destinationSquare.back() <= 4)))
+		if (color == Color::RED && (move.destinationSquare.back() >= 29) || (color == Color::BLACK && (move.destinationSquare.back() <= 4)))
 		{
 			playerPieces->setKing(move.destinationSquare.back(), true);
 		}
