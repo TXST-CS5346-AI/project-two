@@ -29,7 +29,7 @@ public:
 
     Player(bool minMax, Color color); // overloaded constructor to set player color, which is IMMUTABLE
 
-    Board takeTurn();
+    void takeTurn();
     int getNumPieces();
     int getNumPiecesTaken();
     Color getColor();

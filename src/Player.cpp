@@ -18,7 +18,7 @@ Player::Player(bool minMaxState, Color color)
     isMinimax = minMaxState;
 }
 
-Board Player::takeTurn()
+void Player::takeTurn()
 {
 
 
