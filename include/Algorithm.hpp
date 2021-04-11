@@ -47,12 +47,12 @@ private:
     * goodness of Position from the standpoint of Player
     * A helper function staticEval is used to determine which evalFunction to use
     */
-    Result evalFunctOne(Board position, Player p);
-    Result evalFunctTwo(Board position, Player p);
-    Result evalFunctThree(Board position, Player p);
+    Result evalFunctOne(Board position, Player player);
+    Result evalFunctTwo(Board position, Player player);
+    Result evalFunctThree(Board position, Player player);
 
     // wrapper function that will decide which of the actual three eval functions to call
-    Result staticEval(Board position, Player p, int evalVersion);
+    Result staticEval(Board position, Player player, int evalVersion);
 
     // if true, return the structure
     bool deepEnough(int currentDepth);
@@ -70,7 +70,7 @@ public:
     Algorithm(int evalVersion, int maxDepth, Player callingPlayer);
 
     // minimax algorithm returns the position of the best move
-    Result minimax_a_b(Board board, int depth, Player p);
+    Result minimax_a_b(Board board, int depth, Player player);
 
     // AB Prune algorithm
     Result alphaBetaSearch(Board state);

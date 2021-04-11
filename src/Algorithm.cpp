@@ -42,7 +42,7 @@ std::vector<Board::Move> Algorithm::movegen(Board board, Player player)
  * First evaluation function 
  * @author David Torrente 
  */ 
-Algorithm::Result Algorithm::evalFunctOne(Board position, Player p)
+Algorithm::Result Algorithm::evalFunctOne(Board position, Player player)
 {
     Algorithm::Result result;
     return result;
@@ -53,7 +53,7 @@ Algorithm::Result Algorithm::evalFunctOne(Board position, Player p)
  * @author Randall Henderson
  * 
  */  
-Algorithm::Result Algorithm::evalFunctTwo(Board position, Player p)
+Algorithm::Result Algorithm::evalFunctTwo(Board position, Player player)
 {
     Algorithm::Result result;
     return result;
@@ -64,7 +64,7 @@ Algorithm::Result Algorithm::evalFunctTwo(Board position, Player p)
  * @author Borislav Sabotinov
  * 
  */ 
-Algorithm::Result Algorithm::evalFunctThree(Board position, Player p)
+Algorithm::Result Algorithm::evalFunctThree(Board position, Player player)
 {
     Algorithm::Result result;
     return result;
