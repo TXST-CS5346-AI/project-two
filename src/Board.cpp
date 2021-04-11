@@ -3,7 +3,7 @@
 #include <iostream>
 
 // Forward declare the static data member.
-BoardMoveTable Board::boardMoveTable[33];
+Board::BoardMoveTable Board::boardMoveTable[33];
 
 Board::Board()
 {
@@ -18,7 +18,7 @@ Board::~Board()
 
 }
 
-std::vector<Move> Board::moveGen(Color color)
+std::vector<Board::Move> Board::moveGen(Color color)
 {
 	std::vector<Move> totalMoves;
 	std::vector<Move> returnedMoves;
@@ -78,7 +78,7 @@ std::vector<Move> Board::moveGen(Color color)
 	}
 	return totalMoves;
 }
-std::vector<Move> Board::getJumpsForPiece(Color color, int piece, Pieces* playerPieces, Pieces* opponentPieces)
+std::vector<Board::Move> Board::getJumpsForPiece(Color color, int piece, Pieces* playerPieces, Pieces* opponentPieces)
 {
 	std::vector<Move> moves;
 	Move move;
@@ -141,7 +141,7 @@ std::vector<Move> Board::getJumpsForPiece(Color color, int piece, Pieces* player
 
 // Knows it has a proper piece by the time it gets here. It will return the moves
 // for the piece in this square.
-std::vector<Move> Board::getMovesForPiece(Color color, int piece, Pieces* playerPieces, Pieces* opponentPieces)
+std::vector<Board::Move> Board::getMovesForPiece(Color color, int piece, Pieces* playerPieces, Pieces* opponentPieces)
 {
 	std::vector<Move> moves;
 	Move move;
@@ -330,6 +330,11 @@ Board Board::updateBoard(Move move, Color color)
 	}
 
 	return updatedBoard;
+}
+
+void Board::printHelperBoardRow(int row)
+{
+
 }
 
 void Board::InitializeMoveTable()
