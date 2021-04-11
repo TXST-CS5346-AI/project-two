@@ -2,6 +2,7 @@
 
 #include <limits>
 #include <stdexcept>
+#include <iostream>
 
 Algorithm::Algorithm()
 {
@@ -125,6 +126,13 @@ bool deepEnough(int currentDepth)
  */ 
 Algorithm::Result Algorithm::minimax_a_b(Board board, int depth, Player player)
 {
+    if (player.getColor() == Color::RED) {
+        std::cout << "RED "; 
+    } else {
+        std::cout << "BLACK "; 
+    }
+    std::cout << "In minimax...." << std::endl; 
+    
     Algorithm::Result result;
     return result;
 }
@@ -139,12 +147,17 @@ Algorithm::Result Algorithm::minimax_a_b(Board board, int depth, Player player)
  */ 
 Algorithm::Result Algorithm::alphaBetaSearch(Board state)
 {
+    if (callingPlayer.getColor() == Color::RED) {
+        std::cout << "RED "; 
+    } else {
+        std::cout << "BLACK "; 
+    }
+    std::cout << "In alphaBetaSearch...." << std::endl;
+
     int alpha = std::numeric_limits<int>::min(); // tracks best value for max, initialized to WORST case
     int beta = std::numeric_limits<int>::max(); // tracks best value for min, initialized to WORST case
 
-    Algorithm::Result result = maxValue(state, alpha, beta);
-
-    return result;
+    return maxValue(state, alpha, beta);
 }
 
 /**
@@ -160,15 +173,27 @@ Algorithm::Result Algorithm::alphaBetaSearch(Board state)
 Algorithm::Result Algorithm::maxValue(Board state, int alpha, int beta)
 {
     Algorithm::Result result;
-    int value; 
 
     if (Algorithm::terminalTest(state))
-    {
         return Algorithm::utility(state);
+
+    result.value = std::numeric_limits<int>::min(); 
+
+    std::vector<Board::Move> listOfActions = actions(state); 
+    for (int actionIndex = 0; actionIndex < listOfActions.size(); actionIndex++)
+    {
+        Board tmpState = state.updateBoard(listOfActions.at(actionIndex), this->callingPlayer.getColor()); 
+        Algorithm::Result tmpResult = minValue(tmpState, alpha, beta);
+        result.value = std::max(result.value, tmpResult.value);
+
+        if (result.value == tmpResult.value)
+            result = tmpResult; 
+
+        if (result.value >= beta) 
+            return result; 
+        
+        alpha = std::max(alpha, result.value); 
     }
-
-    value = std::numeric_limits<int>::min(); 
-
 
     return result;
 }
@@ -186,6 +211,28 @@ Algorithm::Result Algorithm::maxValue(Board state, int alpha, int beta)
 Algorithm::Result Algorithm::minValue(Board state, int alpha, int beta)
 {
     Algorithm::Result result;
+
+    if (Algorithm::terminalTest(state))
+        return Algorithm::utility(state);
+
+    result.value = std::numeric_limits<int>::max(); 
+
+    std::vector<Board::Move> listOfActions = actions(state); 
+    for (int actionIndex = 0; actionIndex < listOfActions.size(); actionIndex++)
+    {
+        Board tmpState = state.updateBoard(listOfActions.at(actionIndex), this->callingPlayer.getColor()); 
+        Algorithm::Result tmpResult = maxValue(tmpState, alpha, beta);
+        result.value = std::min(result.value, tmpResult.value);
+
+        if (result.value == tmpResult.value)
+            result = tmpResult; 
+
+        if (result.value <= alpha) 
+            return result; 
+        
+        beta = std::max(beta, result.value); 
+    }
+
     return result;
 }
 
