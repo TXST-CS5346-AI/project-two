@@ -12,26 +12,34 @@ Game::~Game()
 Game::Game( bool player1MinMax, int evalVersionP1, bool player2MinMax, int evalVersionP2, int depth )
 {
     state =  Board();
-    redPlayer = Player( player1MinMax, Color::RED, depth );
-    blackPlayer = Player( player2MinMax, Color::BLACK, depth );
+    redPlayer = Player( player1MinMax, Color::RED, depth, evalVersionP1 );
+    blackPlayer = Player( player2MinMax, Color::BLACK, depth, evalVersionP2 );
 }
 
 Game::GameOver Game::startGame()
 {
+    int piecesTaken; 
+    
     while ( true )
     {
+
+        piecesTaken = blackPlayer.takeTurn( state );
+        blackPlayer.increaseNumPiecesTaken(piecesTaken);
+        redPlayer.decreaseNumPieces(piecesTaken);
+
         if ( doesBlackWin() )
             return GameOver::BLACK_WINS;
-        else blackPlayer.takeTurn();
+         
+        piecesTaken = redPlayer.takeTurn( state );
+        redPlayer.increaseNumPiecesTaken(piecesTaken);
+        blackPlayer.decreaseNumPieces(piecesTaken);
 
         if ( doesRedWin() )
-            return GameOver::RED_WINS;
-        else redPlayer.takeTurn();
+            return GameOver::RED_WINS; 
 
         if ( isItADraw() )
             return GameOver::DRAW;
     }
-
 }
 
 Color Game::changePlayer(Color currentPlayer)

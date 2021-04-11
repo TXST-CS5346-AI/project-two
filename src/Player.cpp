@@ -1,4 +1,5 @@
 #include "Player.hpp"
+#include "Algorithm.hpp"
 
 Player::Player()
 {
@@ -9,7 +10,7 @@ Player::~Player()
 
 }
 
-Player::Player( bool minMaxState, Color color, int depth )
+Player::Player( bool minMaxState, Color color, int depth, int evalVersion )
 {
     this->color = color;
     numPieces = 12; // how many pieces does Player have left
@@ -17,16 +18,32 @@ Player::Player( bool minMaxState, Color color, int depth )
     numTurnsTaken = 0; // counter for Player's turns taken
     isMinimax = minMaxState;
     this->depth = depth;
-    Algorithm* algorithm = new Algorithm();
-    algorithm->setEvalFunct(evalFunct);
-    algorithm->setMaxDepth = depth;
-    algorithm->setCallingPlayer = this;
+    this->evalVersion = evalVersion; 
 }
 
-void Player::takeTurn()
+int Player::takeTurn(Board &state)
 {
+    Algorithm::Result result; 
+    Algorithm* algorithm = new Algorithm(evalVersion, depth, *this);
+	
+	if (isMinimax)
+	{
+		result = algorithm->minimax_a_b(state, this->depth, *this);
+	} else {
+		result = algorithm->alphaBetaSearch(state);
+	}
 
+	if (result.bestMove.destinationSquare.size() == 0)
+	{
+		didPlayerMove = false; // Player did not make a turn
+	} else {
+        state = state.updateBoard(result.bestMove, this->color); 
+        numTurnsTaken++; // incremente Player's own turn counter 
+        didPlayerMove = true; // return true as player did make a turn 
+    }
 
+    // return how many pieces the player took during their turn
+    return result.bestMove.removalSquare.size(); 
 }
 
 int Player::getNumPieces()
@@ -53,9 +70,13 @@ Color Player::getColor()
 {
     return color;
 }
-// player can not gain additional pieces during the game, only lose them
-void Player::decreasePlayerPieces(int piecesToSubtract)
+
+void Player::decreaseNumPieces(int numPiecesToDecreaseCount)
 {
-    numPieces -= piecesToSubtract;
-    numPiecesTaken += piecesToSubtract;
+    numPieces -= numPiecesToDecreaseCount;
+}
+
+void Player::increaseNumPiecesTaken(int numPiecesToIncreaseScore)
+{
+    numPiecesTaken += numPiecesToIncreaseScore;
 }
