@@ -32,7 +32,7 @@ class Algorithm
 private: 
     struct Result {
         int value;
-        Move move; 
+        Board::Move bestMove; 
     };
 
     int numNodesGenerated; 
@@ -41,7 +41,7 @@ private:
     Player callingPlayer; 
     
     // plausible move generator, returns a list of positions that can be made by player
-    std::vector<Move> movegen(Board board, Player player);
+    std::vector<Board::Move> movegen(Board board, Player player);
     
     /* static evaluation functions return a number representing the 
     * goodness of Position from the standpoint of Player
@@ -61,11 +61,13 @@ private:
     Result maxValue(Board state, int alpha, int beta); 
     Result minValue(Board state, int alpha, int beta);
     Result utility(Board state);
-    std::vector<Move> actions(Board state);
+    std::vector<Board::Move> actions(Board state);
 
 public: 
     Algorithm(); // constructor
     ~Algorithm(); // destructor 
+
+    Algorithm(int evalVersion, int maxDepth, Player callingPlayer);
 
     // minimax algorithm returns the position of the best move
     Result minimax_a_b(Board board, int depth, Player p);
