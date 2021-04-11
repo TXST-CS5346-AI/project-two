@@ -1,4 +1,4 @@
-#include "../Include/Player.hpp"
+#include "Player.hpp"
 
 Player::Player()
 {
