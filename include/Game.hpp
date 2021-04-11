@@ -30,9 +30,7 @@ private:
     Board state;
     Player redPlayer;
     Player blackPlayer;
-    int useEvalP1,
-        useEvalP2,
-        depth;
+    const int MAX_ALLOWED_TURNS = 75;
 
     enum class GameOver {
         BLACK_WINS = 0,
@@ -56,7 +54,9 @@ public:
     Color changePlayer(Color currentPlayer);
 
     GameOver gameOver();  // Have end game conditions been met?
-
+    bool doesRedWin();
+    bool doesBlackWin();
+    bool isItADraw();
 };
 
 #endif // !GAME_H

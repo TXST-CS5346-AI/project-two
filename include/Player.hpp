@@ -21,17 +21,21 @@ private:
     int numPieces; // how many pieces does Player have left
     int numPiecesTaken; // Player's current score based on captured enemy pieces
     int numTurnsTaken; // counter for Player's turns taken
+    bool didPlayerMove;  //  EndGame Condition
     bool isMinimax; // if false use AB Prune, if true use Minimax. Allows control over alg player uses
+    int depth;
 
 public:
     Player(); // constructor
     ~Player(); // destructor
 
-    Player(bool minMax, Color color); // overloaded constructor to set player color, which is IMMUTABLE
+    Player(bool minMax, Color color, int depth); // overloaded constructor to set player color, which is IMMUTABLE
 
     void takeTurn();
     int getNumPieces();
     int getNumPiecesTaken();
+    int getNumTurns();
+    bool getDidPlayerMove();
     Color getColor();
     // player can not gain additional pieces during the game, only lose them
     void decreasePlayerPieces(int piecesToSubtract);
