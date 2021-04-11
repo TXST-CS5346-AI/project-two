@@ -55,7 +55,7 @@ private:
     Result staticEval(Board position, Player p, int evalVersion);
 
     // if true, return the structure
-    bool deepEnough();
+    bool deepEnough(int currentDepth);
 
     bool terminalTest(Board state); // terminal test for alpha-beta-search
     Result maxValue(Board state, int alpha, int beta); 

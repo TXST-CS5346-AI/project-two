@@ -103,6 +103,17 @@ Algorithm::Result Algorithm::staticEval(Board position, Player player, int evalV
 }
 
 /**
+ * deepEnough - Basic if check, if currentDepth >= maxDepth, true; otherwise false
+ * 
+ * @author Randall Henderson
+ * 
+ */ 
+bool deepEnough(int currentDepth)
+{
+    return false; 
+}
+
+/**
  * minimax algorithm returns the position of the best move
  * @author Randall Henderson
  * 
@@ -112,7 +123,7 @@ Algorithm::Result Algorithm::staticEval(Board position, Player player, int evalV
  * 
  * @return a Result struct, which consists of a value and a Move
  */ 
-Algorithm::Result Algorithm::minimax_a_b(Board board, int depth, Player p)
+Algorithm::Result Algorithm::minimax_a_b(Board board, int depth, Player player)
 {
     Algorithm::Result result;
     return result;
