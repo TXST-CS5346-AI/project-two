@@ -29,11 +29,28 @@
 class Algorithm
 {
 
-private: 
+public: 
+    Algorithm(); // constructor
+    ~Algorithm(); // destructor 
+
+    Algorithm(int evalVersion, int maxDepth, Player callingPlayer);
+
     struct Result {
         int value;
         Board::Move bestMove; 
     };
+
+    // minimax algorithm returns the position of the best move
+    Result minimax_a_b(Board board, int depth, Player player);
+
+    // AB Prune algorithm
+    Result alphaBetaSearch(Board state);
+
+    void setEvalVersion(int evalVersion); 
+    void setMaxDepth(int maxDepth);
+
+private: 
+    
 
     int numNodesGenerated; 
     int evalVersion; 
@@ -63,20 +80,7 @@ private:
     Result utility(Board state);
     std::vector<Board::Move> actions(Board state);
 
-public: 
-    Algorithm(); // constructor
-    ~Algorithm(); // destructor 
 
-    Algorithm(int evalVersion, int maxDepth, Player callingPlayer);
-
-    // minimax algorithm returns the position of the best move
-    Result minimax_a_b(Board board, int depth, Player player);
-
-    // AB Prune algorithm
-    Result alphaBetaSearch(Board state);
-
-    void setEvalVersion(int evalVersion); 
-    void setMaxDepth(int maxDepth);
 };
 
 #endif // !ALGORITHM_H

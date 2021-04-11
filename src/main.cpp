@@ -200,6 +200,19 @@ void runManualGame()
         redMoves = board.moveGen(Color::RED);
         blackMoves = board.moveGen(Color::BLACK);
 
+        if (blackMoves.size() == 0)
+        {
+            gameOver = true; 
+            std::cout << "\nRED WINS!!!" << std::endl; 
+            break; 
+        } 
+        else if (redMoves.size() == 0)
+        {
+            gameOver = true; 
+            std::cout << "\nBLACK WINS!!!" << std::endl; 
+            break; 
+        }
+
         std::cout << "Red(X) moves: ";
         for (int redMoveIter = 0; redMoveIter < redMoves.size(); redMoveIter++)
         {
@@ -254,6 +267,7 @@ void runManualGame()
                 } else {
                     board = board.updateBoard(blackMoves.at(moveSelection - 1), Color::BLACK);
                     currentPlayer = Color::RED;
+                    isSelectionValid = true; 
                 }
             }
         }
