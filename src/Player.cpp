@@ -40,6 +40,7 @@ int Player::takeTurn(Board &state)
         state = state.updateBoard(result.bestMove, this->color); 
         numTurnsTaken++; // incremente Player's own turn counter 
         didPlayerMove = true; // return true as player did make a turn 
+        state.printBoard(); 
     }
 
     // return how many pieces the player took during their turn

@@ -164,17 +164,17 @@ void getCustomSimUserInput(int &playerOneAlg, int &playerOneEvalFunct, int &play
     std::cout << "2. Run AB-Prune algorithm" << std::endl;
 
     // PLAYER ONE CHOICES
-    std::cout << "Your choice for RED - Player 1 " << ANSII_BLUE_START << "(1 or 2)" << ANSII_END << ":";
+    std::cout << "Algorithm for RED - Player 1 " << ANSII_BLUE_START << "(1 or 2)" << ANSII_END << ":";
     std::cin >> playerOneAlg;
     std::cout << std::endl;
-    std::cout << "Now select the evaluation for RED - Player 1 \033[0;30;46m(1, 2, or 3)\033[0m: ";
+    std::cout << "Evaluation for RED - Player 1 \033[0;30;46m(1, 2, or 3)\033[0m: ";
     std::cin >> playerOneEvalFunct;
 
     // PLAYER TWO CHOICES
-    std::cout << "Your choice for RED - Player 1 \033[0;30;46m(1 or 2)\033[0m: ";
+    std::cout << "Algorithm for BLACK - Player 2 \033[0;30;46m(1 or 2)\033[0m: ";
     std::cin >> playerTwoAlg;
     std::cout << std::endl;
-    std::cout << "Now select the evaluation for RED - Player 1 \033[0;30;46m(1, 2, or 3)\033[0m: ";
+    std::cout << "Evaluation for BLACK - Player 2 \033[0;30;46m(1, 2, or 3)\033[0m: ";
     std::cin >> playerTwoEvalFunct;
 }
 

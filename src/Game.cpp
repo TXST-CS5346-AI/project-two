@@ -1,5 +1,7 @@
 #include "Game.hpp"
 
+#include <iostream>
+
 Game::Game()
 {
 }
@@ -11,6 +13,7 @@ Game::~Game()
 Game::Game(bool player1MinMax, int evalVersionP1, bool player2MinMax, int evalVersionP2, int depth)
 {
     state = Board();
+    state.InitializeMoveTable();
     redPlayer = Player(player1MinMax, Color::RED, depth, evalVersionP1);
     blackPlayer = Player(player2MinMax, Color::BLACK, depth, evalVersionP2);
 }
@@ -21,6 +24,7 @@ Game::GameOver Game::startGame()
 
     while (true)
     {
+        std::cout << "Black's Turn..." << std::endl;
 
         piecesTaken = blackPlayer.takeTurn(state);
         blackPlayer.increaseNumPiecesTaken(piecesTaken);
@@ -28,6 +32,8 @@ Game::GameOver Game::startGame()
 
         if (doesBlackWin())
             return GameOver::BLACK_WINS;
+
+        std::cout << "Red's Turn..." << std::endl;
 
         piecesTaken = redPlayer.takeTurn(state);
         redPlayer.increaseNumPiecesTaken(piecesTaken);

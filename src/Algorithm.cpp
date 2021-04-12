@@ -160,8 +160,8 @@ Algorithm::Result Algorithm::alphaBetaSearch(Board state)
 
     int alpha = std::numeric_limits<int>::min(); // tracks best value for max, initialized to WORST case
     int beta = std::numeric_limits<int>::max();  // tracks best value for min, initialized to WORST case
-
-    return maxValue(state, alpha, beta);
+    Board::Move move; // empty Move for first call to max-val
+    return maxValue(state, move, maxDepth, alpha, beta);
 }
 
 /**
@@ -174,30 +174,60 @@ Algorithm::Result Algorithm::alphaBetaSearch(Board state)
  * 
  * @return int utilityValue
  */
-Algorithm::Result Algorithm::maxValue(Board state, int &alpha, int &beta)
+Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, int &alpha, int &beta)
 {
+    std::cout << "In maxValue()! Depth is " << depth << std::endl; 
+
     Algorithm::Result result;
 
-    if (Algorithm::terminalTest(state))
-        return Algorithm::utility(state);
+    if (Algorithm::terminalTest(state, depth))
+    {
+        std::cout << "At terminal state!" << std::endl; 
+        //result.value = std::numeric_limits<int>::max();
+        result.value = 1; 
+        result.bestMove = move; 
+        return result; 
+    } 
+    else if (depth <= 0) 
+    {
+        std::cout << "at depth" << std::endl; 
+        result.value = utility(state);
+        result.bestMove = move;
+        return result; 
+    }
+
+    std::cout << "Not yet at a terminal state...." << std::endl; 
 
     result.value = std::numeric_limits<int>::min();
 
     std::vector<Board::Move> listOfActions = actions(state);
     for (int actionIndex = 0; actionIndex < listOfActions.size(); actionIndex++)
     {
-        Board tmpState = state.updateBoard(listOfActions.at(actionIndex), this->callingPlayer.getColor());
-        Algorithm::Result tmpResult = minValue(tmpState, alpha, beta);
-        result.value = std::max(result.value, tmpResult.value);
+        std::cout << "sim move is from " << listOfActions.at(actionIndex).startSquare << " to "; 
+        for (int i = 0; i < result.bestMove.destinationSquare.size(); i++)
+            std::cout << "dest: " << result.bestMove.destinationSquare.at(i) << std::endl;
 
-        if (result.value == tmpResult.value)
-            result = tmpResult;
+        Board tmpState = state.updateBoard(listOfActions.at(actionIndex), switchPlayerColor(callingPlayer.getColor()));
+        Algorithm::Result tmpResult = minValue(tmpState, listOfActions.at(actionIndex), depth - 1, alpha, beta);
+        
+        //result.value = std::max(result.value, tmpResult.value);
+
+        if (result.value > tmpResult.value)
+        {
+            result.bestMove = listOfActions.at(actionIndex); 
+        } else {
+            result = tmpResult; 
+        }
 
         if (result.value >= beta)
             return result;
 
         alpha = std::max(alpha, result.value);
     }
+
+    std::cout << "alpha: " << alpha << " beta: " << beta << " val: " << result.value << " move start: " << result.bestMove.startSquare << std::endl;
+    for (int i = 0; i < result.bestMove.destinationSquare.size(); i++)
+        std::cout << "dest: " << result.bestMove.destinationSquare.at(i) << std::endl;
 
     return result;
 }
@@ -212,24 +242,50 @@ Algorithm::Result Algorithm::maxValue(Board state, int &alpha, int &beta)
  * 
  * @return  utilityValue
  */
-Algorithm::Result Algorithm::minValue(Board state, int &alpha, int &beta)
+Algorithm::Result Algorithm::minValue(Board state, Board::Move move, int depth, int &alpha, int &beta)
 {
-    Algorithm::Result result;
+    std::cout << "In minValue()! Depth is " << depth << std::endl; 
 
-    if (Algorithm::terminalTest(state))
-        return Algorithm::utility(state);
+    Result result;
+
+    if (Algorithm::terminalTest(state, depth))
+    {
+        std::cout << "At terminal state!" << std::endl; 
+        //result.value = std::numeric_limits<int>::min();
+        result.value = 1;
+        result.bestMove = move; 
+        return result; 
+    }
+    else if (depth <= 0) 
+    {
+        std::cout << "at depth" << std::endl; 
+        result.value = utility(state);
+        result.bestMove = move;
+        return result; 
+    }
+    
+    std::cout << "Not yet at a terminal state...." << std::endl; 
 
     result.value = std::numeric_limits<int>::max();
 
     std::vector<Board::Move> listOfActions = actions(state);
     for (int actionIndex = 0; actionIndex < listOfActions.size(); actionIndex++)
     {
-        Board tmpState = state.updateBoard(listOfActions.at(actionIndex), this->callingPlayer.getColor());
-        Algorithm::Result tmpResult = maxValue(tmpState, alpha, beta);
-        result.value = std::min(result.value, tmpResult.value);
+        std::cout << "sim move is from " << listOfActions.at(actionIndex).startSquare << " to "; 
+        for (int i = 0; i < result.bestMove.destinationSquare.size(); i++)
+            std::cout << "dest: " << result.bestMove.destinationSquare.at(i) << std::endl;
 
-        if (result.value == tmpResult.value)
-            result = tmpResult;
+        Board tmpState = state.updateBoard(listOfActions.at(actionIndex), switchPlayerColor(callingPlayer.getColor()));
+        Result tmpResult = maxValue(tmpState, listOfActions.at(actionIndex), depth - 1, alpha, beta);
+        
+        //result.value = std::min(result.value, tmpResult.value);
+
+        if (result.value < tmpResult.value)
+        {
+            result.bestMove = move; 
+        } else {
+            result = tmpResult; 
+        }
 
         if (result.value <= alpha)
             return result;
@@ -237,7 +293,19 @@ Algorithm::Result Algorithm::minValue(Board state, int &alpha, int &beta)
         beta = std::min(beta, result.value);
     }
 
+    std::cout << "alpha: " << alpha << " beta: " << beta << " val: " << result.value << " move start: " << result.bestMove.startSquare << std::endl;
+    for (int i = 0; i < result.bestMove.destinationSquare.size(); i++)
+        std::cout << "dest: " << result.bestMove.destinationSquare.at(i) << std::endl;
+
     return result;
+}
+
+Color Algorithm::switchPlayerColor(Color color)
+{
+    if (color == Color::RED)
+        return Color::BLACK;
+    else 
+        return Color::RED;
 }
 
 /**
@@ -253,18 +321,16 @@ Algorithm::Result Algorithm::minValue(Board state, int &alpha, int &beta)
  * 
  * @return bool isTerminalState
  */
-bool Algorithm::terminalTest(Board state)
+bool Algorithm::terminalTest(Board state, int depth)
 {
     bool isTerminalState = false;
-    if ((state.getNumRedPieces() == 0 || state.getNumBlackPieces() == 0) ||
-        (state.moveGen(Color::RED).size() == 0 || state.moveGen(Color::BLACK).size() == 0))
-    {
-        isTerminalState = true;
-    }
-    else if (this->currentDepth == this->maxDepth)
-    {
-        isTerminalState = true;
-    }
+    std::vector<Board::Move> redMoves = state.moveGen(Color::RED);
+    std::vector<Board::Move> blackMoves = state.moveGen(Color::BLACK);
+
+    std::cout << redMoves.size() << "   " << blackMoves.size() << std::endl;
+
+    if (redMoves.size() == 0 || blackMoves.size() == 0)
+        isTerminalState = true; 
 
     return isTerminalState;
 }
@@ -274,9 +340,10 @@ bool Algorithm::terminalTest(Board state)
  * Essentially a wrapper function that calls staticEval
  * @author Borislav Sabotinov
  */
-Algorithm::Result Algorithm::utility(Board state)
+int Algorithm::utility(Board state)
 {
-    return staticEval(state, this->callingPlayer, this->evalVersion);
+    //return staticEval(state, this->callingPlayer, this->evalVersion);
+    return 1;
 }
 
 /**
