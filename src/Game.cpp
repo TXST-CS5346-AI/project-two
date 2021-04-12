@@ -1,6 +1,5 @@
 #include "Game.hpp"
 
-
 Game::Game()
 {
 }
@@ -9,65 +8,61 @@ Game::~Game()
 {
 }
 
-Game::Game( bool player1MinMax, int evalVersionP1, bool player2MinMax, int evalVersionP2, int depth )
+Game::Game(bool player1MinMax, int evalVersionP1, bool player2MinMax, int evalVersionP2, int depth)
 {
-    state =  Board();
-    redPlayer = Player( player1MinMax, Color::RED, depth, evalVersionP1 );
-    blackPlayer = Player( player2MinMax, Color::BLACK, depth, evalVersionP2 );
+    state = Board();
+    redPlayer = Player(player1MinMax, Color::RED, depth, evalVersionP1);
+    blackPlayer = Player(player2MinMax, Color::BLACK, depth, evalVersionP2);
 }
 
 Game::GameOver Game::startGame()
 {
-    int piecesTaken; 
-    
-    while ( true )
+    int piecesTaken;
+
+    while (true)
     {
 
-        piecesTaken = blackPlayer.takeTurn( state );
+        piecesTaken = blackPlayer.takeTurn(state);
         blackPlayer.increaseNumPiecesTaken(piecesTaken);
         redPlayer.decreaseNumPieces(piecesTaken);
 
-        if ( doesBlackWin() )
+        if (doesBlackWin())
             return GameOver::BLACK_WINS;
-         
-        piecesTaken = redPlayer.takeTurn( state );
+
+        piecesTaken = redPlayer.takeTurn(state);
         redPlayer.increaseNumPiecesTaken(piecesTaken);
         blackPlayer.decreaseNumPieces(piecesTaken);
 
-        if ( doesRedWin() )
-            return GameOver::RED_WINS; 
+        if (doesRedWin())
+            return GameOver::RED_WINS;
 
-        if ( isItADraw() )
+        if (isItADraw())
             return GameOver::DRAW;
     }
 }
 
 Color Game::changePlayer(Color currentPlayer)
 {
-if (currentPlayer == Color::BLACK)
-    return Color::RED;
-else
-    return  Color::BLACK;
+    if (currentPlayer == Color::BLACK)
+        return Color::RED;
+    else
+        return Color::BLACK;
 }
 
 bool Game::doesBlackWin()
 {
-    if ( redPlayer.getNumPieces() == 0 || !redPlayer.getDidPlayerMove() )
-        return true;
-    return false;
+    return (redPlayer.getNumPieces() == 0 || !redPlayer.getDidPlayerMove());
 }
 
 bool Game::doesRedWin()
 {
-    if ( blackPlayer.getNumPieces() == 0 || !blackPlayer.getDidPlayerMove() )
-        return true;
-    return false;
+    return (blackPlayer.getNumPieces() == 0 || !blackPlayer.getDidPlayerMove());
 }
 
 bool Game::isItADraw()
 {
-    if ( redPlayer.getNumTurns() >= MAX_ALLOWED_TURNS ||
-        blackPlayer.getNumTurns() >= MAX_ALLOWED_TURNS )
+    if (redPlayer.getNumTurns() >= MAX_ALLOWED_TURNS ||
+        blackPlayer.getNumTurns() >= MAX_ALLOWED_TURNS)
         return true;
     return false;
 }
