@@ -104,6 +104,22 @@ void Simulation::runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct,
     // Validate evaluation function selections
     if ((playerOneEvalFunct < 0 || playerOneEvalFunct > 3) && (playerTwoEvalFunct < 0 || playerTwoEvalFunct > 3))
         throw std::runtime_error("Error: evalFunction may only be 1, 2, or 3!");
+
+    Game *game = new Game(playerOneAlg, playerOneEvalFunct, playerTwoAlg, playerTwoEvalFunct, 2);
+    Game::GameOver endGameStatus = game->startGame();
+
+    if (endGameStatus == Game::GameOver::BLACK_WINS)
+        std::cout << "BLACK WINS!!!" << std::endl;
+    else if (endGameStatus == Game::GameOver::RED_WINS)
+        std::cout << "RED WINS!!!" << std::endl;
+    else if (endGameStatus == Game::GameOver::DRAW)
+        std::cout << "DRAW!!!" << std::endl;
+    else 
+        std::cout << "Oops, something went wrong!" << std::endl;
+
+    // TODO: print game status, num nodes generated, time it took, etc. 
+
+    delete game; 
 }
 
 /*

@@ -74,11 +74,13 @@ private:
     // if true, return the structure
     bool deepEnough(int currentDepth);
 
-    bool terminalTest(Board state); // terminal test for alpha-beta-search
-    Result maxValue(Board state, int &alpha, int &beta); 
-    Result minValue(Board state, int &alpha, int &beta);
-    Result utility(Board state);
+    bool terminalTest(Board state, int depth); // terminal test for alpha-beta-search
+    Result maxValue(Board state, Board::Move move, int depth, int &alpha, int &beta); 
+    Result minValue(Board state, Board::Move move, int depth, int &alpha, int &beta);
+    int utility(Board state);
     std::vector<Board::Move> actions(Board state);
+
+    Color switchPlayerColor(Color color); 
 
 
 };
