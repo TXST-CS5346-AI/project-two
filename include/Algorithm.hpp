@@ -75,8 +75,8 @@ private:
     bool deepEnough(int currentDepth);
 
     bool terminalTest(Board state); // terminal test for alpha-beta-search
-    Result maxValue(Board state, int alpha, int beta); 
-    Result minValue(Board state, int alpha, int beta);
+    Result maxValue(Board state, int &alpha, int &beta); 
+    Result minValue(Board state, int &alpha, int &beta);
     Result utility(Board state);
     std::vector<Board::Move> actions(Board state);
 

@@ -6,22 +6,20 @@
 
 Algorithm::Algorithm()
 {
-
 }
 
 Algorithm::~Algorithm()
 {
-
 }
 
 /**
  * Overloaded constructor for Algorithm to set internal member variables
- */ 
+ */
 Algorithm::Algorithm(int evalVersion, int maxDepth, Player callingPlayer)
 {
     this->evalVersion = evalVersion;
-    this->maxDepth = maxDepth; 
-    this->callingPlayer = callingPlayer; 
+    this->maxDepth = maxDepth;
+    this->callingPlayer = callingPlayer;
 }
 
 /**
@@ -33,7 +31,7 @@ Algorithm::Algorithm(int evalVersion, int maxDepth, Player callingPlayer)
  * @param Player board
  * 
  * @return vector<Board::Move> listofPossibleMoves
- */ 
+ */
 std::vector<Board::Move> Algorithm::movegen(Board board, Player player)
 {
     return board.moveGen(player.getColor());
@@ -42,7 +40,7 @@ std::vector<Board::Move> Algorithm::movegen(Board board, Player player)
 /**
  * First evaluation function 
  * @author David Torrente 
- */ 
+ */
 Algorithm::Result Algorithm::evalFunctOne(Board position, Player player)
 {
     Algorithm::Result result;
@@ -53,7 +51,7 @@ Algorithm::Result Algorithm::evalFunctOne(Board position, Player player)
  * Second evaluation function 
  * @author Randall Henderson
  * 
- */  
+ */
 Algorithm::Result Algorithm::evalFunctTwo(Board position, Player player)
 {
     Algorithm::Result result;
@@ -64,7 +62,7 @@ Algorithm::Result Algorithm::evalFunctTwo(Board position, Player player)
  * Third evaluation function
  * @author Borislav Sabotinov
  * 
- */ 
+ */
 Algorithm::Result Algorithm::evalFunctThree(Board position, Player player)
 {
     Algorithm::Result result;
@@ -80,24 +78,24 @@ Algorithm::Result Algorithm::evalFunctThree(Board position, Player player)
  * @param int evalVersion - used to determine which of the 3 eval functions to call
  * 
  * @return a Result struct, which consists of a value and a move. 
- */ 
+ */
 Algorithm::Result Algorithm::staticEval(Board position, Player player, int evalVersion)
 {
     Algorithm::Result result;
 
-    switch(evalVersion)
+    switch (evalVersion)
     {
-        case 1: 
-            result = evalFunctOne(position, player);
-            break;
-        case 2: 
-            result = evalFunctTwo(position, player);
-            break;
-        case 3: 
-            result = evalFunctThree(position, player);
-            break;
-        default: 
-            throw std::runtime_error("Error: eval function # may only be 1, 2, or 3!");
+    case 1:
+        result = evalFunctOne(position, player);
+        break;
+    case 2:
+        result = evalFunctTwo(position, player);
+        break;
+    case 3:
+        result = evalFunctThree(position, player);
+        break;
+    default:
+        throw std::runtime_error("Error: eval function # may only be 1, 2, or 3!");
     }
 
     return result;
@@ -108,10 +106,10 @@ Algorithm::Result Algorithm::staticEval(Board position, Player player, int evalV
  * 
  * @author Randall Henderson
  * 
- */ 
+ */
 bool deepEnough(int currentDepth)
 {
-    return false; 
+    return false;
 }
 
 /**
@@ -123,16 +121,19 @@ bool deepEnough(int currentDepth)
  * @param Player player
  * 
  * @return a Result struct, which consists of a value and a Move
- */ 
+ */
 Algorithm::Result Algorithm::minimax_a_b(Board board, int depth, Player player)
 {
-    if (player.getColor() == Color::RED) {
-        std::cout << "RED "; 
-    } else {
-        std::cout << "BLACK "; 
+    if (player.getColor() == Color::RED)
+    {
+        std::cout << "RED ";
     }
-    std::cout << "In minimax...." << std::endl; 
-    
+    else
+    {
+        std::cout << "BLACK ";
+    }
+    std::cout << "In minimax...." << std::endl;
+
     Algorithm::Result result;
     return result;
 }
@@ -144,18 +145,21 @@ Algorithm::Result Algorithm::minimax_a_b(Board board, int depth, Player player)
  * @param Board state
  * 
  * @return a Result struct, which consists of a value and a Move
- */ 
+ */
 Algorithm::Result Algorithm::alphaBetaSearch(Board state)
 {
-    if (callingPlayer.getColor() == Color::RED) {
-        std::cout << "RED "; 
-    } else {
-        std::cout << "BLACK "; 
+    if (callingPlayer.getColor() == Color::RED)
+    {
+        std::cout << "RED ";
+    }
+    else
+    {
+        std::cout << "BLACK ";
     }
     std::cout << "In alphaBetaSearch...." << std::endl;
 
     int alpha = std::numeric_limits<int>::min(); // tracks best value for max, initialized to WORST case
-    int beta = std::numeric_limits<int>::max(); // tracks best value for min, initialized to WORST case
+    int beta = std::numeric_limits<int>::max();  // tracks best value for min, initialized to WORST case
 
     return maxValue(state, alpha, beta);
 }
@@ -169,30 +173,30 @@ Algorithm::Result Algorithm::alphaBetaSearch(Board state)
  * @param int beta
  * 
  * @return int utilityValue
- */ 
-Algorithm::Result Algorithm::maxValue(Board state, int alpha, int beta)
+ */
+Algorithm::Result Algorithm::maxValue(Board state, int &alpha, int &beta)
 {
     Algorithm::Result result;
 
     if (Algorithm::terminalTest(state))
         return Algorithm::utility(state);
 
-    result.value = std::numeric_limits<int>::min(); 
+    result.value = std::numeric_limits<int>::min();
 
-    std::vector<Board::Move> listOfActions = actions(state); 
+    std::vector<Board::Move> listOfActions = actions(state);
     for (int actionIndex = 0; actionIndex < listOfActions.size(); actionIndex++)
     {
-        Board tmpState = state.updateBoard(listOfActions.at(actionIndex), this->callingPlayer.getColor()); 
+        Board tmpState = state.updateBoard(listOfActions.at(actionIndex), this->callingPlayer.getColor());
         Algorithm::Result tmpResult = minValue(tmpState, alpha, beta);
         result.value = std::max(result.value, tmpResult.value);
 
         if (result.value == tmpResult.value)
-            result = tmpResult; 
+            result = tmpResult;
 
-        if (result.value >= beta) 
-            return result; 
-        
-        alpha = std::max(alpha, result.value); 
+        if (result.value >= beta)
+            return result;
+
+        alpha = std::max(alpha, result.value);
     }
 
     return result;
@@ -207,30 +211,30 @@ Algorithm::Result Algorithm::maxValue(Board state, int alpha, int beta)
  * @param int beta
  * 
  * @return  utilityValue
- */  
-Algorithm::Result Algorithm::minValue(Board state, int alpha, int beta)
+ */
+Algorithm::Result Algorithm::minValue(Board state, int &alpha, int &beta)
 {
     Algorithm::Result result;
 
     if (Algorithm::terminalTest(state))
         return Algorithm::utility(state);
 
-    result.value = std::numeric_limits<int>::max(); 
+    result.value = std::numeric_limits<int>::max();
 
-    std::vector<Board::Move> listOfActions = actions(state); 
+    std::vector<Board::Move> listOfActions = actions(state);
     for (int actionIndex = 0; actionIndex < listOfActions.size(); actionIndex++)
     {
-        Board tmpState = state.updateBoard(listOfActions.at(actionIndex), this->callingPlayer.getColor()); 
+        Board tmpState = state.updateBoard(listOfActions.at(actionIndex), this->callingPlayer.getColor());
         Algorithm::Result tmpResult = maxValue(tmpState, alpha, beta);
         result.value = std::min(result.value, tmpResult.value);
 
         if (result.value == tmpResult.value)
-            result = tmpResult; 
+            result = tmpResult;
 
-        if (result.value <= alpha) 
-            return result; 
-        
-        beta = std::max(beta, result.value); 
+        if (result.value <= alpha)
+            return result;
+
+        beta = std::min(beta, result.value);
     }
 
     return result;
@@ -248,17 +252,18 @@ Algorithm::Result Algorithm::minValue(Board state, int alpha, int beta)
  * @param Board state
  * 
  * @return bool isTerminalState
- */ 
-bool Algorithm::terminalTest(Board state) 
+ */
+bool Algorithm::terminalTest(Board state)
 {
-    bool isTerminalState = false; 
-    if (state.getNumRedPieces() == 0 || state.getNumBlackPieces() == 0)
+    bool isTerminalState = false;
+    if ((state.getNumRedPieces() == 0 || state.getNumBlackPieces() == 0) ||
+        (state.moveGen(Color::RED).size() == 0 || state.moveGen(Color::BLACK).size() == 0))
     {
         isTerminalState = true;
-    } 
-    else if (this->currentDepth == this->currentDepth) 
+    }
+    else if (this->currentDepth == this->maxDepth)
     {
-        isTerminalState = true; 
+        isTerminalState = true;
     }
 
     return isTerminalState;
@@ -272,7 +277,7 @@ bool Algorithm::terminalTest(Board state)
 Algorithm::Result Algorithm::utility(Board state)
 {
     return staticEval(state, this->callingPlayer, this->evalVersion);
-} 
+}
 
 /**
  * actions method determines the list of possible actions, or moves, a player can make
@@ -282,16 +287,15 @@ Algorithm::Result Algorithm::utility(Board state)
  * @param Board state
  * 
  * @return vector<Board::Move> - a list of possible moves for a player of a given color 
- */ 
+ */
 std::vector<Board::Move> Algorithm::actions(Board state)
 {
     return state.moveGen(this->callingPlayer.getColor());
-} 
-
+}
 
 /**
  * Set the evaluation function version - 1, 2, or 3
- */ 
+ */
 void Algorithm::setEvalVersion(int evalVersion)
 {
     this->evalVersion = evalVersion;
@@ -299,7 +303,8 @@ void Algorithm::setEvalVersion(int evalVersion)
 
 /**
  * Set the max depth that will be used
- */ 
-void Algorithm::setMaxDepth(int maxDepth) {
-    this->maxDepth = maxDepth; 
+ */
+void Algorithm::setMaxDepth(int maxDepth)
+{
+    this->maxDepth = maxDepth;
 }
