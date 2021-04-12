@@ -2,6 +2,7 @@
 #define BOARD_H
 
 #include <vector>
+#include <queue>
 #include <string> 
 
 #include "Pieces.hpp"
@@ -46,12 +47,20 @@ public:
 	void printBoard() const;
 	Board updateBoard(Move move, Color color);
 
+	int getNumRegularPieces(Color color);
+	int getNumKingPieces(Color color);
+	int getNumPlayerTotalPieces(Color color);
 
-	int getNumRedPieces() const { return numRedPieces; }
-	int getNumBlackPieces() const { return numBlackPieces; }
+
 
 	int squareToRow(int square) const;
 	int squareToColumn(int square) const;
+
+
+	std::vector<Move> getJumpsForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces);
+	std::vector < Board::Move> getJumpsForPiece2(Color color, int piece, Board::Move move, std::vector<Board::Move>& totalMoves, Board board);
+	std::vector<Move> getMovesForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces);
+
 
 private:
 
@@ -62,9 +71,6 @@ private:
 	int numBlackPieces;
 
 	static BoardMoveTable boardMoveTable[33];
-	
-	std::vector<Move> getJumpsForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces);
-	std::vector<Move> getMovesForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces);
 	void printHelperBoardRow(int row);
 
 };
