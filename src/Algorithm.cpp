@@ -127,7 +127,7 @@ bool deepEnough(int currentDepth)
  */
 Algorithm::Result Algorithm::minimax_a_b( Board state, int depth, Player player, Color color, int useThresh, int passThresh )
 {
-    Color color = player.getColor();
+    //Color color = player.getColor();
     
 
     if (color == Color::RED)
