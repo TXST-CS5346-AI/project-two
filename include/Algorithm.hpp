@@ -41,7 +41,7 @@ public:
     };
 
     // minimax algorithm returns the position of the best move
-    Result minimax_a_b(Board board, int depth, Player player);
+    Result minimax_a_b(Board state, int depth, Player player, Color color, int useThresh, int passThresh );
 
     // AB Prune algorithm
     Result alphaBetaSearch(Board state);

@@ -109,7 +109,10 @@ Algorithm::Result Algorithm::staticEval(Board position, Player player, int evalV
  */
 bool deepEnough(int currentDepth)
 {
-    return false;
+    if ( currentDepth <= 0)
+        return true;
+    else
+        return false;
 }
 
 /**
@@ -122,9 +125,12 @@ bool deepEnough(int currentDepth)
  * 
  * @return a Result struct, which consists of a value and a Move
  */
-Algorithm::Result Algorithm::minimax_a_b(Board board, int depth, Player player)
+Algorithm::Result Algorithm::minimax_a_b( Board state, int depth, Player player, Color color, int useThresh, int passThresh )
 {
-    if (player.getColor() == Color::RED)
+    Color color = player.getColor();
+    
+
+    if (color == Color::RED)
     {
         std::cout << "RED ";
     }
@@ -134,7 +140,35 @@ Algorithm::Result Algorithm::minimax_a_b(Board board, int depth, Player player)
     }
     std::cout << "In minimax...." << std::endl;
 
-    Algorithm::Result result;
+   Algorithm::Result result;
+
+    if ( deepEnough(depth) )
+        return result;
+    result = staticEval(state, player, evalVersion);
+    std::vector<Board::Move> successors = actions(state);
+    if (successors.size() == 0)
+        return result;
+    for ( int successorIndex = 0; successorIndex < successors.size(); successorIndex++ )
+    {   
+        Board tmpState = state.updateBoard(successors.at(successorIndex), this->callingPlayer.getColor());
+        if (color == Color::RED)
+            color == Color::BLACK;
+        else 
+            color == Color::RED;
+        result = minimax_a_b( tmpState, depth-1, player, color, -useThresh,-passThresh );
+        if ( result.value > passThresh )
+        {
+            passThresh = result.value;
+        }
+        if ( passThresh >= useThresh )
+        {
+            result.value = passThresh;
+            result.bestMove = successors.at(successorIndex);
+        }
+
+
+    }
+
     return result;
 }
 
