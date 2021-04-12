@@ -57,7 +57,7 @@ void Simulation::runFullSimulation()
 
     for (int depth = 2; depth <= 4; depth += 2)
     {
-        std::cout << "Depth: " << depth << std::endl; 
+        std::cout << "Depth: " << depth << std::endl;
 
         for (int p1_alg = 0; p1_alg < 2; p1_alg++)
         {
@@ -73,17 +73,20 @@ void Simulation::runFullSimulation()
                             continue;
 
                         std::cout << "p1_alg: " << p1_alg << " p1_eval: " << p1_eval << " p2_alg: "
-                                << p2_alg << " p2_eval: " << p2_eval << std::endl;
-                        
-                        
-                        //Game* game = new Game(true, 1, false, 1, 4); 
-                        //Game::GameOver go = game->startGame(); 
+                                  << p2_alg << " p2_eval: " << p2_eval << std::endl;
+
+                        Game *game = new Game(p1_alg, p1_eval, p2_alg, p2_eval, 4);
+                        Game::GameOver endGameStatus = game->startGame();
+
+                        // TODO: print game status, num nodes generated, time it took, etc. 
+
+                        delete game; 
 
                     } // p2_eval
-                } // p1_eval
-            } // p2_alg
-        } // p1_alg
-    } // depth
+                }     // p1_eval
+            }         // p2_alg
+        }             // p1_alg
+    }                 // depth
 }
 
 /**
@@ -128,5 +131,4 @@ int Simulation::getNumGamesPlayed()
 // how many nodes were created, etc.
 void Simulation::generateAnalysisResults()
 {
-
 }

@@ -30,9 +30,12 @@ private:
     Board state;
     Player redPlayer;
     Player blackPlayer;
-    int useEvalP1,
-        useEvalP2,
-        depth;
+    const int MAX_ALLOWED_TURNS = 75;
+
+public:
+    Game(); // constructor
+    ~Game(); // destructor
+    Game( bool, int, bool, int, int); // player1 algo, eval version, player2 algo, eval version, depth
 
     enum class GameOver {
         BLACK_WINS = 0,
@@ -40,11 +43,6 @@ private:
         DRAW = 2,
         NOT_DONE = 3
     };
-
-public:
-    Game(); // constructor
-    ~Game(); // destructor
-    Game( bool, int, bool, int, int); // player1 algo, eval version, player2 algo, eval version, depth
 
     // The only initialization function needed, as the game will
     // be played automatically by 2 AI players (MIN and MAX).
@@ -56,7 +54,9 @@ public:
     Color changePlayer(Color currentPlayer);
 
     GameOver gameOver();  // Have end game conditions been met?
-
+    bool doesRedWin();
+    bool doesBlackWin();
+    bool isItADraw();
 };
 
 #endif // !GAME_H
