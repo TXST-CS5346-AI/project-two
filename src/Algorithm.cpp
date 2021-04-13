@@ -32,16 +32,16 @@ Algorithm::Algorithm(int evalVersion, int maxDepth, Player callingPlayer)
  * 
  * @return vector<Board::Move> listofPossibleMoves
  */
-std::vector<Board::Move> Algorithm::movegen(Board board, Player player)
+std::vector<Board::Move> Algorithm::movegen(Board board, Color color)
 {
-    return board.moveGen(player.getColor());
+    return board.moveGen( color );
 }
 
 /**
  * First evaluation function 
  * @author David Torrente 
  */
-Algorithm::Result Algorithm::evalFunctOne(Board position, Player player)
+Algorithm::Result Algorithm::evalFunctOne(Board position, Color color)
 {
     Algorithm::Result result;
     return result;
@@ -52,7 +52,7 @@ Algorithm::Result Algorithm::evalFunctOne(Board position, Player player)
  * @author Randall Henderson
  * 
  */
-Algorithm::Result Algorithm::evalFunctTwo(Board position, Player player)
+Algorithm::Result Algorithm::evalFunctTwo(Board position, Color color)
 {
     Algorithm::Result result;
     return result;
@@ -63,7 +63,7 @@ Algorithm::Result Algorithm::evalFunctTwo(Board position, Player player)
  * @author Borislav Sabotinov
  * 
  */
-Algorithm::Result Algorithm::evalFunctThree(Board position, Player player)
+Algorithm::Result Algorithm::evalFunctThree(Board position, Color color)
 {
     Algorithm::Result result;
     return result;
@@ -79,20 +79,20 @@ Algorithm::Result Algorithm::evalFunctThree(Board position, Player player)
  * 
  * @return a Result struct, which consists of a value and a move. 
  */
-Algorithm::Result Algorithm::staticEval(Board position, Player player, int evalVersion)
+Algorithm::Result Algorithm::staticEval(Board position, Color color, int evalVersion)
 {
     Algorithm::Result result;
 
     switch (evalVersion)
     {
     case 1:
-        result = evalFunctOne(position, player);
+        result = evalFunctOne(position, color);
         break;
     case 2:
-        result = evalFunctTwo(position, player);
+        result = evalFunctTwo(position, color);
         break;
     case 3:
-        result = evalFunctThree(position, player);
+        result = evalFunctThree(position, color);
         break;
     default:
         throw std::runtime_error("Error: eval function # may only be 1, 2, or 3!");
@@ -107,9 +107,12 @@ Algorithm::Result Algorithm::staticEval(Board position, Player player, int evalV
  * @author Randall Henderson
  * 
  */
-bool deepEnough(int currentDepth)
+bool Algorithm::deepEnough(int currentDepth)
 {
-    return false;
+    if ( currentDepth <= 0 )
+        return true;
+    else
+        return false;
 }
 
 /**
@@ -122,9 +125,9 @@ bool deepEnough(int currentDepth)
  * 
  * @return a Result struct, which consists of a value and a Move
  */
-Algorithm::Result Algorithm::minimax_a_b(Board board, int depth, Player player)
-{
-    if (player.getColor() == Color::RED)
+Algorithm::Result Algorithm::minimax_a_b( Board state, int depth, Color color, int passThresh, int useThresh )
+{  
+    if (color == Color::RED)
     {
         std::cout << "RED ";
     }
@@ -134,7 +137,32 @@ Algorithm::Result Algorithm::minimax_a_b(Board board, int depth, Player player)
     }
     std::cout << "In minimax...." << std::endl;
 
-    Algorithm::Result result;
+   Algorithm::Result result;
+
+    if ( deepEnough(depth) )
+        return result;
+    result = staticEval(state, color, evalVersion);
+    std::vector<Board::Move> successors = actions(state);
+    if (successors.size() == 0)
+        return result;
+    for ( int successorIndex = 0; successorIndex < successors.size(); successorIndex++ )
+    {   
+        Board tmpState = state.updateBoard(successors.at(successorIndex), color );
+
+        result = minimax_a_b( tmpState, depth-1,  switchPlayerColor( color ), -useThresh,-passThresh );
+        if ( result.value > passThresh )
+        {
+            passThresh = result.value;
+        }
+        if ( passThresh >= useThresh )
+        {
+            result.value = passThresh;
+            result.bestMove = successors.at(successorIndex);
+        }
+
+
+    }
+
     return result;
 }
 
@@ -227,6 +255,7 @@ Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, 
     }
 
     std::cout << "alpha: " << alpha << " beta: " << beta << " val: " << result.value << " move start: " << result.bestMove.startSquare << std::endl;
+
     for (int i = 0; i < result.bestMove.destinationSquare.size(); i++)
         std::cout << "dest: " << result.bestMove.destinationSquare.at(i) << std::endl;
 
