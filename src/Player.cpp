@@ -1,6 +1,8 @@
 #include "Player.hpp"
 #include "Algorithm.hpp"
 
+#include <iostream>
+
 Player::Player()
 {
 
@@ -38,6 +40,7 @@ int Player::takeTurn(Board &state)
 		didPlayerMove = false; // Player did not make a turn
 	} else {
         state = state.updateBoard(result.bestMove, this->color); 
+        printMove(result.bestMove, this->color);
         numTurnsTaken++; // incremente Player's own turn counter 
         didPlayerMove = true; // return true as player did make a turn 
         state.printBoard(); 
@@ -80,4 +83,18 @@ void Player::decreaseNumPieces(int numPiecesToDecreaseCount)
 void Player::increaseNumPiecesTaken(int numPiecesToIncreaseScore)
 {
     numPiecesTaken += numPiecesToIncreaseScore;
+}
+
+void Player::printMove(Board::Move move, Color color)
+{
+    std::string colorStr; 
+    if (color == Color::BLACK)
+        colorStr = "Black";
+    else 
+        colorStr = "Red";
+
+    std::cout << colorStr << " moves from " << move.startSquare << " to destination (in sequence): "; 
+    for (int i = 0; i < move.destinationSquare.size(); i++)
+            std::cout << "dest: " << move.destinationSquare.at(i) << std::endl;
+
 }
