@@ -30,7 +30,7 @@ private:
     Board state;
     Player redPlayer;
     Player blackPlayer;
-    const int MAX_ALLOWED_TURNS = 75;
+    const int MAX_ALLOWED_TURNS = 10;
 
 public:
     Game(); // constructor
