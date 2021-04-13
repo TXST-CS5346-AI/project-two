@@ -142,7 +142,7 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, int depth, Color color, i
     if ( deepEnough(depth) )
         return result;
     result = staticEval(state, color, evalVersion);
-    std::vector<Board::Move> successors = actions(state);
+    std::vector<Board::Move> successors = actions(state, color);
     if (successors.size() == 0)
         return result;
     for ( int successorIndex = 0; successorIndex < successors.size(); successorIndex++ )
@@ -189,7 +189,7 @@ Algorithm::Result Algorithm::alphaBetaSearch(Board state)
     int alpha = std::numeric_limits<int>::min(); // tracks best value for max, initialized to WORST case
     int beta = std::numeric_limits<int>::max();  // tracks best value for min, initialized to WORST case
     Board::Move move; // empty Move for first call to max-val
-    return maxValue(state, move, maxDepth, alpha, beta);
+    return maxValue(state, move, maxDepth, alpha, beta, callingPlayer.getColor());
 }
 
 /**
@@ -202,7 +202,7 @@ Algorithm::Result Algorithm::alphaBetaSearch(Board state)
  * 
  * @return int utilityValue
  */
-Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, int &alpha, int &beta)
+Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, int &alpha, int &beta, Color color)
 {
     std::cout << "In maxValue()! Depth is " << depth << std::endl; 
 
@@ -228,27 +228,28 @@ Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, 
 
     result.value = std::numeric_limits<int>::min();
 
-    std::vector<Board::Move> listOfActions = actions(state);
+    std::vector<Board::Move> listOfActions = actions(state, color);
     for (int actionIndex = 0; actionIndex < listOfActions.size(); actionIndex++)
     {
-        std::cout << "sim move is from " << listOfActions.at(actionIndex).startSquare << " to "; 
-        for (int i = 0; i < result.bestMove.destinationSquare.size(); i++)
-            std::cout << "dest: " << result.bestMove.destinationSquare.at(i) << std::endl;
+        Player::printMove(listOfActions.at(actionIndex), color);
 
-        Board tmpState = state.updateBoard(listOfActions.at(actionIndex), switchPlayerColor(callingPlayer.getColor()));
-        Algorithm::Result tmpResult = minValue(tmpState, listOfActions.at(actionIndex), depth - 1, alpha, beta);
+        Board tmpState = state.updateBoard(listOfActions.at(actionIndex), color);
+        Algorithm::Result tmpResult = minValue(tmpState, listOfActions.at(actionIndex), depth - 1, alpha, beta, switchPlayerColor(color));
         
         //result.value = std::max(result.value, tmpResult.value);
 
         if (result.value > tmpResult.value)
         {
-            result.bestMove = listOfActions.at(actionIndex); 
+            // do nothing 
         } else {
             result = tmpResult; 
         }
 
         if (result.value >= beta)
+        {
+            result.bestMove = listOfActions.at(actionIndex);
             return result;
+        }
 
         alpha = std::max(alpha, result.value);
     }
@@ -271,7 +272,7 @@ Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, 
  * 
  * @return  utilityValue
  */
-Algorithm::Result Algorithm::minValue(Board state, Board::Move move, int depth, int &alpha, int &beta)
+Algorithm::Result Algorithm::minValue(Board state, Board::Move move, int depth, int &alpha, int &beta, Color color)
 {
     std::cout << "In minValue()! Depth is " << depth << std::endl; 
 
@@ -297,27 +298,28 @@ Algorithm::Result Algorithm::minValue(Board state, Board::Move move, int depth, 
 
     result.value = std::numeric_limits<int>::max();
 
-    std::vector<Board::Move> listOfActions = actions(state);
+    std::vector<Board::Move> listOfActions = actions(state, color);
     for (int actionIndex = 0; actionIndex < listOfActions.size(); actionIndex++)
     {
-        std::cout << "sim move is from " << listOfActions.at(actionIndex).startSquare << " to "; 
-        for (int i = 0; i < result.bestMove.destinationSquare.size(); i++)
-            std::cout << "dest: " << result.bestMove.destinationSquare.at(i) << std::endl;
+        Player::printMove(listOfActions.at(actionIndex), color);
 
-        Board tmpState = state.updateBoard(listOfActions.at(actionIndex), switchPlayerColor(callingPlayer.getColor()));
-        Result tmpResult = maxValue(tmpState, listOfActions.at(actionIndex), depth - 1, alpha, beta);
+        Board tmpState = state.updateBoard(listOfActions.at(actionIndex), color);
+        Result tmpResult = maxValue(tmpState, listOfActions.at(actionIndex), depth - 1, alpha, beta, switchPlayerColor(color));
         
         //result.value = std::min(result.value, tmpResult.value);
 
         if (result.value < tmpResult.value)
         {
-            result.bestMove = move; 
+            // do nothing
         } else {
             result = tmpResult; 
         }
 
         if (result.value <= alpha)
+        {
+            result.bestMove = listOfActions.at(actionIndex);
             return result;
+        }
 
         beta = std::min(beta, result.value);
     }
@@ -384,9 +386,9 @@ int Algorithm::utility(Board state)
  * 
  * @return vector<Board::Move> - a list of possible moves for a player of a given color 
  */
-std::vector<Board::Move> Algorithm::actions(Board state)
+std::vector<Board::Move> Algorithm::actions(Board state, Color color)
 {
-    return state.moveGen(this->callingPlayer.getColor());
+    return state.moveGen(color);
 }
 
 /**

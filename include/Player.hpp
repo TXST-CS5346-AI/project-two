@@ -41,6 +41,8 @@ public:
     void decreaseNumPieces(int numPiecesToDecreaseCount);
     void increaseNumPiecesTaken(int numPiecesToIncreaseScore);
 
+    static void printMove(Board::Move, Color color);
+
 };
 
 #endif // !PLAYER_H

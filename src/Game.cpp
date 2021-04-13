@@ -57,12 +57,14 @@ Color Game::changePlayer(Color currentPlayer)
 
 bool Game::doesBlackWin()
 {
-    return (redPlayer.getNumPieces() == 0 || !redPlayer.getDidPlayerMove());
+    std::vector<Board::Move> redMoves = state.moveGen(Color::RED);
+    return (redMoves.size() == 0);
 }
 
 bool Game::doesRedWin()
 {
-    return (blackPlayer.getNumPieces() == 0 || !blackPlayer.getDidPlayerMove());
+    std::vector<Board::Move> blackMoves = state.moveGen(Color::BLACK);
+    return (blackMoves.size() == 0);
 }
 
 bool Game::isItADraw()
