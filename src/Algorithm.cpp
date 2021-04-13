@@ -142,7 +142,7 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, int depth, Color color, i
     if ( deepEnough(depth) )
         return result;
     result = staticEval(state, color, evalVersion);
-    std::vector<Board::Move> successors = actions(state);
+    std::vector<Board::Move> successors = actions(state, color);
     if (successors.size() == 0)
         return result;
     for ( int successorIndex = 0; successorIndex < successors.size(); successorIndex++ )
