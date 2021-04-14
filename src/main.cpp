@@ -31,7 +31,7 @@ void printWelcomeMsg();
 void printHelpMenu();
 void printMainMenuOptions();
 void executeRunBasedOnUserInput(int userInput, bool &isInputValid);
-void getCustomSimUserInput(int &playerOneAlg, int &playerOneEvalFunct, int &playerTwoAlg, int &playerTwoEvalFunct);
+void getCustomSimUserInput(int &playerOneAlg, int &playerOneEvalFunct, int &playerTwoAlg, int &playerTwoEvalFunct, int &depth);
 void runManualGame();
 void goodbye();
 
@@ -137,9 +137,9 @@ void executeRunBasedOnUserInput(int userInput, bool &isInputValid)
         break;
     case 2: // one custom sim
         isInputValid = true; 
-        int playerOneAlg, playerOneEvalFunct, playerTwoAlg, playerTwoEvalFunct;
-        getCustomSimUserInput(playerOneAlg, playerOneEvalFunct, playerTwoAlg, playerTwoEvalFunct);
-        simulation->runSpecificSimulation(playerOneAlg, playerOneEvalFunct, playerTwoAlg, playerTwoEvalFunct);
+        int playerOneAlg, playerOneEvalFunct, playerTwoAlg, playerTwoEvalFunct, depth;
+        getCustomSimUserInput(playerOneAlg, playerOneEvalFunct, playerTwoAlg, playerTwoEvalFunct, depth);
+        simulation->runSpecificSimulation(playerOneAlg, playerOneEvalFunct, playerTwoAlg, playerTwoEvalFunct, depth);
         break;
     case 3: // player vs. player
         isInputValid = true; 
@@ -157,25 +157,29 @@ void executeRunBasedOnUserInput(int userInput, bool &isInputValid)
  * getCustomSimUserInput is a helper function to obtain the algorithm and eval function for Player 1 and Player 2
  * One game will be simulated only using this input. 
  */
-void getCustomSimUserInput(int &playerOneAlg, int &playerOneEvalFunct, int &playerTwoAlg, int &playerTwoEvalFunct)
+void getCustomSimUserInput(int &playerOneAlg, int &playerOneEvalFunct, int &playerTwoAlg, int &playerTwoEvalFunct, int &depth)
 {
     std::cout << "Please select the type of simulation you wish to run by entering in it's number." << std::endl;
     std::cout << "1. Run Minimax-A-B algorithm" << std::endl;
-    std::cout << "2. Run AB-Prune algorithm" << std::endl;
+    std::cout << "0. Run Alpha-Beta-Search algorithm" << std::endl;
 
     // PLAYER ONE CHOICES
-    std::cout << "Algorithm for RED - Player 1 " << ANSII_BLUE_START << "(1 or 2)" << ANSII_END << ":";
+    std::cout << "Algorithm for RED - Player 1 " << ANSII_BLUE_START << "(1 for minimax, 0 for ab-Search)" << ANSII_END << ":";
     std::cin >> playerOneAlg;
     std::cout << std::endl;
-    std::cout << "Evaluation for RED - Player 1 \033[0;30;46m(1, 2, or 3)\033[0m: ";
+    std::cout << "Evaluation for RED - Player 1 " << ANSII_BLUE_START << "(1, 2, or 3)" << ANSII_END << ": ";
     std::cin >> playerOneEvalFunct;
 
     // PLAYER TWO CHOICES
-    std::cout << "Algorithm for BLACK - Player 2 \033[0;30;46m(1 or 2)\033[0m: ";
+    std::cout << "Algorithm for BLACK - Player 2 " << ANSII_BLUE_START << "(1 for minimax, 0 for ab-Search)" << ANSII_END << ": ";
     std::cin >> playerTwoAlg;
     std::cout << std::endl;
-    std::cout << "Evaluation for BLACK - Player 2 \033[0;30;46m(1, 2, or 3)\033[0m: ";
+    std::cout << "Evaluation for BLACK - Player 2 " << ANSII_BLUE_START << "(1, 2, or 3)" << ANSII_END << ": ";
     std::cin >> playerTwoEvalFunct;
+
+    // DEPTH
+    std::cout << "Enter the depth for the search tree " << ANSII_BLUE_START << "(2 or 4 recommended)" << ANSII_END << ": ";
+    std::cin >> depth; 
 }
 
 /**
