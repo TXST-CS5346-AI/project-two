@@ -121,7 +121,9 @@ bool Algorithm::deepEnough(int currentDepth)
  * 
  * @param Board board
  * @param int depth
- * @param Player player
+ * @param Color color
+ * @param int passThresh = INT32_MAX
+ * @param int useThresh = INT32_MIN
  * 
  * @return a Result struct, which consists of a value and a Move
  */
@@ -137,27 +139,34 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, int depth, Color color, i
     }
     std::cout << "In minimax...." << std::endl;
 
-   Algorithm::Result result;
+   Algorithm::Result result = staticEval(state, color, evalVersion);  // Initial result to the passed in state
 
     if ( deepEnough(depth) )
-        return result;
-    result = staticEval(state, color, evalVersion);
+    {
+        std::cout << "Deep Enough met. " << std::endl;
+        return result;  
+    }
+
+    
     std::vector<Board::Move> successors = actions(state, color);
     if (successors.size() == 0)
         return result;
     for ( int successorIndex = 0; successorIndex < successors.size(); successorIndex++ )
     {   
         Board tmpState = state.updateBoard(successors.at(successorIndex), color );
-
+        std::cout << "      Depth " << depth << " Index " << successorIndex << std::endl;
         result = minimax_a_b( tmpState, depth-1,  switchPlayerColor( color ), -useThresh,-passThresh );
         if ( result.value > passThresh )
         {
+            std::cout << "        Change PassThresh  Old: " << passThresh << "  New: " << result.value << std::endl;
             passThresh = result.value;
         }
         if ( passThresh >= useThresh )
         {
+            std::cout << "           PassThresh > UseThresh  Pass-> " << passThresh << " Use-> " << useThresh << " Returning " << std::endl;
             result.value = passThresh;
             result.bestMove = successors.at(successorIndex);
+            return result;
         }
 
 
