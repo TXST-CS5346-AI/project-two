@@ -154,7 +154,7 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, int depth, Color color, i
     for ( int successorIndex = 0; successorIndex < successors.size(); successorIndex++ )
     {   
         Board tmpState = state.updateBoard(successors.at(successorIndex), color );
-std::cout << "      Depth " << depth << " Index " << successorIndex << std::endl;
+        std::cout << "      Depth " << depth << " Index " << successorIndex << std::endl;
         result = minimax_a_b( tmpState, depth-1,  switchPlayerColor( color ), -useThresh,-passThresh );
         if ( result.value > passThresh )
         {
