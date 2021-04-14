@@ -77,7 +77,7 @@ public:
     void runFullSimulation();
     
     // public method for specific simulations
-    void runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct, int playerTwoAlg, int PlayerTwoEvalFunct);
+    void runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct, int playerTwoAlg, int PlayerTwoEvalFunct, int depth);
     
     // returns a count of the number of games played in a simulation
     // each of the 3 run functions. 

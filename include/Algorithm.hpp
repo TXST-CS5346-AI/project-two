@@ -41,7 +41,7 @@ public:
     };
 
     // minimax algorithm returns the position of the best move
-    Result minimax_a_b( Board board, int depth, Color color, int useThresh, int passThresh );
+    Result minimax_a_b( Board board, Board::Move move, int depth, Color color, int useThresh, int passThresh );
 
     // AB Prune algorithm
     Result alphaBetaSearch(Board state);
@@ -64,12 +64,12 @@ private:
     * goodness of Position from the standpoint of Player
     * A helper function staticEval is used to determine which evalFunction to use
     */
-    Result evalFunctOne(Board position, Color color);
-    Result evalFunctTwo(Board position, Color color);
-    Result evalFunctThree(Board position, Color color);
+    int evalFunctOne(Board state, Color color);
+    int evalFunctTwo(Board state, Color color);
+    int evalFunctThree(Board state, Color color);
 
     // wrapper function that will decide which of the actual three eval functions to call
-    Result staticEval(Board position, Color color, int evalVersion);
+    int staticEval(Board state, Color color, int evalVersion);
 
     // if true, return the structure
     bool deepEnough(int currentDepth);

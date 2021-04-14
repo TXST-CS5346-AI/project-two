@@ -93,7 +93,7 @@ void Simulation::runFullSimulation()
 * @param int algorithm - If 1, minimax; if 2, AB Prune
 * @param int evalFunction - 1,2, or 3
 */
-void Simulation::runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct, int playerTwoAlg, int playerTwoEvalFunct)
+void Simulation::runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct, int playerTwoAlg, int playerTwoEvalFunct, int depth)
 {
     std::cout << "\033[0;32mRunning a SINGLE game, specific simulation!\033[0m" << std::endl;
 
@@ -104,8 +104,12 @@ void Simulation::runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct,
     // Validate evaluation function selections
     if ((playerOneEvalFunct < 0 || playerOneEvalFunct > 3) && (playerTwoEvalFunct < 0 || playerTwoEvalFunct > 3))
         throw std::runtime_error("Error: evalFunction may only be 1, 2, or 3!");
+    
+    // Validate depth
+    if (depth <= 0 || depth > 10)
+        throw std::runtime_error("Error: depth must be > 0 and <= 10. ");
 
-    Game *game = new Game(playerOneAlg, playerOneEvalFunct, playerTwoAlg, playerTwoEvalFunct, 2);
+    Game *game = new Game(playerOneAlg, playerOneEvalFunct, playerTwoAlg, playerTwoEvalFunct, depth);
     Game::GameOver endGameStatus = game->startGame();
 
     if (endGameStatus == Game::GameOver::BLACK_WINS)

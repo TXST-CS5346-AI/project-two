@@ -40,33 +40,43 @@ std::vector<Board::Move> Algorithm::movegen(Board board, Color color)
 /**
  * First evaluation function 
  * @author David Torrente 
+ * 
+ * @param Board State
+ * @param Color color
+ * 
+ * @return an integer score of how good we think the state is
  */
-Algorithm::Result Algorithm::evalFunctOne(Board position, Color color)
+int Algorithm::evalFunctOne(Board state, Color color)
 {
-    Algorithm::Result result;
-    return result;
+    return 1; 
 }
 
 /**
  * Second evaluation function 
  * @author Randall Henderson
  * 
+ * @param Board State
+ * @param Color color
+ * 
+ * @return an integer score of how good we think the state is
  */
-Algorithm::Result Algorithm::evalFunctTwo(Board position, Color color)
+int Algorithm::evalFunctTwo(Board state, Color color)
 {
-    Algorithm::Result result;
-    return result;
+    return 1; 
 }
 
 /**
  * Third evaluation function
  * @author Borislav Sabotinov
  * 
+ * @param Board State
+ * @param Color color
+ * 
+ * @return an integer score of how good we think the state is
  */
-Algorithm::Result Algorithm::evalFunctThree(Board position, Color color)
+int Algorithm::evalFunctThree(Board state, Color color)
 {
-    Algorithm::Result result;
-    return result;
+    return 1; 
 }
 
 /**
@@ -79,26 +89,26 @@ Algorithm::Result Algorithm::evalFunctThree(Board position, Color color)
  * 
  * @return a Result struct, which consists of a value and a move. 
  */
-Algorithm::Result Algorithm::staticEval(Board position, Color color, int evalVersion)
+int Algorithm::staticEval(Board state, Color color, int evalVersion)
 {
-    Algorithm::Result result;
+    int scoreOfGoodness;
 
     switch (evalVersion)
     {
     case 1:
-        result = evalFunctOne(position, color);
+        scoreOfGoodness = evalFunctOne(state, color);
         break;
     case 2:
-        result = evalFunctTwo(position, color);
+        scoreOfGoodness = evalFunctTwo(state, color);
         break;
     case 3:
-        result = evalFunctThree(position, color);
+        scoreOfGoodness = evalFunctThree(state, color);
         break;
     default:
         throw std::runtime_error("Error: eval function # may only be 1, 2, or 3!");
     }
 
-    return result;
+    return scoreOfGoodness;
 }
 
 /**
@@ -127,7 +137,7 @@ bool Algorithm::deepEnough(int currentDepth)
  * 
  * @return a Result struct, which consists of a value and a Move
  */
-Algorithm::Result Algorithm::minimax_a_b( Board state, int depth, Color color, int passThresh, int useThresh )
+Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int depth, Color color, int passThresh, int useThresh )
 {  
     if (color == Color::RED)
     {
@@ -139,28 +149,39 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, int depth, Color color, i
     }
     std::cout << "In minimax...." << std::endl;
 
-   Algorithm::Result result = staticEval(state, color, evalVersion);  // Initial result to the passed in state
+    Algorithm::Result result; 
+
+    int value = staticEval(state, color, evalVersion);  // Initial result to the passed in state
 
     if ( deepEnough(depth) )
     {
         std::cout << "Deep Enough met. " << std::endl;
+        result.value = value; 
         return result;  
     }
 
     
     std::vector<Board::Move> successors = actions(state, color);
+
     if (successors.size() == 0)
         return result;
+
     for ( int successorIndex = 0; successorIndex < successors.size(); successorIndex++ )
     {   
         Board tmpState = state.updateBoard(successors.at(successorIndex), color );
         std::cout << "      Depth " << depth << " Index " << successorIndex << std::endl;
-        result = minimax_a_b( tmpState, depth-1,  switchPlayerColor( color ), -useThresh,-passThresh );
-        if ( result.value > passThresh )
+        
+        // recursive call
+        result = minimax_a_b( tmpState, successors.at(successorIndex), depth-1,  switchPlayerColor( color ), -useThresh, -passThresh );
+
+        int newValue = -result.value;
+
+        if ( newValue > passThresh )
         {
             std::cout << "        Change PassThresh  Old: " << passThresh << "  New: " << result.value << std::endl;
-            passThresh = result.value;
+            passThresh = newValue;
         }
+
         if ( passThresh >= useThresh )
         {
             std::cout << "           PassThresh > UseThresh  Pass-> " << passThresh << " Use-> " << useThresh << " Returning " << std::endl;
@@ -168,8 +189,6 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, int depth, Color color, i
             result.bestMove = successors.at(successorIndex);
             return result;
         }
-
-
     }
 
     return result;
