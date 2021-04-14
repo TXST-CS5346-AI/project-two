@@ -20,10 +20,14 @@ Pieces::Pieces(Color color)
 	// kings, so bits 33 - 64 are all zeros on both sides.
 
 	if (color == Color::RED) // red
+		//pieces = 1;
 		//pieces = 19455;
+		//pieces = 1152921504875282432;
 		pieces = 4095; // Initial board state
 	else // black
-		//pieces = 4291952640;  
+		//pieces = 4291952640;
+		//pieces = 128;
+		//pieces = 16974848;
 		pieces = 4293918720; // Initial board state
 }
 
@@ -38,7 +42,7 @@ bool Pieces::isKing(int position) const
 
 	bool isKing = false;
 
-	if ((pieces >> kingBit) % 2 != 0)
+	if (((pieces >> kingBit) & 1) == 1)
 	{
 		isKing = true;
 	}

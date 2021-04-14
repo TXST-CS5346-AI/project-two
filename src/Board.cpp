@@ -18,10 +18,36 @@ Board::~Board()
 
 }
 
+
+Pieces Board::getPlayerPieces(Color color)
+{
+	if (color == Color::RED)
+	{
+		return redPieces;
+	}
+	else
+	{
+		return blackPieces;
+	}
+}
+
+Pieces Board::getOpponentPieces(Color color)
+{
+	if (color == Color::RED)
+	{
+		return blackPieces;
+	}
+	else
+	{
+		return redPieces;
+	}
+}
+
 int Board::getNumRegularPieces(Color color)
 {
 	return getNumPlayerTotalPieces(color) - getNumKingPieces(color);
 }
+
 int Board::getNumKingPieces(Color color)
 {
 	{
@@ -40,7 +66,7 @@ int Board::getNumKingPieces(Color color)
 
 		for (int iter = 32; iter < 64; iter++)
 		{
-			if ((*playerPieces >> iter) % 2 != 0)
+			if(((*playerPieces >> iter) & 1) == 1)
 			{
 				kingPieceCount++;
 			}
@@ -49,6 +75,7 @@ int Board::getNumKingPieces(Color color)
 		return kingPieceCount;
 	}
 }
+
 int Board::getNumPlayerTotalPieces(Color color) 
 {
 	int totalPieceCount = 0;
@@ -66,7 +93,8 @@ int Board::getNumPlayerTotalPieces(Color color)
 
 	for (int iter = 0; iter < 32; iter++)
 	{
-		if ((*playerPieces >> iter) % 2 != 0)
+
+		if (((*playerPieces >> iter) & 1) == 1)
 		{
 			totalPieceCount++;
 		}
@@ -106,7 +134,7 @@ std::vector<Board::Move> Board::moveGen(Color color)
 		// here to align to the position bits properly.
 		bitOffset = pieceIter - 1;
 		
-		if (((playerPieces->pieces) >> bitOffset) % 2 != 0)
+		if ((((playerPieces->pieces) >> bitOffset) & 1) == 1)
 		{
 			// Check for possible jump mpves first.
 			returnedMoves = getJumpsForPiece(color, pieceIter, playerPieces, opponentPieces);
@@ -116,6 +144,7 @@ std::vector<Board::Move> Board::moveGen(Color color)
 
 	// Go through all 32 squares and see if it is one
 	// of the appropriate pieces belonging to player.
+	// Do this only if no jumps are possible.
 	if (totalMoves.size() == 0)
 	{
 		for (int pieceIter = 1; pieceIter <= 32; pieceIter++)
@@ -125,7 +154,8 @@ std::vector<Board::Move> Board::moveGen(Color color)
 			// here to align to the position bits properly.
 			bitOffset = pieceIter - 1;
 
-			if (((playerPieces->pieces) >> bitOffset) % 2 != 0)
+			// Check if player is in this space
+			if ((((playerPieces->pieces) >> bitOffset) & 1) == 1)
 			{
 				// Check for non jump moves here.
 				returnedMoves = getMovesForPiece(color, pieceIter, playerPieces, opponentPieces);
@@ -136,205 +166,68 @@ std::vector<Board::Move> Board::moveGen(Color color)
 	return totalMoves;
 }
 
-
-// Old getJumpsForPiece... Adjusting saved for ref and revert.
-/*
 std::vector<Board::Move> Board::getJumpsForPiece(Color color, int piece, Pieces* playerPieces, Pieces* opponentPieces)
 {
+	// The returned vector of all possible jumps carried out completely
 	std::vector<Move> finalMoves;
-	Move move;
 
-	bool isKing = false;
+	Board board;
 
-	int squareJumped = 0;
-
-	int bitOffset = 0;
-
-	// First, determine if it is a king. This is needed to see which moves
-	// are valid for this piece/player. Move either up/down at first.
-	if (playerPieces->isKing(piece))
-	{
-		isKing = true;
-	}
-	else
-	{
-		isKing = false;
-	}
-
-
-	// Check if a jump position is open for this piece. This goes through all of the jumps.
-	for (int jumpIter = 0; jumpIter < Board::boardMoveTable[piece].jumps.size(); jumpIter++)
-	{
-		// Get the position of the jump, reduce it by one for an offset. Note
-		// that while it is one less than the position, the direction check still works
-		// since a jump will always be greater than the distance needed to determine 
-		// direction.
-		bitOffset = (Board::boardMoveTable[piece].jumps.at(jumpIter) - 1);
-
-		// Check to see which direction it is going, and if it can go that direction.
-		// King goes both ways		Red not a king goes "down"            Black not a king goes up
-		if (isKing || ((piece - bitOffset) < 0 && color == Color::RED) || ((piece - bitOffset) > 0 && color == Color::BLACK))
-		{
-			// Combine both bit fields into one and check if the space is empty.
-			if (((playerPieces->pieces | opponentPieces->pieces) >> bitOffset) % 2 == 0)
-			{
-				// If it is open, get the space between. We will need to check it.
-				// Again with the -1 to help with the offset
-				squareJumped = Board::boardMoveTable[piece].removals.at(jumpIter) - 1;
-
-				if ((opponentPieces->pieces >> squareJumped) % 2 != 0)
-				{
-					//yup, we are good!!!! this means that an opponent was in this spot.
-					move.startSquare = piece;
-					move.destinationSquare.push_back(bitOffset + 1);
-					move.removalSquare.push_back(squareJumped + 1);
-					finalMoves.push_back(move);
-					move.destinationSquare.clear();
-					move.removalSquare.clear();
-				}
-			}
-		}
-	}
-
-	return finalMoves;
-}
-*/
-
-std::vector < Board::Move> Board::getJumpsForPiece2(Color color, int piece, Board::Move previousMove, std::vector<Board::Move>& totalMovesAccumulator,  Board board)
-{
-
-	// Get new starting position 
-	int pieceXXXXX = previousMove.destinationSquare.back();
-
-	// Apply the jump so that the board is ready for the next
-	// attempted jump.
-	Board updatedBoard = board.updateBoard(previousMove, color);
-
-	std::vector<Board::Move> totalMoves;
-	std::vector<Board::Move> returnedMoves;
-
-	std::vector<Move> currentMoves;
-	Move move;
-
-	Pieces playerPieces;
-	Pieces opponentPieces;
-
-	int bitOffset = 0;
 
 	if (color == Color::RED)
 	{
-		playerPieces = board.redPieces;
-		opponentPieces = board.blackPieces;
-	}
-
-	else
-	{
-		playerPieces = board.blackPieces;
-		opponentPieces = board.redPieces;
-	}
-
-	bool isKing = false;
-
-	int squareJumped = 0;
-
-	// First, determine if it is a king. This is needed to see which moves
-	// are valid for this piece/player. Move either up/down at first.
-	if (playerPieces.isKing(piece))
-	{
-		isKing = true;
+		board.redPieces = *playerPieces;
+		board.blackPieces = *opponentPieces;
 	}
 	else
 	{
-		isKing = false;
+		board.redPieces = *opponentPieces;
+		board.blackPieces = *playerPieces;
 	}
-
-	// Check if a jump position is open for this piece. This goes through all of the jumps.
-	for (int jumpIter = 0; jumpIter < Board::boardMoveTable[piece].jumps.size(); jumpIter++)
-	{
-		// Get the position of the jump, reduce it by one for an offset. Note
-		// that while it is one less than the position, the direction check still works
-		// since a jump will always be greater than the distance needed to determine 
-		// direction.
-		bitOffset = (Board::boardMoveTable[piece].jumps.at(jumpIter) - 1);
-
-		// Check to see which direction it is going, and if it can go that direction.
-		// King goes both ways		Red not a king goes "down"            Black not a king goes up
-		if (isKing || ((piece - bitOffset) < 0 && color == Color::RED) || ((piece - bitOffset) > 0 && color == Color::BLACK))
-		{
-			// Combine both bit fields into one and check if the space is empty.
-			if (((playerPieces.pieces | opponentPieces.pieces) >> bitOffset) % 2 == 0)
-			{
-				// If it is open, get the space between. We will need to check it.
-				// Again with the -1 to help with the offset
-				squareJumped = Board::boardMoveTable[piece].removals.at(jumpIter) - 1;
-
-				if ((opponentPieces.pieces >> squareJumped) % 2 != 0)
-				{
-					//yup, we are good!!!! this means that an opponent was in this spot.
-					move.startSquare = piece;
-					move.destinationSquare.push_back(bitOffset + 1);
-					move.removalSquare.push_back(squareJumped + 1);
-
-					currentMoves.push_back(move);
-					
-					//previousMove.destinationSquare.push_back.
-
-					move.destinationSquare.clear();
-					move.removalSquare.clear();
-				}
-			}
-		}
-	}
-
-
-	// This means we have no more possible jumps, so record the move to
-	// totalMovesAccumulator
-	if (currentMoves.size() == 0)
-	{
-
-	}
-
-	return totalMoves;
-}
-std::vector<Board::Move> Board::getJumpsForPiece(Color color, int piece, Pieces* playerPieces, Pieces* opponentPieces)
-{
-	std::queue<Move> partialMoves;
-	std::vector<int> piecesRemoved;
-	bool moreJumpsPossible = false;
-
-
-	std::vector<Move> finalMoves;
+	// In order to start the recursion, this is needed.
 	Move move;
+	move.startSquare = piece;
 
+	getJumpsForPieceRec(color, move, finalMoves, board);
+
+	return finalMoves;
+}
+
+void Board::getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board::Move>& totalMovesAccumulator,  Board board)
+{
+
+	int piece;
+
+	bool endOfJumpChain = true;
+
+	bool wasKingPriorMove = board.getPlayerPieces(color).isKing(move.startSquare);
 	bool isKing = false;
-
-	int squareJumped = 0;
 
 	int bitOffset = 0;
+	int squareJumped = 0;
 
-	// First, determine if it is a king. This is needed to see which moves
-	// are valid for this piece/player. Move either up/down at first.
-	if (playerPieces->isKing(piece))
+
+	// This determines if we are starting the jump sequence or in the middle of it.
+	if (move.destinationSquare.size() == 0)
 	{
-		isKing = true;
+		piece = move.startSquare;
+		// use the current board as it is.
 	}
 	else
 	{
-		isKing = false;
+		piece = move.destinationSquare.back();
+		board = updateBoard(move, color);
 	}
 
+	// First, determine if it is a king. This is needed to see which moves
+	// are valid for this piece/player. Move either up/down at first.
+	isKing = board.getPlayerPieces(color).isKing(piece);
 
-	do {
-
-
+	if (isKing == wasKingPriorMove)
+	{
 		// Check if a jump position is open for this piece. This goes through all of the jumps.
 		for (int jumpIter = 0; jumpIter < Board::boardMoveTable[piece].jumps.size(); jumpIter++)
 		{
-			if (partialMoves.size() != 0)
-			{
-				partialMoves.pop();
-			}
-			moreJumpsPossible = false;
 			// Get the position of the jump, reduce it by one for an offset. Note
 			// that while it is one less than the position, the direction check still works
 			// since a jump will always be greater than the distance needed to determine 
@@ -342,51 +235,56 @@ std::vector<Board::Move> Board::getJumpsForPiece(Color color, int piece, Pieces*
 			bitOffset = (Board::boardMoveTable[piece].jumps.at(jumpIter) - 1);
 
 			// Check to see which direction it is going, and if it can go that direction.
-			// King goes both ways		Red not a king goes "down"            Black not a king goes up
+			// King goes both ways		Red not a king goes "down"            Black not a king goes "up"
 			if (isKing || ((piece - bitOffset) < 0 && color == Color::RED) || ((piece - bitOffset) > 0 && color == Color::BLACK))
 			{
 				// Combine both bit fields into one and check if the space is empty.
-				if (((playerPieces->pieces | opponentPieces->pieces) >> bitOffset) % 2 == 0)
+				if ((((board.getPlayerPieces(color).pieces | board.getOpponentPieces(color).pieces) >> bitOffset) & 1) == 0)
 				{
 					// If it is open, get the space between. We will need to check it.
 					// Again with the -1 to help with the offset
 					squareJumped = Board::boardMoveTable[piece].removals.at(jumpIter) - 1;
 
-					if ((opponentPieces->pieces >> squareJumped) % 2 != 0)
+					if (((board.getOpponentPieces(color).pieces >> squareJumped) & 1) == 1)
 					{
-						//yup, we are good!!!! this means that an opponent was in this spot.
-						move.startSquare = piece;
+						// Yup, we are good!!!! this means that an opponent was in this spot and
+						// we can jump them.
+
+						// Since we found a new jump, we need to keep going with the jump chain
+						endOfJumpChain = false;
+
+						// Do not change start square. This is set to the overall start of the jump.
+						// Commented out to show the thought process behind setting the move.
+						// move.startSquare = piece;
+
 						move.destinationSquare.push_back(bitOffset + 1);
 						move.removalSquare.push_back(squareJumped + 1);
 
-						partialMoves.push(move);
-						
-						finalMoves.push_back(move);
-						
-						move.destinationSquare.clear();
-						move.removalSquare.clear();
-
-						moreJumpsPossible = true;
+						//make recursive call here?
+						getJumpsForPieceRec(color, move, totalMovesAccumulator, board);
+						// Remove the jump we just added to the chain. We've already made the recursive call
+						move.destinationSquare.pop_back();
+						move.removalSquare.pop_back();
 					}
 				}
 			}
 		}
+	}
 
-		if (partialMoves.size() != 0)
+	if (endOfJumpChain == true)
+	{
+		// Once here, it means we are at the leaf of a jump or
+		// that we became a king due to this jump.
+		// We add it to the list at that point.
+		// It will rise back up the chain when the stack unwinds.
+		
+		if (move.destinationSquare.size() != 0)
 		{
-			piece = partialMoves.front().destinationSquare.at(0);
+			totalMovesAccumulator.push_back(move);
 		}
+	}
 
-	} while (partialMoves.size() != 0);
-
-	return finalMoves;
 }
-
-
-
-
-
-
 
 // Knows it has a proper piece by the time it gets here. It will return the moves
 // for the piece in this square.
@@ -412,14 +310,12 @@ std::vector<Board::Move> Board::getMovesForPiece(Color color, int piece, Pieces*
 		isKing = false;
 	}
 
-	// If there were possible jumps, they need to be taken. Do not generate
-	// any non jumping moves as per checkers rules.
 		for (int moveIter = 0; moveIter < Board::boardMoveTable[piece].moves.size(); moveIter++)
 		{
 			bitOffset = Board::boardMoveTable[piece].moves.at(moveIter) - 1;
 			if (isKing || ((piece - bitOffset) < 0 && color == Color::RED) || ((piece - bitOffset) > 0 && color == Color::BLACK))
 			{
-				if (((playerPieces->pieces | opponentPieces->pieces) >> bitOffset) % 2 == 0)
+				if ((((playerPieces->pieces | opponentPieces->pieces) >> bitOffset) & 1) == 0)
 				{
 					move.startSquare = piece;
 					move.destinationSquare.push_back(bitOffset + 1);
@@ -452,12 +348,6 @@ int Board::squareToColumn(int square) const
 	return column;
 }
 
-bool Board::movePiece(Color color, std::string move)
-{
-
-	return true;
-}
-
 void Board::printBoard() const
 {
 	int squareOffset = 0;
@@ -485,7 +375,7 @@ void Board::printBoard() const
 			
 			squareOffset = (rowIter * 4 + colIter);
 
-			if ((redPieces.pieces >> squareOffset) % 2 != 0)
+			if (((redPieces.pieces >> squareOffset) & 1) ==1)
 			{
 				if (redPieces.isKing(squareOffset + 1))
 				{
@@ -496,7 +386,7 @@ void Board::printBoard() const
 					std::cout << "r|";
 				}
 			}
-			else if ((blackPieces.pieces >> squareOffset) % 2 != 0)
+			else if (((blackPieces.pieces >> squareOffset) & 1) == 1)
 			{
 				if (blackPieces.isKing(squareOffset + 1))
 				{

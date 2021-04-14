@@ -30,9 +30,6 @@ public:
 
 	struct BoardMoveTable
 	{
-		// Jumps will always come in pairs. The even
-		// values are the jumps, the odd values are the 
-		// spaces jumped. 
 		std::vector<int> jumps;
 		std::vector<int> removals;
 		std::vector<int> moves;
@@ -41,7 +38,6 @@ public:
 	Board();
 	~Board();
 	static void InitializeMoveTable();
-	bool movePiece(Color color, std::string move);
 	std::vector<Move> moveGen(Color color);
 	
 	void printBoard() const;
@@ -51,27 +47,23 @@ public:
 	int getNumKingPieces(Color color);
 	int getNumPlayerTotalPieces(Color color);
 
-
-
 	int squareToRow(int square) const;
 	int squareToColumn(int square) const;
 
-
 	std::vector<Move> getJumpsForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces);
-	std::vector < Board::Move> getJumpsForPiece2(Color color, int piece, Board::Move move, std::vector<Board::Move>& totalMoves, Board board);
 	std::vector<Move> getMovesForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces);
 
+	Pieces getPlayerPieces(Color color);
+	Pieces getOpponentPieces(Color color);
 
 private:
 
 	Pieces blackPieces;
 	Pieces redPieces;
 
-	int numRedPieces;
-	int numBlackPieces;
-
 	static BoardMoveTable boardMoveTable[33];
 	void printHelperBoardRow(int row);
+	void getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board::Move>& totalMoves, Board board);
 
 };
 
