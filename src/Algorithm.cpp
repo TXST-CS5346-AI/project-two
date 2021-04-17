@@ -76,6 +76,27 @@ int Algorithm::evalFunctTwo(Board state, Color color)
  */
 int Algorithm::evalFunctThree(Board state, Color color)
 {
+    int squareValuesForRed[] = { 1, 1, 1, 1, 
+                                 2, 1, 1, 2, 
+                                 1, 1, 1, 2, 
+                                 2, 3, 3, 1, 
+                                 2, 3, 3, 4, 
+                                 2, 3, 3, 1, 
+                                 3, 3, 3, 4, 
+                                 10, 10, 10, 10 };
+
+    int squareValuesForBlack[] = { 10, 10, 10, 10, 
+                                   4, 3, 3, 3, 
+                                   1, 3, 3, 2, 
+                                   4, 3, 3, 2, 
+                                   1, 3, 3, 2, 
+                                   2, 1, 1, 1, 
+                                   2, 1, 1, 2, 
+                                   1, 1, 1, 1 };
+    
+    int numPieces = state.getNumPlayerTotalPieces(color);
+    int numKings = state.getNumKingPieces(color);
+
     return 1; 
 }
 
