@@ -113,11 +113,25 @@ void Simulation::runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct,
     Game::GameOver endGameStatus = game->startGame();
 
     if (endGameStatus == Game::GameOver::BLACK_WINS)
-        std::cout << "BLACK WINS!!!" << std::endl;
+    {
+        std::cout << "\nBLACK WINS!!!" << std::endl; 
+        std::cout << "BLACK Player: ᕙ(⇀‸↼‶)ᕗ" << std::endl;
+        std::cout << "But most importantly, RED looooses (boooo!)" << std::endl;
+        std::cout << "RED Player: (╯°□°）╯︵ ┻━┻" << std::endl;
+    }
     else if (endGameStatus == Game::GameOver::RED_WINS)
-        std::cout << "RED WINS!!!" << std::endl;
+    {
+        std::cout << "\nRED WINS!!!" << std::endl; 
+        std::cout << "RED Player: ᕙ(⇀‸↼‶)ᕗ" << std::endl;
+        std::cout << "But most importantly, BLACK looooses (boooo!)" << std::endl;
+        std::cout << "BLACK Player: (╯°□°）╯︵ ┻━┻" << std::endl; 
+    }
     else if (endGameStatus == Game::GameOver::DRAW)
+    {
         std::cout << "DRAW!!!" << std::endl;
+        std::cout << "Red - (ง •̀_•́)ง   ლ( `Д’ ლ) - Black" << std::endl;
+        std::cout << "Mission FAILED...We'll get em next time!" << std::endl; 
+    }
     else 
         std::cout << "Oops, something went wrong!" << std::endl;
 

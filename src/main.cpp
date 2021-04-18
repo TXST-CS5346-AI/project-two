@@ -208,12 +208,19 @@ void runManualGame()
         {
             gameOver = true; 
             std::cout << "\nRED WINS!!!" << std::endl; 
+            std::cout << "RED Player: ᕙ(⇀‸↼‶)ᕗ" << std::endl;
+            std::cout << "But most importantly, BLACK looooses (boooo!)" << std::endl;
+            std::cout << "BLACK Player: (╯°□°）╯︵ ┻━┻" << std::endl; 
+
             break; 
         } 
         else if (redMoves.size() == 0)
         {
             gameOver = true; 
             std::cout << "\nBLACK WINS!!!" << std::endl; 
+            std::cout << "BLACK Player: ᕙ(⇀‸↼‶)ᕗ" << std::endl;
+            std::cout << "But most importantly, RED looooses (boooo!)" << std::endl;
+            std::cout << "RED Player: (╯°□°）╯︵ ┻━┻" << std::endl; 
             break; 
         }
 
