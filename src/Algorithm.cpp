@@ -214,20 +214,23 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int dep
 
     Algorithm::Result result; 
 
-    int value = staticEval(state, color, evalVersion);  // Initial result to the passed in state
+    //int value = staticEval(state, color, evalVersion);  // Initial result to the passed in state
 
     if ( deepEnough(depth) )
     {
         std::cout << "Deep Enough met. " << std::endl;
-        result.value = value; 
+        result.value = staticEval(state, color, evalVersion); 
         return result;  
     }
 
     
-    std::vector<Board::Move> successors = actions(state, color);
+    std::vector<Board::Move> successors = movegen(state, color);
 
     if (successors.size() == 0)
+    {
+        result.value = std::numeric_limits<int>::max(); 
         return result;
+    }
 
     for ( int successorIndex = 0; successorIndex < successors.size(); successorIndex++ )
     {   
