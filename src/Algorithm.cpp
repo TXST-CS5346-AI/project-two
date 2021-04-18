@@ -383,7 +383,7 @@ Algorithm::Result Algorithm::minValue(Board state, Board::Move move, int depth, 
     if (Algorithm::terminalTest(state, depth))
     {
         std::cout << "At terminal state!" << std::endl; 
-        result.value = std::numeric_limits<int>::min();
+        result.value = std::numeric_limits<int>::max();
         //result.value = 1;
         result.bestMove = move; 
         return result; 
@@ -391,7 +391,7 @@ Algorithm::Result Algorithm::minValue(Board state, Board::Move move, int depth, 
     else if (depth <= 0) 
     {
         std::cout << "at depth" << std::endl; 
-        result.value = -staticEval(state, color, this->evalVersion);
+        result.value = staticEval(state, color, this->evalVersion);
         std::cout << "Static eval gives us a score of " << result.value << std::endl; 
         result.bestMove = move;
         return result; 
