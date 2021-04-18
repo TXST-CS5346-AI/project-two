@@ -7,6 +7,12 @@
 
 #include "Pieces.hpp"
 
+// ANSII codes for colored text, to improve UI and readability
+#define ANSII_BLUE_START "\033[0;30;46m"
+#define ANSII_RED_START "\033[0;31m"
+#define ANSII_END "\033[0m"
+
+
 /**
  * Header definition for class Board. 
  * 

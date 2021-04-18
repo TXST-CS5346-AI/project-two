@@ -1,6 +1,7 @@
 #include "Board.hpp"
 #include "Pieces.hpp"
 #include <iostream>
+#include <iomanip>
 
 // Forward declare the static data member.
 Board::BoardMoveTable Board::boardMoveTable[33];
@@ -359,7 +360,7 @@ void Board::printBoard() const
 	bool oddRow = true;
 
 	// A basic bar to go across the top. Cosmetic.
-	std::cout << "_________________" << std::endl;
+	std::cout << "_________________________________" << std::endl;
 
 	for (int rowIter = 0; rowIter <= 7; rowIter++)
 	{
@@ -370,7 +371,7 @@ void Board::printBoard() const
 		{
 			if (oddRow)
 			{
-				std::cout << "_|";
+				std::cout << "   |";
 			}
 			
 			squareOffset = (rowIter * 4 + colIter);
@@ -379,35 +380,60 @@ void Board::printBoard() const
 			{
 				if (redPieces.isKing(squareOffset + 1))
 				{
-					std::cout << "R|";
+					std::cout << ANSII_RED_START << " R " << ANSII_END << "|";
 				}
 				else
 				{
-					std::cout << "r|";
+					std::cout << ANSII_RED_START << " r "<< ANSII_END << "|";
 				}
 			}
 			else if (((blackPieces.pieces >> squareOffset) & 1) == 1)
 			{
 				if (blackPieces.isKing(squareOffset + 1))
 				{
-					std::cout << "B|";
+					std::cout << ANSII_BLUE_START << " B " << ANSII_END << "|";
 				}
 				else
 				{
-					std::cout << "b|";
+					std::cout << ANSII_BLUE_START <<" b "<< ANSII_END <<"|";
 				}
 				
 			}
 			else
 			{
-				std::cout << "_|";
+				std::cout << "   |";
 			}
 
 			if (!oddRow)
 			{
-				std::cout << "_|";
+				std::cout << "   |";
 			}
 		}
+
+
+		// Now print the numeric values of the squares.
+		std::cout << std::endl;
+
+		std::cout << "|";
+
+		for (int colIterNum = 0; colIterNum <= 3; colIterNum++)
+		{
+			if (oddRow)
+			{
+				std::cout << "___|";
+			}
+
+			squareOffset = (rowIter * 4 + colIterNum);
+			std::cout << std::setfill('_') << std::setw(3) << squareOffset + 1 <<"|";
+		
+			if (!oddRow)
+			{
+				std::cout << "___|";
+			}
+
+		}
+
+		
 
 		// Toggle between even and odd rows for the offset.
 		oddRow = !oddRow;
