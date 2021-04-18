@@ -67,4 +67,6 @@ Debug
 
 *.h 
 *.c 
-*.cd 
+*.cd
+
+*.txt 
