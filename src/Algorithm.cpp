@@ -76,7 +76,7 @@ int Algorithm::evalFunctTwo(Board state, Color color)
  */
 int Algorithm::evalFunctThree(Board state, Color color)
 {
-    int squareValuesForRed[] = { 1, 1, 1, 1, 
+    int squareValuesForRed[] = { 100, 1, 100, 1, 
                                  2, 1, 1, 2, 
                                  1, 1, 1, 2, 
                                  2, 3, 3, 1, 
@@ -92,12 +92,54 @@ int Algorithm::evalFunctThree(Board state, Color color)
                                    1, 3, 3, 2, 
                                    2, 1, 1, 1, 
                                    2, 1, 1, 2, 
-                                   1, 1, 1, 1 };
+                                   1, 100, 1, 100 };
     
     int numPieces = state.getNumPlayerTotalPieces(color);
-    int numKings = state.getNumKingPieces(color);
+    int numKingsScore = state.getNumKingPieces(color) * 10;
 
-    return 1; 
+    std::vector<Board::Move> moves = state.moveGen(color);
+
+    int advancementScore = 0; 
+    for (int move = 0; move < moves.size(); move++) 
+    {
+        if (color == Color::RED)
+        {
+            advancementScore += squareValuesForRed[moves.at(move).destinationSquare.back()];
+        }
+        else if (color == Color::BLACK)
+        {
+            advancementScore += squareValuesForBlack[moves.at(move).destinationSquare.back()];
+        }
+    }
+
+    int positionScore = 0; 
+    Pieces playerPieces = state.getPlayerPieces(color);
+    
+    for (int piece = 0; piece < 32; piece++)
+    {
+        if (color == Color::RED)
+        {
+            int pieceBit = (playerPieces.pieces >> piece) & 1; 
+            if (pieceBit == 1)
+            {
+                positionScore += squareValuesForRed[piece];
+            }
+            
+        }
+        else if (color == Color::BLACK)
+        {
+            int pieceBit = (playerPieces.pieces >> piece) & 1; 
+            if (pieceBit == 1)
+            {
+                positionScore += squareValuesForBlack[piece];
+            }
+        }
+        
+    }
+
+    int compositeScore = numPieces + numKingsScore + advancementScore + positionScore;
+
+    return compositeScore; 
 }
 
 /**
@@ -226,18 +268,17 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int dep
 Algorithm::Result Algorithm::alphaBetaSearch(Board state)
 {
     if (callingPlayer.getColor() == Color::RED)
-    {
         std::cout << "RED ";
-    }
     else
-    {
         std::cout << "BLACK ";
-    }
+    
     std::cout << "In alphaBetaSearch...." << std::endl;
 
     int alpha = std::numeric_limits<int>::min(); // tracks best value for max, initialized to WORST case
     int beta = std::numeric_limits<int>::max();  // tracks best value for min, initialized to WORST case
+
     Board::Move move; // empty Move for first call to max-val
+
     return maxValue(state, move, maxDepth, alpha, beta, callingPlayer.getColor());
 }
 
@@ -253,6 +294,10 @@ Algorithm::Result Algorithm::alphaBetaSearch(Board state)
  */
 Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, int &alpha, int &beta, Color color)
 {
+    if (color == Color::RED)
+        std::cout << "\n\nRED ";
+    else
+        std::cout << "\n\nBLACK ";
     std::cout << "In maxValue()! Depth is " << depth << std::endl; 
 
     Algorithm::Result result;
@@ -260,15 +305,16 @@ Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, 
     if (Algorithm::terminalTest(state, depth))
     {
         std::cout << "At terminal state!" << std::endl; 
-        //result.value = std::numeric_limits<int>::max();
-        result.value = 1; 
+        result.value = std::numeric_limits<int>::max();
+        //result.value = 1; 
         result.bestMove = move; 
         return result; 
     } 
     else if (depth <= 0) 
     {
         std::cout << "at depth" << std::endl; 
-        result.value = utility(state);
+        result.value = staticEval(state, color, this->evalVersion);
+        std::cout << "Static eval gives us a score of " << result.value << std::endl; 
         result.bestMove = move;
         return result; 
     }
@@ -323,6 +369,10 @@ Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, 
  */
 Algorithm::Result Algorithm::minValue(Board state, Board::Move move, int depth, int &alpha, int &beta, Color color)
 {
+    if (color == Color::RED)
+        std::cout << "\n\nRED ";
+    else
+        std::cout << "\n\nBLACK ";
     std::cout << "In minValue()! Depth is " << depth << std::endl; 
 
     Result result;
@@ -330,15 +380,16 @@ Algorithm::Result Algorithm::minValue(Board state, Board::Move move, int depth, 
     if (Algorithm::terminalTest(state, depth))
     {
         std::cout << "At terminal state!" << std::endl; 
-        //result.value = std::numeric_limits<int>::min();
-        result.value = 1;
+        result.value = std::numeric_limits<int>::min();
+        //result.value = 1;
         result.bestMove = move; 
         return result; 
     }
     else if (depth <= 0) 
     {
         std::cout << "at depth" << std::endl; 
-        result.value = utility(state);
+        result.value = -staticEval(state, color, this->evalVersion);
+        std::cout << "Static eval gives us a score of " << result.value << std::endl; 
         result.bestMove = move;
         return result; 
     }
