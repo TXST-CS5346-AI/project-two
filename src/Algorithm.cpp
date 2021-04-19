@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <iostream>
 
+
 Algorithm::Algorithm()
 {
 }
@@ -195,11 +196,154 @@ bool Algorithm::deepEnough(int currentDepth)
  * @param Board board
  * @param int depth
  * @param Color color
- * @param int passThresh = INT32_MAX
- * @param int useThresh = INT32_MIN
+ * @param int useThresh = 90000000
+ * @param int passThresh = -800000000
  * 
  * @return a Result struct, which consists of a value and a Move
  */
+
+
+Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int depth, Color color, int useThresh, int passThresh )
+{
+
+    Algorithm::Result result;  // Return structure for MiniMaxAB
+    char indentValue[200] = "1.";  // Tracking header in cout statments.  Shows level in recursion
+    char playerColor[7]; // Used for debugging ouput
+    Board::Move bestMove = move;  //  This is the best move the algorithm can find
+
+    if (color == Color::RED)
+    {
+        strcpy(playerColor,"RED ");
+        //std::cout << indentValue << "RED ";
+    }
+    else
+    {
+        strcpy(playerColor, "BLACK ");
+        //std::cout << indentValue << "BLACK ";
+    }
+
+
+    std::cout << indentValue << ANSII_GREEN_START   << "STARTING MINIMAX_A_B VALUES: passThresh-> " << passThresh << " useThresh-> " << useThresh << ANSII_END << std::endl;
+
+    strcat(indentValue,"2.");
+
+    if ( deepEnough(depth) )  // deep enough and Terminal could be combined.  Separated for error tracking
+    {
+        std::cout << indentValue << playerColor << "Deep Enough met. " << std::endl;
+        result.value = staticEval(state, color, evalVersion);
+        result.bestMove = move;
+
+        std::cout << indentValue << ANSII_RED_START << playerColor << "Returning -> " << result.value << " Move:  Start-> "
+                  << result.bestMove.startSquare << " Move to-> " << result.bestMove.destinationSquare.at(0)
+                  << " Depth-> " << depth << ANSII_END << std::endl;
+
+        return result;
+    }
+    else if ( Algorithm::terminalTest(state, depth) )  // checking if the move is a terminal move
+    {
+        std::cout << indentValue << playerColor << "Board in Terminal State. " << std::endl;
+        result.value = staticEval(state, color, evalVersion);
+        result.bestMove = move;
+
+        std::cout << indentValue << ANSII_RED_START << playerColor << "Returning -> " << result.value << " Move:  Start-> "
+                  << result.bestMove.startSquare << " Move to-> " << result.bestMove.destinationSquare.at(0)
+                  << " Depth-> " << depth << ANSII_END << std::endl;
+
+        return result;
+    }
+    else
+        std::cout << indentValue << playerColor << "Not in Terminal State.  Checking moves" << std::endl;
+
+    // Call MoveGen Function
+    // Loads the list of moves into the vector successors
+    std::vector<Board::Move> successors = movegen(state, color);
+
+    // Player has no moves
+    if (successors.size() == 0)
+    {
+        std::cout << indentValue << playerColor << "Player has no moves" << std::endl;
+        result.value = staticEval(state, color, evalVersion);
+        result.bestMove = move;
+
+        std::cout << indentValue << ANSII_RED_START << playerColor << "Returning -> " << result.value << " Move:  Start-> "
+                  << result.bestMove.startSquare << " Move to-> " << result.bestMove.destinationSquare.at(0)
+                  << " Depth-> " << depth << ANSII_END << std::endl;
+
+        return result;
+    }
+
+    strcat(indentValue,"3.");
+
+    for ( int successorIndex = 0; successorIndex < successors.size(); successorIndex++ )
+    {
+        //Create a board at the current iteration of successors
+        Board tmpState = state.updateBoard(successors.at(successorIndex), color );
+        result.bestMove = successors.at(successorIndex);
+
+        strcat(indentValue, ">." );
+
+        std::cout << indentValue << ANSII_BLUE_START << playerColor << "Index #-> " << successorIndex << " Passed in parameters:  Start-> "
+                  << successors.at(successorIndex).startSquare << " Move to-> " << successors.at(successorIndex).destinationSquare.at(0)
+                  << " Depth-> " << depth  << ANSII_END << std::endl;
+        std::cout << indentValue << " passThresh-> " << passThresh << " useThresh-> " << useThresh  << std::endl;
+        
+        // recursive call
+        result = minimax_a_b( tmpState, successors.at(successorIndex), depth-1,  switchPlayerColor( color ), -passThresh, -useThresh );
+
+        // Keeps the IndentValue from growing too big.
+        char tmpValue[200];
+        strncpy(tmpValue ,indentValue, strlen(indentValue)-2);
+        strcpy(indentValue, tmpValue);
+
+        int newValue = -result.value;
+
+        std::cout << indentValue << playerColor << " NEW_VALUE -> " << newValue << std::endl;
+
+        if ( newValue > passThresh )  // Found the Best Move
+        {
+            std::cout << indentValue << "New Best Move.  Change PassThresh  Old: " << passThresh 
+                      << " to  New: " << newValue << std::endl;
+
+            passThresh = newValue;
+            bestMove = successors.at(successorIndex);
+        }
+
+        if ( passThresh >= useThresh )  // Best move on the branch.  No need to look anymore
+        {
+            std::cout << indentValue << playerColor << "Best Move on the Branch.  PassThresh > UseThresh  Pass-> " 
+                      << passThresh << " Use-> " << useThresh << " Returning " << std::endl;
+
+            result.value = passThresh;
+            result.bestMove = successors.at(successorIndex);
+
+            std::cout << indentValue << ANSII_RED_START << playerColor << "Returning -> " << result.value << " Move:  Start-> "
+                      << result.bestMove.startSquare << " Move to-> " << result.bestMove.destinationSquare.at(0)
+                      << " Depth-> " << depth << ANSII_END << std::endl;
+
+            return result;
+            
+        }
+        std::cout << indentValue << ANSII_BLUE_TYPE << playerColor << "End of Index #-> " << successorIndex
+                  << " result.value -> " << passThresh << " Start-> " << successors.at(successorIndex).startSquare
+                  << " Move to-> " << successors.at(successorIndex).destinationSquare.at(0)
+                  << " Depth-> " << depth  << ANSII_END << std::endl;    //result.value = passThresh;
+
+        // set result to the best move found
+        result.value = passThresh;
+        result.bestMove = bestMove;
+    }
+
+    std::cout << indentValue << ANSII_RED_START << playerColor << "Returning -> " << result.value << " Move:  Start-> "
+              << result.bestMove.startSquare << " Move to-> " << result.bestMove.destinationSquare.at(0)
+              << " Depth-> " << depth << ANSII_END << std::endl;
+
+   return result;
+}
+
+/*
+
+OLD/ORIGINAL CODE!!!!
+
 Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int depth, Color color, int passThresh, int useThresh )
 {  
     if (color == Color::RED)
@@ -259,6 +403,7 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int dep
 
     return result;
 }
+*/
 
 /**
  * Alpha Beta Search

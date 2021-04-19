@@ -3,9 +3,14 @@
 
 #include <vector> 
 #include <string> 
+#include <cstring>
 
 #include "Player.hpp"
 #include "Board.hpp"
+
+#define ANSII_BLUE_TYPE "\033[0;34m"
+#define ANSII_GREEN_START "\033[0;32m"
+
 
 /**
  * Header definition for class Algorithm. 
