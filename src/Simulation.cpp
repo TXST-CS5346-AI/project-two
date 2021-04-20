@@ -93,7 +93,7 @@ void Simulation::runFullSimulation()
 * @param int algorithm - If 1, minimax; if 2, AB Prune
 * @param int evalFunction - 1,2, or 3
 */
-void Simulation::runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct, int playerTwoAlg, int playerTwoEvalFunct)
+void Simulation::runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct, int playerTwoAlg, int playerTwoEvalFunct, int depth)
 {
     std::cout << "\033[0;32mRunning a SINGLE game, specific simulation!\033[0m" << std::endl;
 
@@ -104,6 +104,40 @@ void Simulation::runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct,
     // Validate evaluation function selections
     if ((playerOneEvalFunct < 0 || playerOneEvalFunct > 3) && (playerTwoEvalFunct < 0 || playerTwoEvalFunct > 3))
         throw std::runtime_error("Error: evalFunction may only be 1, 2, or 3!");
+    
+    // Validate depth
+    if (depth <= 0 || depth > 10)
+        throw std::runtime_error("Error: depth must be > 0 and <= 10. ");
+
+    Game *game = new Game(playerOneAlg, playerOneEvalFunct, playerTwoAlg, playerTwoEvalFunct, depth);
+    Game::GameOver endGameStatus = game->startGame();
+
+    if (endGameStatus == Game::GameOver::BLACK_WINS)
+    {
+        std::cout << "\nBLACK WINS!!!" << std::endl; 
+        std::cout << "BLACK Player: ᕙ(⇀‸↼‶)ᕗ" << std::endl;
+        std::cout << "But most importantly, RED looooses (boooo!)" << std::endl;
+        std::cout << "RED Player: (╯°□°）╯︵ ┻━┻" << std::endl;
+    }
+    else if (endGameStatus == Game::GameOver::RED_WINS)
+    {
+        std::cout << "\nRED WINS!!!" << std::endl; 
+        std::cout << "RED Player: ᕙ(⇀‸↼‶)ᕗ" << std::endl;
+        std::cout << "But most importantly, BLACK looooses (boooo!)" << std::endl;
+        std::cout << "BLACK Player: (╯°□°）╯︵ ┻━┻" << std::endl; 
+    }
+    else if (endGameStatus == Game::GameOver::DRAW)
+    {
+        std::cout << "DRAW!!!" << std::endl;
+        std::cout << "Red - (ง •̀_•́)ง   ლ( `Д’ ლ) - Black" << std::endl;
+        std::cout << "Mission FAILED...We'll get em next time!" << std::endl; 
+    }
+    else 
+        std::cout << "Oops, something went wrong!" << std::endl;
+
+    // TODO: print game status, num nodes generated, time it took, etc. 
+
+    delete game; 
 }
 
 /*

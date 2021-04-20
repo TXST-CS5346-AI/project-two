@@ -1,6 +1,8 @@
 #include "Player.hpp"
 #include "Algorithm.hpp"
 
+#include <iostream>
+
 Player::Player()
 {
 
@@ -28,7 +30,8 @@ int Player::takeTurn(Board &state)
 	
 	if (isMinimax)
 	{
-		result = algorithm->minimax_a_b(state, this->depth, *this);
+        Board::Move move; // empty move for init call to minimax
+		result = algorithm->minimax_a_b( state, move, this->depth, this->color, 9000000, -8000000 );
 	} else {
 		result = algorithm->alphaBetaSearch(state);
 	}
@@ -38,8 +41,10 @@ int Player::takeTurn(Board &state)
 		didPlayerMove = false; // Player did not make a turn
 	} else {
         state = state.updateBoard(result.bestMove, this->color); 
+        printMove(result.bestMove, this->color);
         numTurnsTaken++; // incremente Player's own turn counter 
         didPlayerMove = true; // return true as player did make a turn 
+        state.printBoard(); 
     }
 
     // return how many pieces the player took during their turn
@@ -79,4 +84,18 @@ void Player::decreaseNumPieces(int numPiecesToDecreaseCount)
 void Player::increaseNumPiecesTaken(int numPiecesToIncreaseScore)
 {
     numPiecesTaken += numPiecesToIncreaseScore;
+}
+
+void Player::printMove(Board::Move move, Color color)
+{
+    std::string colorStr; 
+    if (color == Color::BLACK)
+        colorStr = "Black";
+    else 
+        colorStr = "Red";
+
+    std::cout << colorStr << " moves from " << move.startSquare << " to destination (in sequence): "; 
+    for (int i = 0; i < move.destinationSquare.size(); i++)
+            std::cout << "dest: " << move.destinationSquare.at(i) << std::endl;
+
 }
