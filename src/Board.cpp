@@ -174,6 +174,7 @@ std::vector<Board::Move> Board::getJumpsForPiece(Color color, int piece, Pieces*
 
 	Board board;
 
+	bool wasKingPriorMove = false;
 
 	if (color == Color::RED)
 	{
@@ -188,20 +189,20 @@ std::vector<Board::Move> Board::getJumpsForPiece(Color color, int piece, Pieces*
 	// In order to start the recursion, this is needed.
 	Move move;
 	move.startSquare = piece;
+	wasKingPriorMove = board.getPlayerPieces(color).isKing(move.startSquare);
 
-	getJumpsForPieceRec(color, move, finalMoves, board);
+	getJumpsForPieceRec(color, move, finalMoves, board, wasKingPriorMove);
 
 	return finalMoves;
 }
 
-void Board::getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board::Move>& totalMovesAccumulator,  Board board)
+void Board::getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board::Move>& totalMovesAccumulator,  Board board, bool wasKingPriorMove)
 {
 
 	int piece;
 
 	bool endOfJumpChain = true;
 
-	bool wasKingPriorMove = board.getPlayerPieces(color).isKing(move.startSquare);
 	bool isKing = false;
 
 	int bitOffset = 0;
@@ -262,7 +263,7 @@ void Board::getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board
 						move.removalSquare.push_back(squareJumped + 1);
 
 						//make recursive call here?
-						getJumpsForPieceRec(color, move, totalMovesAccumulator, board);
+						getJumpsForPieceRec(color, move, totalMovesAccumulator, board, wasKingPriorMove);
 						// Remove the jump we just added to the chain. We've already made the recursive call
 						move.destinationSquare.pop_back();
 						move.removalSquare.pop_back();
@@ -469,7 +470,7 @@ Board Board::updateBoard(Move move, Color color)
 
 	// Position in final destination spot - probably check if it needs to be kinged here.
 	// Do this first since you will need to clear the king flag. 
-	playerPieces->pieces = playerPieces->pieces | (1ULL << (move.destinationSquare.back() - 1));
+	playerPieces->pieces = playerPieces->pieces | (1LL << (move.destinationSquare.back() - 1));
 	if (playerPieces->isKing(move.startSquare))
 	{
 		playerPieces->setKing(move.destinationSquare.back(), true);
@@ -485,13 +486,13 @@ Board Board::updateBoard(Move move, Color color)
 	}
 
 	// Remove start pos
-	playerPieces->pieces = playerPieces->pieces & ~(1 << (move.startSquare - 1));
+	playerPieces->pieces = playerPieces->pieces & ~(1LL << (move.startSquare - 1));
 	
 	// Remove all jumped spots and set them back to not a king.
 	for (int jumpedSpaceIter = 0; jumpedSpaceIter < move.removalSquare.size(); jumpedSpaceIter++)
 	{
-		opponentPieces->pieces = opponentPieces->pieces & ~(1ULL << (move.removalSquare.at(jumpedSpaceIter) - 1));
-		opponentPieces->pieces = opponentPieces->pieces & ~(1ULL << (move.removalSquare.at(jumpedSpaceIter) + 31));
+		opponentPieces->pieces = opponentPieces->pieces & ~(1LL << (move.removalSquare.at(jumpedSpaceIter) - 1));
+		opponentPieces->pieces = opponentPieces->pieces & ~(1LL << (move.removalSquare.at(jumpedSpaceIter) + 31));
 	}
 
 	return updatedBoard;
