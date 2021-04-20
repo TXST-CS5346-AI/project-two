@@ -7,11 +7,6 @@
 
 #include "Pieces.hpp"
 
-// ANSII codes for colored text, to improve UI and readability
-#define ANSII_BLUE_START "\033[0;30;46m"
-#define ANSII_RED_START "\033[9;37;41m"
-#define ANSII_END "\033[0m"
-
 
 /**
  * Header definition for class Board. 
@@ -56,7 +51,7 @@ public:
 	int squareToRow(int square) const;
 	int squareToColumn(int square) const;
 
-	std::vector<Move> getJumpsForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces);
+	std::vector<Move> getJumpsForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces); 
 	std::vector<Move> getMovesForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces);
 
 	Pieces getPlayerPieces(Color color);
@@ -69,7 +64,7 @@ private:
 
 	static BoardMoveTable boardMoveTable[33];
 	void printHelperBoardRow(int row);
-	void getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board::Move>& totalMoves, Board board);
+	void getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board::Move>& totalMoves, Board board, bool wasKingPriorMove);
 
 };
 

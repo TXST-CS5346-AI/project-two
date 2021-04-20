@@ -19,6 +19,18 @@
  * A jump may be continuous - the piece must continue capturing enemy pieces if more are available for capture. 
  */
 
+// ANSII codes for colored text, to improve UI and readability
+#define ANSII_BLUE_START "\033[0;30;46m"
+#define ANSII_RED_START "\033[0;31m"
+#define ANSII_RED_HIGH "\033[9;37;41m"
+#define ANSII_END "\033[0m"
+#define ANSII_GREEN_START "\033[0;32m"
+#define ANSII_BLUE_COUT "\033[44;1m"
+#define ANSII_RED_COUT "\033[41;1m"
+#define ANSII_GREEN_COUT "\033[42;1m"
+#define ANSII_YELLOW_COUT "\033[30;48;5;3m"
+
+
 enum class Color { RED = 1, BLACK = -1 };
 
 class Pieces 
