@@ -24,7 +24,7 @@ Game::GameOver Game::startGame()
 
     while (true)
     {
-        std::cout << "Black's Turn..." << std::endl;
+        std::cout << "Turn " << blackPlayer.getNumTurns() + 1  << " Black's Turn..." << std::endl;
 
         piecesTaken = blackPlayer.takeTurn(state);
         blackPlayer.increaseNumPiecesTaken(piecesTaken);
@@ -33,7 +33,7 @@ Game::GameOver Game::startGame()
         if (doesBlackWin())
             return GameOver::BLACK_WINS;
 
-        std::cout << "Red's Turn..." << std::endl;
+        std::cout << "Turn " << redPlayer.getNumTurns() + 1 << " Red's Turn..." << std::endl;
 
         piecesTaken = redPlayer.takeTurn(state);
         redPlayer.increaseNumPiecesTaken(piecesTaken);

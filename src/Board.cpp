@@ -381,11 +381,11 @@ void Board::printBoard() const
 			{
 				if (redPieces.isKing(squareOffset + 1))
 				{
-					std::cout << ANSII_RED_START << " R " << ANSII_END << "|";
+					std::cout << ANSII_RED_HIGH << " R " << ANSII_END << "|";
 				}
 				else
 				{
-					std::cout << ANSII_RED_START << " r "<< ANSII_END << "|";
+					std::cout << ANSII_RED_HIGH << " r "<< ANSII_END << "|";
 				}
 			}
 			else if (((blackPieces.pieces >> squareOffset) & 1) == 1)
