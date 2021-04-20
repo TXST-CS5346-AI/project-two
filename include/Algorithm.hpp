@@ -3,13 +3,16 @@
 
 #include <vector> 
 #include <string> 
-#include <cstring>
 
 #include "Player.hpp"
 #include "Board.hpp"
 
-#define ANSII_BLUE_TYPE "\033[0;34m"
-#define ANSII_GREEN_START "\033[0;32m"
+// ANSII codes for colored text, to improve UI and readability
+
+#define ANSII_BLUE_COUT "\033[44;1m"
+#define ANSII_RED_COUT "\033[41;1m"
+#define ANSII_GREEN_COUT "\033[42;1m"
+#define ANSII_YELLOW_COUT "\033[30;48;5;3m"
 
 
 /**

@@ -174,7 +174,6 @@ std::vector<Board::Move> Board::getJumpsForPiece(Color color, int piece, Pieces*
 
 	Board board;
 
-	bool wasKingPriorMove = false;
 
 	if (color == Color::RED)
 	{
@@ -189,20 +188,20 @@ std::vector<Board::Move> Board::getJumpsForPiece(Color color, int piece, Pieces*
 	// In order to start the recursion, this is needed.
 	Move move;
 	move.startSquare = piece;
-	wasKingPriorMove = board.getPlayerPieces(color).isKing(move.startSquare);
 
-	getJumpsForPieceRec(color, move, finalMoves, board, wasKingPriorMove);
+	getJumpsForPieceRec(color, move, finalMoves, board);
 
 	return finalMoves;
 }
 
-void Board::getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board::Move>& totalMovesAccumulator,  Board board, bool wasKingPriorMove)
+void Board::getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board::Move>& totalMovesAccumulator,  Board board)
 {
 
 	int piece;
 
 	bool endOfJumpChain = true;
 
+	bool wasKingPriorMove = board.getPlayerPieces(color).isKing(move.startSquare);
 	bool isKing = false;
 
 	int bitOffset = 0;
@@ -263,7 +262,7 @@ void Board::getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board
 						move.removalSquare.push_back(squareJumped + 1);
 
 						//make recursive call here?
-						getJumpsForPieceRec(color, move, totalMovesAccumulator, board, wasKingPriorMove);
+						getJumpsForPieceRec(color, move, totalMovesAccumulator, board);
 						// Remove the jump we just added to the chain. We've already made the recursive call
 						move.destinationSquare.pop_back();
 						move.removalSquare.pop_back();

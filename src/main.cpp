@@ -25,6 +25,7 @@
 #define ANSII_BLUE_START "\033[0;30;46m"
 #define ANSII_RED_START "\033[0;31m"
 #define ANSII_END "\033[0m"
+#define ANSII_GREEN_START "\033[0;32m"
 
 // helper functions to make main() more readable and conscise
 void printWelcomeMsg();
@@ -79,7 +80,7 @@ int main(int argc, char *argv[])
  */
 void printWelcomeMsg()
 {
-    std::cout << "Welcome to the Checkers AI Program." << std::endl;
+    std::cout << ANSII_GREEN_START << "Welcome to the Checkers AI Program." << ANSII_END << std::endl;
     std::cout << "Authors: " << ANSII_RED_START << " David Torrente (dat54@txstate.edu), Randall Henderson (rrh93@txstate.edu), "
               << "Borislav Sabotinov (bss64@txstate.edu)." << ANSII_END << std::endl;
     std::cout << "Re-run this program with -h or -help CLI argument to see a help menu or refer to README for instructions."
