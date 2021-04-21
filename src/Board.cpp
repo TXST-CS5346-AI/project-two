@@ -262,7 +262,7 @@ void Board::getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board
 						move.destinationSquare.push_back(bitOffset + 1);
 						move.removalSquare.push_back(squareJumped + 1);
 
-						//make recursive call here?
+						//make recursive call here
 						getJumpsForPieceRec(color, move, totalMovesAccumulator, board, wasKingPriorMove);
 						// Remove the jump we just added to the chain. We've already made the recursive call
 						move.destinationSquare.pop_back();
@@ -330,25 +330,7 @@ std::vector<Board::Move> Board::getMovesForPiece(Color color, int piece, Pieces*
 	return moves;
 }
 
-int Board::squareToRow(int square) const
-{
-	return  (square / 4) + 1;
-}
 
-int Board::squareToColumn(int square) const
-{
-	int column;
-	column = square % 4;
-
-	// Need to make 0 actually come after 3,
-	// so just set it to 4 (the last column)
-	if (0 == column)
-	{
-		column = 4;
-	}
-
-	return column;
-}
 
 void Board::printBoard() const
 {
@@ -434,13 +416,39 @@ void Board::printBoard() const
 
 		}
 
-		
-
 		// Toggle between even and odd rows for the offset.
 		oddRow = !oddRow;
 		std::cout << std::endl;
 	}
 
+}
+
+
+int Board::getPieceInSquare(int position, Color color)
+{
+	int pieceType = 0;
+	Pieces playerPieces;
+
+	if (Color::RED == color)
+	{
+		playerPieces = redPieces;
+	}
+	else
+	{
+		playerPieces = blackPieces;
+	}
+	
+	if (((playerPieces.pieces >> (position -1)) & 1) == 1)
+	{
+		pieceType = 1;
+		
+		if (playerPieces.isKing(position))
+		{
+			pieceType = 2;
+		}
+	}
+	
+	return pieceType;
 }
 
 
@@ -496,11 +504,6 @@ Board Board::updateBoard(Move move, Color color)
 	}
 
 	return updatedBoard;
-}
-
-void Board::printHelperBoardRow(int row)
-{
-
 }
 
 void Board::InitializeMoveTable()
