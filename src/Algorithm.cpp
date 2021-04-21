@@ -453,11 +453,10 @@ Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, 
     {
         std::cout << "At terminal state!" << std::endl; 
         result.value = std::numeric_limits<int>::max();
-        //result.value = 1; 
         result.bestMove = move; 
         return result; 
     } 
-    else if (depth <= 0) 
+    else if (deepEnough(depth)) 
     {
         std::cout << "at depth" << std::endl; 
         result.value = staticEval(state, color, this->evalVersion);
@@ -477,8 +476,6 @@ Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, 
 
         Board tmpState = state.updateBoard(listOfActions.at(actionIndex), color);
         Algorithm::Result tmpResult = minValue(tmpState, listOfActions.at(actionIndex), depth - 1, alpha, beta, switchPlayerColor(color));
-        
-        //result.value = std::max(result.value, tmpResult.value);
 
         if (result.value > tmpResult.value)
         {
@@ -497,7 +494,6 @@ Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, 
     }
 
     std::cout << "alpha: " << alpha << " beta: " << beta << " val: " << result.value << " move start: " << result.bestMove.startSquare << std::endl;
-
     for (int i = 0; i < result.bestMove.destinationSquare.size(); i++)
         std::cout << "dest: " << result.bestMove.destinationSquare.at(i) << std::endl;
 
