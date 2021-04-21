@@ -1,6 +1,8 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
 
+#include "Board.hpp"
+
 /**
  * Header definition for class Simulation. 
  * @author Borislav Sabotinov
@@ -81,6 +83,9 @@ public:
 
     // public method for player vs AI simulation
     void runPlayerVsAISimulation(int playerAlg, int playerEvalFunct, int depth); 
+
+    // helper function to determine winner and break out of game loop
+    static bool didSomeoneWin(Board board);
     
     // returns a count of the number of games played in a simulation
     // each of the 3 run functions. 
@@ -89,6 +94,11 @@ public:
     // creates a table with results for analysis. 
     // how many nodes were created, etc. 
     void generateAnalysisResults(); 
+
+    // helper print methods
+    static void printBlackWins(); 
+    static void printRedWins(); 
+    static void printDraw(); 
 
 };
 

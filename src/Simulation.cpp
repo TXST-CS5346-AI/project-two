@@ -113,25 +113,11 @@ void Simulation::runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct,
     Game::GameOver endGameStatus = game->startGame();
 
     if (endGameStatus == Game::GameOver::BLACK_WINS)
-    {
-        std::cout << "\nBLACK WINS!!!" << std::endl; 
-        std::cout << "BLACK Player: ᕙ(-_-')ᕗ" << std::endl;
-        std::cout << "But most importantly, RED looooses (boooo!)" << std::endl;
-        std::cout << "RED Player: (╯°□°）╯︵ ┻━┻" << std::endl;
-    }
+        printBlackWins(); 
     else if (endGameStatus == Game::GameOver::RED_WINS)
-    {
-        std::cout << "\nRED WINS!!!" << std::endl; 
-        std::cout << "RED Player: ᕙ(-_-')ᕗ" << std::endl;
-        std::cout << "But most importantly, BLACK looooses (boooo!)" << std::endl;
-        std::cout << "BLACK Player: (╯°□°）╯ ︵ ┻━┻" << std::endl; 
-    }
+        printRedWins(); 
     else if (endGameStatus == Game::GameOver::DRAW)
-    {
-        std::cout << "DRAW!!!" << std::endl;
-        std::cout << "Red - (ง •̀_•́)ง   ლ( `Д’ ლ) - Black" << std::endl;
-        std::cout << "Mission FAILED...We'll get em next time!" << std::endl; 
-    }
+        printDraw(); 
     else 
         std::cout << "Oops, something went wrong!" << std::endl;
 
@@ -146,11 +132,106 @@ void Simulation::runPlayerVsAISimulation(int playerAlg, int playerEvalFunct, int
 {
     
     Player computerPlayer = Player(playerAlg, Color::RED, depth, playerEvalFunct); 
+    bool gameOver = false;
+    int moveSelection;
+    Color computerPlayerColor = Color::RED;
+    Color humanPlayerColor = Color::BLACK; 
+    Color currentPlayerColor = humanPlayerColor; 
+    Board board;
+    board.printBoard();
     
-    while (true)
+    while (!gameOver)
     {
+        if (currentPlayerColor == humanPlayerColor) // BLACK
+        {
+            std::vector<Board::Move> blackMoves = board.moveGen(humanPlayerColor);
+            // PRINT OUT BLACK'S MOVES
+            std::cout << "Black's moves (b/B): ";
+            for (int blackMoveIter = 0; blackMoveIter < blackMoves.size(); blackMoveIter++)
+            {
+                std::cout << "<" << blackMoveIter + 1 << "> " << blackMoves.at(blackMoveIter).startSquare;
+                for (int destinationIter = 0; destinationIter < blackMoves.at(blackMoveIter).destinationSquare.size(); destinationIter++)
+                {
+                    std::cout << " to " << blackMoves.at(blackMoveIter).destinationSquare.at(destinationIter);
+                }
+                std::cout << ", ";
+            }
+            std::cout << std::endl;
 
+            // GET HUMAN PLAYER MOVE
+            bool isSelectionValid = false; 
+            while (!isSelectionValid)
+            {
+                std::cout << "Select BLACK (Human) move: ";
+                std::cin >> moveSelection;
+                if (moveSelection > blackMoves.size() || moveSelection < 0) 
+                {
+                    std::cerr << "Out of range; please enter a valid choice!" << std::endl;
+                } else {
+                    board = board.updateBoard(blackMoves.at(moveSelection - 1), Color::BLACK);
+                    currentPlayerColor = computerPlayerColor;  // RED
+                    isSelectionValid = true; 
+                }
+            }
+        }
+        else if (currentPlayerColor == computerPlayerColor) // RED
+        {
+            // AI TAKES TURN AND PRINTS BOARD
+            int numPiecesTakenByAI = computerPlayer.takeTurn(board); 
+            currentPlayerColor = humanPlayerColor;  // BLACK
+        }
+        
+        // CHECK WIN-LOSS CONDITIONS
+        gameOver = didSomeoneWin(board); // if true, game will end
     }
+    board.printBoard(); // print final board after someone wins
+}
+
+/**
+ * didSomeoneWin - returns true if one player won, to break out of game loops
+ * @param Board board
+ */ 
+bool Simulation::didSomeoneWin(Board board)
+{
+    bool isGameOver = false; 
+    std::vector<Board::Move> redMoves = board.moveGen(Color::RED);
+    std::vector<Board::Move> blackMoves = board.moveGen(Color::BLACK); 
+    
+    if (blackMoves.size() == 0)
+    {
+        isGameOver = true; 
+        printRedWins();
+    }       
+    else if (redMoves.size() == 0)
+    {
+        isGameOver = true; 
+        printBlackWins(); 
+    }
+
+    return isGameOver; 
+}
+
+void Simulation::printRedWins()
+{
+    std::cout << "\nRED WINS!!!" << std::endl; 
+    std::cout << "RED Player: ᕙ(-_-')ᕗ" << std::endl;
+    std::cout << "But most importantly, BLACK looooses (boooo!)" << std::endl;
+    std::cout << "BLACK Player: (╯°□°）╯︵ ┻━┻" << std::endl; 
+}
+
+void Simulation::printBlackWins()
+{
+    std::cout << "\nBLACK WINS!!!" << std::endl; 
+    std::cout << "BLACK Player: ᕙ(-_-')ᕗ" << std::endl;
+    std::cout << "But most importantly, RED looooses (boooo!)" << std::endl;
+    std::cout << "RED Player: (╯°□°）╯ ︵ ┻━┻" << std::endl; 
+}
+
+void Simulation::printDraw()
+{
+    std::cout << "DRAW!!!" << std::endl;
+    std::cout << "Red - (ง •̀_•́)ง   ლ( `Д’ ლ) - Black" << std::endl;
+    std::cout << "Mission FAILED...We'll get em next time!" << std::endl; 
 }
 
 /** 

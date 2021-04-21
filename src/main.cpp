@@ -232,35 +232,15 @@ void runManualGame()
     std::vector<Board::Move> redMoves;
     std::vector<Board::Move> blackMoves;
     Board board;
-    board.InitializeMoveTable();
+    board.printBoard(); 
 
     while (!gameOver)
     {
-        board.printBoard();
-        redMoves = board.moveGen(Color::RED);
-        blackMoves = board.moveGen(Color::BLACK);
-
-        if (blackMoves.size() == 0)
-        {
-            gameOver = true; 
-            std::cout << "\nRED WINS!!!" << std::endl; 
-            std::cout << "RED Player: ᕙ(-_-')ᕗ" << std::endl;
-            std::cout << "But most importantly, BLACK looooses (boooo!)" << std::endl;
-            std::cout << "BLACK Player: (╯°□°）╯︵ ┻━┻" << std::endl; 
-
-            break; 
-        } 
-        else if (redMoves.size() == 0)
-        {
-            gameOver = true; 
-            std::cout << "\nBLACK WINS!!!" << std::endl; 
-            std::cout << "BLACK Player: ᕙ(-_-')ᕗ" << std::endl;
-            std::cout << "But most importantly, RED looooses (boooo!)" << std::endl;
-            std::cout << "RED Player: (╯°□°）╯ ︵ ┻━┻" << std::endl; 
-            break; 
-        }
-
+        std::vector<Board::Move> redMoves = board.moveGen(Color::RED);
+        std::vector<Board::Move> blackMoves = board.moveGen(Color::BLACK); 
+        std::cout << std::endl;
         std::cout << "Red(X) moves: ";
+        
         for (int redMoveIter = 0; redMoveIter < redMoves.size(); redMoveIter++)
         {
             std::cout << "<" << redMoveIter + 1 << "> " << redMoves.at(redMoveIter).startSquare;
@@ -318,6 +298,9 @@ void runManualGame()
                 }
             }
         }
+
+        board.printBoard();
+        gameOver = Simulation::didSomeoneWin(board);
     }
 }
 
