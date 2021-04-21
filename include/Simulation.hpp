@@ -2,6 +2,7 @@
 #define SIMULATION_H
 
 #include "Board.hpp"
+#include "Game.hpp"
 
 /**
  * Header definition for class Simulation. 
@@ -70,6 +71,9 @@ private:
    
     // runs only games using AB Prune algorithm
     void runABPruneOnly();
+
+    void printGameResults(Game::GameOver endGameStatus);
+    void printGameConfig(int redPlayerAlg, int redPlayerEvalFunct, int blackPlayerAlg, int blackPlayerEvalFunct, int depth); 
 
 public: 
     Simulation(); // constructor

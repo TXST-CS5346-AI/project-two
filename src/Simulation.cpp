@@ -1,5 +1,4 @@
 #include "Simulation.hpp"
-#include "Game.hpp"
 
 #include <iostream>
 #include <stdexcept>
@@ -78,9 +77,10 @@ void Simulation::runFullSimulation()
                         Game *game = new Game(p1_alg, p1_eval, p2_alg, p2_eval, 4);
                         Game::GameOver endGameStatus = game->startGame();
 
-                        // TODO: print game status, num nodes generated, time it took, etc. 
+                        printGameResults(endGameStatus);
+                        printGameConfig(p1_alg, p1_eval, p2_alg, p2_eval, depth);
 
-                        delete game; 
+                        delete game;
 
                     } // p2_eval
                 }     // p1_eval
@@ -90,56 +90,71 @@ void Simulation::runFullSimulation()
 }
 
 /**
-* @param int algorithm - If 1, minimax; if 2, AB Prune
-* @param int evalFunction - 1,2, or 3
-*/
-void Simulation::runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct, int playerTwoAlg, int playerTwoEvalFunct, int depth)
+ * Player one is red, player two is black
+ * @param int algorithm - If 1, minimax; if 2, AB Prune
+ * @param int evalFunction - 1,2, or 3
+ */
+void Simulation::runSpecificSimulation(int redPlayerAlg, int redPlayerEvalFunct, int blackPlayerAlg, int blackPlayerEvalFunct, int depth)
 {
     std::cout << Pieces::ANSII_GREEN_START << "Running a SINGLE game, specific simulation!" << Pieces::ANSII_END << std::endl;
 
     // Validate algorithm selections
-    if ((playerOneAlg < 0 || playerOneAlg > 3) && (playerTwoAlg < 0 || playerTwoAlg > 3))
+    if ((redPlayerAlg < 0 || redPlayerAlg > 3) && (blackPlayerAlg < 0 || blackPlayerAlg > 3))
         throw std::runtime_error("Error: algorithm may only be 1 (minimax-a-b) or 2 (ab-prune)!");
 
     // Validate evaluation function selections
-    if ((playerOneEvalFunct < 0 || playerOneEvalFunct > 4) && (playerTwoEvalFunct < 0 || playerTwoEvalFunct > 4))
+    if ((redPlayerEvalFunct < 0 || redPlayerEvalFunct > 4) && (redPlayerEvalFunct < 0 || redPlayerEvalFunct > 4))
         throw std::runtime_error("Error: evalFunction may only be 1, 2, 3, or 4!");
-    
+
     // Validate depth
     if (depth <= 0 || depth > 15)
         throw std::runtime_error("Error: depth must be > 0 and <= 15. ");
 
-    Game *game = new Game(playerOneAlg, playerOneEvalFunct, playerTwoAlg, playerTwoEvalFunct, depth);
+    Game *game = new Game(redPlayerAlg, redPlayerEvalFunct, blackPlayerAlg, blackPlayerEvalFunct, depth);
     Game::GameOver endGameStatus = game->startGame();
 
-    if (endGameStatus == Game::GameOver::BLACK_WINS)
-        printBlackWins(); 
-    else if (endGameStatus == Game::GameOver::RED_WINS)
-        printRedWins(); 
-    else if (endGameStatus == Game::GameOver::DRAW)
-        printDraw(); 
-    else 
-        std::cout << "Oops, something went wrong!" << std::endl;
+    printGameResults(endGameStatus);
+    printGameConfig(redPlayerAlg, redPlayerEvalFunct, blackPlayerAlg, blackPlayerEvalFunct, depth);
 
-    delete game; 
+    delete game;
+}
+
+void Simulation::printGameResults(Game::GameOver endGameStatus)
+{
+    if (endGameStatus == Game::GameOver::BLACK_WINS)
+        printBlackWins();
+    else if (endGameStatus == Game::GameOver::RED_WINS)
+        printRedWins();
+    else if (endGameStatus == Game::GameOver::DRAW)
+        printDraw();
+    else
+        std::cout << "Oops, something went wrong!" << std::endl;
+}
+
+void Simulation::printGameConfig(int redPlayerAlg, int redPlayerEvalFunct, int blackPlayerAlg, int blackPlayerEvalFunct, int depth)
+{
+    std::string algs[2] = {"Alpha-Beta-Search", "Minimax-Alpha-Beta"};
+    std::cout << "Red player alg: " << algs[redPlayerAlg] << ", eval: " << redPlayerEvalFunct << std::endl;
+    std::cout << "Black player alg: " << algs[blackPlayerAlg] << ", eval: " << blackPlayerEvalFunct << std::endl;
+    std::cout << "Depth: " << depth << std::endl;
 }
 
 /**
  * runPlayerVsAISimulation - play a game with a human against a computer player
  * 
- */ 
-void Simulation::runPlayerVsAISimulation(int playerAlg, int playerEvalFunct, int depth) 
+ */
+void Simulation::runPlayerVsAISimulation(int playerAlg, int playerEvalFunct, int depth)
 {
-    
-    Player computerPlayer = Player(playerAlg, Color::RED, depth, playerEvalFunct); 
+
+    Player computerPlayer = Player(playerAlg, Color::RED, depth, playerEvalFunct);
     bool gameOver = false;
     int moveSelection;
     Color computerPlayerColor = Color::RED;
-    Color humanPlayerColor = Color::BLACK; 
-    Color currentPlayerColor = humanPlayerColor; 
+    Color humanPlayerColor = Color::BLACK;
+    Color currentPlayerColor = humanPlayerColor;
     Board board;
     board.printBoard();
-    
+
     while (!gameOver)
     {
         if (currentPlayerColor == humanPlayerColor) // BLACK
@@ -159,28 +174,30 @@ void Simulation::runPlayerVsAISimulation(int playerAlg, int playerEvalFunct, int
             std::cout << std::endl;
 
             // GET HUMAN PLAYER MOVE
-            bool isSelectionValid = false; 
+            bool isSelectionValid = false;
             while (!isSelectionValid)
             {
                 std::cout << "Select BLACK (Human) move: ";
                 std::cin >> moveSelection;
-                if (moveSelection > blackMoves.size() || moveSelection < 0) 
+                if (moveSelection > blackMoves.size() || moveSelection < 0)
                 {
                     std::cerr << "Out of range; please enter a valid choice!" << std::endl;
-                } else {
+                }
+                else
+                {
                     board = board.updateBoard(blackMoves.at(moveSelection - 1), Color::BLACK);
-                    currentPlayerColor = computerPlayerColor;  // RED
-                    isSelectionValid = true; 
+                    currentPlayerColor = computerPlayerColor; // RED
+                    isSelectionValid = true;
                 }
             }
         }
         else if (currentPlayerColor == computerPlayerColor) // RED
         {
             // AI TAKES TURN AND PRINTS BOARD
-            int numPiecesTakenByAI = computerPlayer.takeTurn(board); 
-            currentPlayerColor = humanPlayerColor;  // BLACK
+            int numPiecesTakenByAI = computerPlayer.takeTurn(board);
+            currentPlayerColor = humanPlayerColor; // BLACK
         }
-        
+
         // CHECK WIN-LOSS CONDITIONS
         gameOver = didSomeoneWin(board); // if true, game will end
     }
@@ -190,48 +207,48 @@ void Simulation::runPlayerVsAISimulation(int playerAlg, int playerEvalFunct, int
 /**
  * didSomeoneWin - returns true if one player won, to break out of game loops
  * @param Board board
- */ 
+ */
 bool Simulation::didSomeoneWin(Board board)
 {
-    bool isGameOver = false; 
+    bool isGameOver = false;
     std::vector<Board::Move> redMoves = board.moveGen(Color::RED);
-    std::vector<Board::Move> blackMoves = board.moveGen(Color::BLACK); 
-    
+    std::vector<Board::Move> blackMoves = board.moveGen(Color::BLACK);
+
     if (blackMoves.size() == 0)
     {
-        isGameOver = true; 
+        isGameOver = true;
         printRedWins();
-    }       
+    }
     else if (redMoves.size() == 0)
     {
-        isGameOver = true; 
-        printBlackWins(); 
+        isGameOver = true;
+        printBlackWins();
     }
 
-    return isGameOver; 
+    return isGameOver;
 }
 
 void Simulation::printRedWins()
 {
-    std::cout << "\nRED WINS!!!" << std::endl; 
+    std::cout << "\nRED WINS!!!" << std::endl;
     std::cout << "RED Player: ᕙ(-_-')ᕗ" << std::endl;
     std::cout << "But most importantly, BLACK looooses (boooo!)" << std::endl;
-    std::cout << "BLACK Player: (╯°□°）╯︵ ┻━┻" << std::endl; 
+    std::cout << "BLACK Player: (╯°□°）╯︵ ┻━┻" << std::endl;
 }
 
 void Simulation::printBlackWins()
 {
-    std::cout << "\nBLACK WINS!!!" << std::endl; 
+    std::cout << "\nBLACK WINS!!!" << std::endl;
     std::cout << "BLACK Player: ᕙ(-_-')ᕗ" << std::endl;
     std::cout << "But most importantly, RED looooses (boooo!)" << std::endl;
-    std::cout << "RED Player: (╯°□°）╯ ︵ ┻━┻" << std::endl; 
+    std::cout << "RED Player: (╯°□°）╯ ︵ ┻━┻" << std::endl;
 }
 
 void Simulation::printDraw()
 {
     std::cout << "DRAW!!!" << std::endl;
     std::cout << "Red - (ง •̀_•́)ง   ლ( `Д’ ლ) - Black" << std::endl;
-    std::cout << "Mission FAILED...We'll get em next time!" << std::endl; 
+    std::cout << "Mission FAILED...We'll get em next time!" << std::endl;
 }
 
 /** 
@@ -245,7 +262,7 @@ int Simulation::getNumGamesPlayed()
 
 /**
  * generateAnalsysisResults creates a table with results for analysis how many nodes were created, etc.
- */ 
+ */
 void Simulation::generateAnalysisResults()
 {
 }
