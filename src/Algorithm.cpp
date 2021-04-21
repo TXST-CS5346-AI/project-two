@@ -79,9 +79,9 @@ int Algorithm::evalFunctTwo(Board state, Color color)
 
     if (color == Color::RED)
     {
-        playerColor = ANSII_RED_START;
+        playerColor = Pieces::ANSII_RED_START;
         playerColor.append("RED ");
-        playerColor.append(ANSII_END);
+        playerColor.append(Pieces::ANSII_END);
     }
     else
         playerColor = "BLACK ";
@@ -115,14 +115,14 @@ int Algorithm::evalFunctTwo(Board state, Color color)
                                   2, 3, 3, 2,
                                   1, 1, 1, 1 };
 
-    std::cout << indentValue << ANSII_GREEN_COUT << " Evaluating Current Player:  Pieces-> " << ANSII_END
+    std::cout << indentValue << Pieces::ANSII_GREEN_COUT << " Evaluating Current Player:  Pieces-> " << Pieces::ANSII_END
               << numPieces << " Kings-> "
               << numKingsScore << " Opponent Pieces-> " << numOponentPieces  << " Kings-> "
               << numOponentKingsScore << " total pieces-> " << totalPieces << std::endl;
 
     if ( state.getNumPlayerTotalPieces(color) == 0 )
     {
-        std::cout << indentValue << ANSII_RED_COUT << "TERMINAL STATE!! Returning -> " << ANSII_END << std::endl;
+        std::cout << indentValue << Pieces::ANSII_RED_COUT << "TERMINAL STATE!! Returning -> " << Pieces::ANSII_END << std::endl;
         return 777775;
     }
 
@@ -153,11 +153,11 @@ int Algorithm::evalFunctTwo(Board state, Color color)
 
     moveScore = preservePieces + takePieces * endGameAdjust + boardValue + positionAdder;
 
-    std::cout << indentValue << ANSII_GREEN_COUT << " Evaluated Move:  moveScore-> " << ANSII_END
+    std::cout << indentValue << Pieces::ANSII_GREEN_COUT << " Evaluated Move:  moveScore-> " << Pieces::ANSII_END
               << moveScore << " preservePieces-> " << preservePieces << " takePieces -> "
               << takePieces * endGameAdjust << " PositionAdder-> " << positionAdder << std::endl;
 
-    std::cout << indentValue << ANSII_YELLOW_COUT << " Checking opponent's Board " << ANSII_END  << std::endl;
+    std::cout << indentValue << Pieces::ANSII_YELLOW_COUT << " Checking opponent's Board " << Pieces::ANSII_END  << std::endl;
 
     return moveScore; //  Preserve pieces on the board,  this should make moves that loses a piece unfavorable
 }
@@ -267,7 +267,7 @@ int Algorithm::staticEval(Board state, Color color, int evalVersion)
         break;
     default: {
         scoreOfGoodness = 1;  // default and debug value.  Player takes first option everytime
-        std::cout << ANSII_GREEN_COUT << " TEST/DEBUG EVALUATION BRANCH RETURN VALUE = 1 " << ANSII_END << std::endl;
+        std::cout << Pieces::ANSII_GREEN_COUT << " TEST/DEBUG EVALUATION BRANCH RETURN VALUE = 1 " << Pieces::ANSII_END << std::endl;
         //throw std::runtime_error("Error: eval function # may only be 1, 2, or 3!");
     }
     }
@@ -312,9 +312,9 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int dep
 
     if (color == Color::RED)
     {
-        playerColor = ANSII_RED_START;
-        playerColor.append("RED   ");
-        playerColor.append(ANSII_END);
+        playerColor = Pieces::ANSII_RED_START;
+        playerColor.append("RED ");
+        playerColor.append(Pieces::ANSII_END);
     }
 
     else
@@ -334,10 +334,10 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int dep
         result.value = staticEval(state, color, evalVersion);
         result.bestMove = move;
 
-        std::cout << indentValue << ANSII_RED_COUT << "Deep Enough, Move Evaluated.  Returning -> " << result.value
+        std::cout << indentValue << Pieces::ANSII_RED_COUT << "Deep Enough, Move Evaluated.  Returning -> " << result.value
                   << " Move:  Start-> "  << result.bestMove.startSquare << " Move to-> "
                   << result.bestMove.destinationSquare.at(0)
-                  << " Depth-> " << depth << ANSII_END << std::endl;
+                  << " Depth-> " << depth << Pieces::ANSII_END << std::endl;
 
         return result;
     }
@@ -348,7 +348,7 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int dep
     // Loads the list of moves into the vector successors
     std::vector<Board::Move> successors = movegen(state, color);
 
-    std::cout << indentValue << ANSII_GREEN_COUT   << "Available Moves->  " << successors.size() << ANSII_END << std::endl;
+    std::cout << indentValue << Pieces::ANSII_GREEN_COUT   << "Available Moves->  " << successors.size() << Pieces::ANSII_END << std::endl;
 
     // Player has no moves  this is a terminal state
     if (successors.size() == 0)
@@ -358,9 +358,9 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int dep
         result.value = staticEval(state, color, evalVersion);
         result.bestMove = move;
 
-        std::cout << indentValue << ANSII_RED_COUT << "TERMINAL STATE!! Returning -> " << result.value
+        std::cout << indentValue << Pieces::ANSII_RED_COUT << "TERMINAL STATE!! Returning -> " << result.value
                   << " Move:  Start-> " << result.bestMove.startSquare << " Move to-> "
-                  << result.bestMove.destinationSquare.at(0) << " Depth-> " << depth << ANSII_END << std::endl;
+                  << result.bestMove.destinationSquare.at(0) << " Depth-> " << depth << Pieces::ANSII_END << std::endl;
 
         return result;
     }
@@ -374,12 +374,12 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int dep
 
         indentValue.append( ">." );
 
-        std::cout << indentValue << ANSII_BLUE_COUT << "Checking Moves:  Move #-> " << successorIndex + 1
-                  << " Passed in parameters:  " << ANSII_END << "Start-> " << successors.at(successorIndex).startSquare
-                  << " Move to-> " << successors.at(successorIndex).destinationSquare.at(0) << " Depth-> " << depth
-                  << std::endl;
+        std::cout << indentValue << Pieces::ANSII_BLUE_COUT << "Checking Moves:  Move #-> " << successorIndex + 1
+                  << " Passed in parameters:  Start-> " << successors.at(successorIndex).startSquare << " Move to-> "
+                  << successors.at(successorIndex).destinationSquare.at(0) << " Depth-> " << depth
+                  << Pieces::ANSII_END << std::endl;
 
-        std::cout << indentValue << ANSII_BLUE_COUT << "Current Values:  passThresh-> " << ANSII_END
+        std::cout << indentValue << Pieces::ANSII_BLUE_COUT << "Current Values:  passThresh-> " << Pieces::ANSII_END
                   << passThresh << " useThresh-> " << useThresh  << std::endl;
 
         // recursive call
@@ -393,8 +393,8 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int dep
 
         if ( newValue > passThresh )  // Found the Best Move
         {
-            std::cout << indentValue << ANSII_YELLOW_COUT << "New Best Move.  Change PassThresh  Old: " << passThresh
-                      << " to  New: " << newValue << ANSII_END << std::endl;
+            std::cout << indentValue << Pieces::ANSII_YELLOW_COUT << "New Best Move.  Change PassThresh  Old: " << passThresh
+                      << " to  New: " << newValue << Pieces::ANSII_END << std::endl;
 
             passThresh = newValue;
             bestMove = successors.at(successorIndex);
@@ -402,15 +402,15 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int dep
 
         if ( passThresh >= useThresh )  // Best move on the branch.  No need to look anymore
         {
-            std::cout << indentValue << ANSII_YELLOW_COUT << "AB-CUTOFF!!  Best Move on the Branch.  PassThresh -> "
-                      << ANSII_END << passThresh << " Use-> " << useThresh << " Returning " << std::endl;
+            std::cout << indentValue << Pieces::ANSII_YELLOW_COUT << "AB-CUTOFF!!  Best Move on the Branch.  PassThresh -> "
+                      << Pieces::ANSII_END << passThresh << " Use-> " << useThresh << " Returning " << std::endl;
 
             result.value = passThresh;
             result.bestMove = successors.at(successorIndex);
 
-            std::cout << indentValue << ANSII_RED_COUT  << "Returning -> " << result.value << " Move:  Start-> "
+            std::cout << indentValue << Pieces::ANSII_RED_COUT  << "Returning -> " << result.value << " Move:  Start-> "
                       << result.bestMove.startSquare << " Move to-> " << result.bestMove.destinationSquare.at(0)
-                      << " Depth-> " << depth << ANSII_END << std::endl;
+                      << " Depth-> " << depth << Pieces::ANSII_END << std::endl;
 
             return result;
 
@@ -422,9 +422,9 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int dep
         result.bestMove = bestMove;
 
 
-    std::cout << indentValue << ANSII_BLUE_COUT << "Returning -> " << result.value << " Move:  Start-> "
+    std::cout << indentValue << Pieces::ANSII_BLUE_COUT << "Returning -> " << result.value << " Move:  Start-> "
               << result.bestMove.startSquare << " Move to-> " << result.bestMove.destinationSquare.at(0)
-              << " Depth-> " << depth << ANSII_END << std::endl;
+              << " Depth-> " << depth << Pieces::ANSII_END << std::endl;
 
     return result;
 }
@@ -478,11 +478,10 @@ Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, 
     {
         std::cout << "At terminal state!" << std::endl; 
         result.value = std::numeric_limits<int>::max();
-        //result.value = 1; 
         result.bestMove = move; 
         return result; 
     } 
-    else if (depth <= 0) 
+    else if (deepEnough(depth)) 
     {
         std::cout << "at depth" << std::endl; 
         result.value = staticEval(state, color, this->evalVersion);
@@ -503,8 +502,6 @@ Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, 
 
         Board tmpState = state.updateBoard(listOfActions.at(actionIndex), color);
         Algorithm::Result tmpResult = minValue(tmpState, listOfActions.at(actionIndex), depth - 1, alpha, beta, switchPlayerColor(color));
-        
-        //result.value = std::max(result.value, tmpResult.value);
 
         if (result.value > tmpResult.value)
         {
@@ -523,7 +520,6 @@ Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, 
     }
 
     std::cout << "alpha: " << alpha << " beta: " << beta << " val: " << result.value << " move start: " << result.bestMove.startSquare << std::endl;
-
     for (int i = 0; i < result.bestMove.destinationSquare.size(); i++)
         std::cout << "dest: " << result.bestMove.destinationSquare.at(i) << std::endl;
 
