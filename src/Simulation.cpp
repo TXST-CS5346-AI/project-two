@@ -95,19 +95,19 @@ void Simulation::runFullSimulation()
 */
 void Simulation::runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct, int playerTwoAlg, int playerTwoEvalFunct, int depth)
 {
-    std::cout << "\033[0;32mRunning a SINGLE game, specific simulation!\033[0m" << std::endl;
+    std::cout << Pieces::ANSII_GREEN_START << "Running a SINGLE game, specific simulation!" << Pieces::ANSII_END << std::endl;
 
     // Validate algorithm selections
     if ((playerOneAlg < 0 || playerOneAlg > 3) && (playerTwoAlg < 0 || playerTwoAlg > 3))
         throw std::runtime_error("Error: algorithm may only be 1 (minimax-a-b) or 2 (ab-prune)!");
 
     // Validate evaluation function selections
-    if ((playerOneEvalFunct < 0 || playerOneEvalFunct > 3) && (playerTwoEvalFunct < 0 || playerTwoEvalFunct > 3))
-        throw std::runtime_error("Error: evalFunction may only be 1, 2, or 3!");
+    if ((playerOneEvalFunct < 0 || playerOneEvalFunct > 4) && (playerTwoEvalFunct < 0 || playerTwoEvalFunct > 4))
+        throw std::runtime_error("Error: evalFunction may only be 1, 2, 3, or 4!");
     
     // Validate depth
-    if (depth <= 0 || depth > 10)
-        throw std::runtime_error("Error: depth must be > 0 and <= 10. ");
+    if (depth <= 0 || depth > 15)
+        throw std::runtime_error("Error: depth must be > 0 and <= 15. ");
 
     Game *game = new Game(playerOneAlg, playerOneEvalFunct, playerTwoAlg, playerTwoEvalFunct, depth);
     Game::GameOver endGameStatus = game->startGame();
@@ -115,16 +115,16 @@ void Simulation::runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct,
     if (endGameStatus == Game::GameOver::BLACK_WINS)
     {
         std::cout << "\nBLACK WINS!!!" << std::endl; 
-        std::cout << "BLACK Player: ᕙ(⇀‸↼‶)ᕗ" << std::endl;
+        std::cout << "BLACK Player: ᕙ(-_-')ᕗ" << std::endl;
         std::cout << "But most importantly, RED looooses (boooo!)" << std::endl;
         std::cout << "RED Player: (╯°□°）╯︵ ┻━┻" << std::endl;
     }
     else if (endGameStatus == Game::GameOver::RED_WINS)
     {
         std::cout << "\nRED WINS!!!" << std::endl; 
-        std::cout << "RED Player: ᕙ(⇀‸↼‶)ᕗ" << std::endl;
+        std::cout << "RED Player: ᕙ(-_-')ᕗ" << std::endl;
         std::cout << "But most importantly, BLACK looooses (boooo!)" << std::endl;
-        std::cout << "BLACK Player: (╯°□°）╯︵ ┻━┻" << std::endl; 
+        std::cout << "BLACK Player: (╯°□°）╯ ︵ ┻━┻" << std::endl; 
     }
     else if (endGameStatus == Game::GameOver::DRAW)
     {
@@ -135,34 +135,36 @@ void Simulation::runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct,
     else 
         std::cout << "Oops, something went wrong!" << std::endl;
 
-    // TODO: print game status, num nodes generated, time it took, etc. 
-
     delete game; 
 }
 
-/*
-* Runs only games using Minimax algorithm
-*/
-void Simulation::runMinimaxOnly()
+/**
+ * runPlayerVsAISimulation - play a game with a human against a computer player
+ * 
+ */ 
+void Simulation::runPlayerVsAISimulation(int playerAlg, int playerEvalFunct, int depth) 
 {
+    
+    Player computerPlayer = Player(playerAlg, Color::RED, depth, playerEvalFunct); 
+    
+    while (true)
+    {
+
+    }
 }
 
-/* 
-* Runs only games using AB Prune algorithm
-*/
-void Simulation::runABPruneOnly()
-{
-}
-
-// returns a count of the number of games played in a simulation
-// each of the 3 run functions.
+/** 
+ * getNumGamesPlayed - returns a count of the number of games played in a simulation
+ *
+ */
 int Simulation::getNumGamesPlayed()
 {
     return 0;
 }
 
-// creates a table with results for analysis.
-// how many nodes were created, etc.
+/**
+ * generateAnalsysisResults creates a table with results for analysis how many nodes were created, etc.
+ */ 
 void Simulation::generateAnalysisResults()
 {
 }

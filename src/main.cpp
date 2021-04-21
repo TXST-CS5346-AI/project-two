@@ -28,6 +28,7 @@ void printWelcomeMsg();
 void printHelpMenu();
 void printMainMenuOptions();
 void executeRunBasedOnUserInput(int userInput, bool &isInputValid);
+void getCustomSimUserInput(int &computerPlayerAlg, int &computerPlayerEval, int &depth);
 void getCustomSimUserInput(int &playerOneAlg, int &playerOneEvalFunct, int &playerTwoAlg, int &playerTwoEvalFunct, int &depth);
 void runManualGame();
 void goodbye();
@@ -48,10 +49,28 @@ int main(int argc, char *argv[])
     printWelcomeMsg();
 
     // display help menu
-    if (argc == 2 && (strcmp(argv[1], "-h") || strcmp(argv[1], "-help")))
+    if (argc == 2)
     {
-        printHelpMenu();
-        return EXIT_SUCCESS;
+        std::string cliArg = argv[1]; 
+
+        if (cliArg == "-h" || cliArg == "-help")
+        {
+            printHelpMenu();
+            return EXIT_SUCCESS;
+        }
+        else if (cliArg == "-nc")  // disable color
+        {
+            // ANSII codes for colored text, to improve UI and readability
+            Pieces::ANSII_BLUE_START     = "";
+            Pieces::ANSII_RED_START      = "";
+            Pieces::ANSII_RED_HIGH       = "";
+            Pieces::ANSII_END            = "";
+            Pieces::ANSII_GREEN_START    = "";
+            Pieces::ANSII_BLUE_COUT      = "";
+            Pieces::ANSII_RED_COUT       = "";
+            Pieces::ANSII_GREEN_COUT     = "";
+            Pieces::ANSII_YELLOW_COUT    = "";
+        }
     }
 
     printMainMenuOptions();
@@ -60,7 +79,7 @@ int main(int argc, char *argv[])
     while (!isInputValid)
     {
         int userInput;
-        std::cout << "Your choice " << ANSII_BLUE_START << "(1, 2, 3, or 4)" << ANSII_END << ": ";
+        std::cout << "Your choice " << Pieces::ANSII_BLUE_START << "(1, 2, 3, or 4)" << Pieces::ANSII_END << ": ";
         std::cin >> userInput;
 
         executeRunBasedOnUserInput(userInput, isInputValid);
@@ -76,9 +95,9 @@ int main(int argc, char *argv[])
  */
 void printWelcomeMsg()
 {
-    std::cout << ANSII_GREEN_START << "Welcome to the Checkers AI Program." << ANSII_END << std::endl;
-    std::cout << "Authors: " << ANSII_RED_START << " David Torrente (dat54@txstate.edu), Randall Henderson (rrh93@txstate.edu), "
-              << "Borislav Sabotinov (bss64@txstate.edu)." << ANSII_END << std::endl;
+    std::cout << Pieces::ANSII_GREEN_START << "Welcome to the Checkers AI Program." << Pieces::ANSII_END << std::endl;
+    std::cout << "Authors: " << Pieces::ANSII_RED_START << " David Torrente (dat54@txstate.edu), Randall Henderson (rrh93@txstate.edu), "
+              << "Borislav Sabotinov (bss64@txstate.edu)." << Pieces::ANSII_END << std::endl;
     std::cout << "Re-run this program with -h or -help CLI argument to see a help menu or refer to README for instructions."
               << std::endl;
     std::cout << std::endl;
@@ -144,10 +163,30 @@ void executeRunBasedOnUserInput(int userInput, bool &isInputValid)
         break;
     case 4: // player vs. ai
         isInputValid = true; 
+        getCustomSimUserInput(playerOneAlg, playerOneEvalFunct, depth); 
+        simulation->runPlayerVsAISimulation(playerOneAlg, playerOneEvalFunct, depth); 
         break;
     default:
         std::cerr << "Invalid option selected! Valid choices are 1, 2, 3, and 4" << std::endl;
     }
+}
+
+void getCustomSimUserInput(int &computerPlayerAlg, int &computerPlayerEval, int &depth)
+{
+    std::cout << "Please select the type of simulation you wish to run by entering in it's number." << std::endl;
+    std::cout << "1. Run Minimax-A-B algorithm" << std::endl;
+    std::cout << "0. Run Alpha-Beta-Search algorithm" << std::endl;
+
+    // PLAYER CHOICES
+    std::cout << "Algorithm for RED - Player 1 " << Pieces::ANSII_BLUE_START << "(1 for minimax, 0 for ab-Search)" << Pieces::ANSII_END << ":";
+    std::cin >> computerPlayerAlg;
+    std::cout << std::endl;
+    std::cout << "Evaluation for RED - Player 1 " << Pieces::ANSII_BLUE_START << "(1 (David's), 2 (Randy's), 3 (Boris'), 4 (returns 1st available move))" << Pieces::ANSII_END << ": ";
+    std::cin >> computerPlayerEval;
+
+    // DEPTH
+    std::cout << "Enter the depth for the search tree " << Pieces::ANSII_BLUE_START << "(2 or 4 recommended; min = 1, max = 15)" << Pieces::ANSII_END << ": ";
+    std::cin >> depth; 
 }
 
 /**
@@ -161,21 +200,21 @@ void getCustomSimUserInput(int &playerOneAlg, int &playerOneEvalFunct, int &play
     std::cout << "0. Run Alpha-Beta-Search algorithm" << std::endl;
 
     // PLAYER ONE CHOICES
-    std::cout << "Algorithm for RED - Player 1 " << ANSII_BLUE_START << "(1 for minimax, 0 for ab-Search)" << ANSII_END << ":";
+    std::cout << "Algorithm for RED - Player 1 " << Pieces::ANSII_BLUE_START << "(1 for minimax, 0 for ab-Search)" << Pieces::ANSII_END << ":";
     std::cin >> playerOneAlg;
     std::cout << std::endl;
-    std::cout << "Evaluation for RED - Player 1 " << ANSII_BLUE_START << "(1, 2, or 3)" << ANSII_END << ": ";
+    std::cout << "Evaluation for RED - Player 1 " << Pieces::ANSII_BLUE_START << "(1 (David's), 2 (Randy's), 3 (Boris'), 4 (returns 1st available move))" << Pieces::ANSII_END << ": ";
     std::cin >> playerOneEvalFunct;
 
     // PLAYER TWO CHOICES
-    std::cout << "Algorithm for BLACK - Player 2 " << ANSII_BLUE_START << "(1 for minimax, 0 for ab-Search)" << ANSII_END << ": ";
+    std::cout << "Algorithm for BLACK - Player 2 " << Pieces::ANSII_BLUE_START << "(1 for minimax, 0 for ab-Search)" << Pieces::ANSII_END << ": ";
     std::cin >> playerTwoAlg;
     std::cout << std::endl;
-    std::cout << "Evaluation for BLACK - Player 2 " << ANSII_BLUE_START << "(1, 2, or 3)" << ANSII_END << ": ";
+    std::cout << "Evaluation for BLACK - Player 2 " << Pieces::ANSII_BLUE_START << "(1 (David's), 2 (Randy's), 3 (Boris'), 4 (returns 1st available move))" << Pieces::ANSII_END << ": ";
     std::cin >> playerTwoEvalFunct;
 
     // DEPTH
-    std::cout << "Enter the depth for the search tree " << ANSII_BLUE_START << "(2 or 4 recommended)" << ANSII_END << ": ";
+    std::cout << "Enter the depth for the search tree " << Pieces::ANSII_BLUE_START << "(2 or 4 recommended; min = 1, max = 15)" << Pieces::ANSII_END << ": ";
     std::cin >> depth; 
 }
 
@@ -205,7 +244,7 @@ void runManualGame()
         {
             gameOver = true; 
             std::cout << "\nRED WINS!!!" << std::endl; 
-            std::cout << "RED Player: ᕙ(⇀‸↼‶)ᕗ" << std::endl;
+            std::cout << "RED Player: ᕙ(-_-')ᕗ" << std::endl;
             std::cout << "But most importantly, BLACK looooses (boooo!)" << std::endl;
             std::cout << "BLACK Player: (╯°□°）╯︵ ┻━┻" << std::endl; 
 
@@ -215,9 +254,9 @@ void runManualGame()
         {
             gameOver = true; 
             std::cout << "\nBLACK WINS!!!" << std::endl; 
-            std::cout << "BLACK Player: ᕙ(⇀‸↼‶)ᕗ" << std::endl;
+            std::cout << "BLACK Player: ᕙ(-_-')ᕗ" << std::endl;
             std::cout << "But most importantly, RED looooses (boooo!)" << std::endl;
-            std::cout << "RED Player: (╯°□°）╯︵ ┻━┻" << std::endl; 
+            std::cout << "RED Player: (╯°□°）╯ ︵ ┻━┻" << std::endl; 
             break; 
         }
 
@@ -285,9 +324,9 @@ void runManualGame()
 void goodbye()
 {
     std::cout << std::endl; 
-    std::cout << ANSII_BLUE_START << " __  __  __  __  __     __  " << ANSII_END << std::endl;
-    std::cout << ANSII_BLUE_START << "/ _ /  \\/  \\|  \\|__)\\_/|_ | " << ANSII_END << std::endl;
-    std::cout << ANSII_BLUE_START << "\\__)\\__/\\__/|__/|__) | |__. " << ANSII_END << std::endl;
-    std::cout << ANSII_BLUE_START << "                            " << ANSII_END << std::endl;
+    std::cout << Pieces::ANSII_BLUE_START << " __  __  __  __  __     __  " << Pieces::ANSII_END << std::endl;
+    std::cout << Pieces::ANSII_BLUE_START << "/ _ /  \\/  \\|  \\|__)\\_/|_ | " << Pieces::ANSII_END << std::endl;
+    std::cout << Pieces::ANSII_BLUE_START << "\\__)\\__/\\__/|__/|__) | |__. " << Pieces::ANSII_END << std::endl;
+    std::cout << Pieces::ANSII_BLUE_START << "                            " << Pieces::ANSII_END << std::endl;
     std::cout << std::endl; 
 }

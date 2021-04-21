@@ -78,6 +78,9 @@ public:
     
     // public method for specific simulations
     void runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct, int playerTwoAlg, int PlayerTwoEvalFunct, int depth);
+
+    // public method for player vs AI simulation
+    void runPlayerVsAISimulation(int playerAlg, int playerEvalFunct, int depth); 
     
     // returns a count of the number of games played in a simulation
     // each of the 3 run functions. 

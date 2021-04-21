@@ -363,22 +363,22 @@ void Board::printBoard() const
 			{
 				if (redPieces.isKing(squareOffset + 1))
 				{
-					std::cout << ANSII_RED_HIGH << " R " << ANSII_END << "|";
+					std::cout << Pieces::ANSII_RED_HIGH << " R " << Pieces::ANSII_END << "|";
 				}
 				else
 				{
-					std::cout << ANSII_RED_HIGH << " r "<< ANSII_END << "|";
+					std::cout << Pieces::ANSII_RED_HIGH << " r "<< Pieces::ANSII_END << "|";
 				}
 			}
 			else if (((blackPieces.pieces >> squareOffset) & 1) == 1)
 			{
 				if (blackPieces.isKing(squareOffset + 1))
 				{
-					std::cout << ANSII_BLUE_START << " B " << ANSII_END << "|";
+					std::cout << Pieces::ANSII_BLUE_START << " B " << Pieces::ANSII_END << "|";
 				}
 				else
 				{
-					std::cout << ANSII_BLUE_START <<" b "<< ANSII_END <<"|";
+					std::cout << Pieces::ANSII_BLUE_START <<" b "<< Pieces::ANSII_END <<"|";
 				}
 				
 			}

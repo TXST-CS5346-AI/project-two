@@ -19,17 +19,6 @@
  * A jump may be continuous - the piece must continue capturing enemy pieces if more are available for capture. 
  */
 
-// ANSII codes for colored text, to improve UI and readability
-#define ANSII_BLUE_START "\033[0;30;46m"
-#define ANSII_RED_START "\033[0;31m"
-#define ANSII_RED_HIGH "\033[9;37;41m"
-#define ANSII_END "\033[0m"
-#define ANSII_GREEN_START "\033[0;32m"
-#define ANSII_BLUE_COUT "\033[44;1m"
-#define ANSII_RED_COUT "\033[41;1m"
-#define ANSII_GREEN_COUT "\033[42;1m"
-#define ANSII_YELLOW_COUT "\033[30;48;5;3m"
-
 
 enum class Color { RED = 1, BLACK = -1 };
 
@@ -39,6 +28,17 @@ public:
     
     Pieces(); // constructor
     Pieces(Color color);
+
+    // ANSII codes for colored text, to improve UI and readability
+    static std::string ANSII_BLUE_START;
+    static std::string ANSII_RED_START;
+    static std::string ANSII_RED_HIGH;
+    static std::string ANSII_END;
+    static std::string ANSII_GREEN_START;
+    static std::string ANSII_BLUE_COUT;
+    static std::string ANSII_RED_COUT;
+    static std::string ANSII_GREEN_COUT;
+    static std::string ANSII_YELLOW_COUT;
 
     bool isKing(int position) const; // takes position, adds 32 and returns if what is in position is king (or not)
     void setKing(int poisition, bool toKing); // sets member variable isKing to true. Takes position adds 32 and sets the bit it to 1

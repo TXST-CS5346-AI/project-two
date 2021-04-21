@@ -79,9 +79,9 @@ int Algorithm::evalFunctTwo(Board state, Color color)
 
     if (color == Color::RED)
     {
-        playerColor = ANSII_RED_START;
+        playerColor = Pieces::ANSII_RED_START;
         playerColor.append("RED ");
-        playerColor.append(ANSII_END);
+        playerColor.append(Pieces::ANSII_END);
     }
     else
         playerColor = "BLACK ";
@@ -275,9 +275,9 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int dep
 
     if (color == Color::RED)
     {
-        playerColor = ANSII_RED_START;
+        playerColor = Pieces::ANSII_RED_START;
         playerColor.append("RED ");
-        playerColor.append(ANSII_END);
+        playerColor.append(Pieces::ANSII_END);
     }
 
     else
@@ -286,8 +286,8 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int dep
     indentValue = playerColor;
     indentValue.append( "1." );
 
-    std::cout << indentValue << ANSII_GREEN_COUT   << "Entering MINIMAX_A_B Values are:  Depth-> " << depth
-              << " passThresh-> " << passThresh << " useThresh-> " << useThresh << ANSII_END << std::endl;
+    std::cout << indentValue << Pieces::ANSII_GREEN_COUT   << "Entering MINIMAX_A_B Values are:  Depth-> " << depth
+              << " passThresh-> " << passThresh << " useThresh-> " << useThresh << Pieces::ANSII_END << std::endl;
 
     indentValue.append( "2." );
 
@@ -297,10 +297,10 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int dep
         result.value = staticEval(state, color, evalVersion);
         result.bestMove = move;
 
-        std::cout << indentValue << ANSII_RED_COUT << "Deep Enough, Move Evaluated.  Returning -> " << result.value
+        std::cout << indentValue << Pieces::ANSII_RED_COUT << "Deep Enough, Move Evaluated.  Returning -> " << result.value
                   << " Move:  Start-> "  << result.bestMove.startSquare << " Move to-> "
                   << result.bestMove.destinationSquare.at(0)
-                  << " Depth-> " << depth << ANSII_END << std::endl;
+                  << " Depth-> " << depth << Pieces::ANSII_END << std::endl;
 
         return result;
     }
@@ -332,9 +332,9 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int dep
         result.value = 777777;  // if this is current player - TAKE THIS MOVE else AVOID AT ALL COSTS
         result.bestMove = move;
 
-        std::cout << indentValue << ANSII_RED_COUT << "TERMINAL STATE!! Returning -> " << result.value
+        std::cout << indentValue << Pieces::ANSII_RED_COUT << "TERMINAL STATE!! Returning -> " << result.value
                   << " Move:  Start-> " << result.bestMove.startSquare << " Move to-> "
-                  << result.bestMove.destinationSquare.at(0) << " Depth-> " << depth << ANSII_END << std::endl;
+                  << result.bestMove.destinationSquare.at(0) << " Depth-> " << depth << Pieces::ANSII_END << std::endl;
 
         return result;
     }
@@ -348,10 +348,10 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int dep
 
         indentValue.append( ">." );
 
-        std::cout << indentValue << ANSII_BLUE_COUT << "Checking Moves:  Move #-> " << successorIndex + 1
+        std::cout << indentValue << Pieces::ANSII_BLUE_COUT << "Checking Moves:  Move #-> " << successorIndex + 1
                   << " Passed in parameters:  Start-> " << successors.at(successorIndex).startSquare << " Move to-> "
                   << successors.at(successorIndex).destinationSquare.at(0) << " Depth-> " << depth
-                  << ANSII_END << std::endl;
+                  << Pieces::ANSII_END << std::endl;
 
         //std::cout << indentValue << " passThresh-> " << passThresh << " useThresh-> " << useThresh  << std::endl;
 
@@ -364,12 +364,12 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int dep
 
         int newValue = -result.value;
 
- //       std::cout << indentValue << " NEW_VALUE -> " << newValue << std::endl;
+        //std::cout << indentValue << " NEW_VALUE -> " << newValue << std::endl;
 
         if ( newValue > passThresh )  // Found the Best Move
         {
-            std::cout << indentValue << ANSII_YELLOW_COUT << "New Best Move.  Change PassThresh  Old: " << passThresh
-                      << " to  New: " << newValue << ANSII_END << std::endl;
+            std::cout << indentValue << Pieces::ANSII_YELLOW_COUT << "New Best Move.  Change PassThresh  Old: " << passThresh
+                      << " to  New: " << newValue << Pieces::ANSII_END << std::endl;
 
             passThresh = newValue;
             bestMove = successors.at(successorIndex);
@@ -383,9 +383,9 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int dep
             result.value = passThresh;
             result.bestMove = successors.at(successorIndex);
 
-            std::cout << indentValue << ANSII_RED_COUT  << "Returning -> " << result.value << " Move:  Start-> "
+            std::cout << indentValue << Pieces::ANSII_RED_COUT  << "Returning -> " << result.value << " Move:  Start-> "
                       << result.bestMove.startSquare << " Move to-> " << result.bestMove.destinationSquare.at(0)
-                      << " Depth-> " << depth << ANSII_END << std::endl;
+                      << " Depth-> " << depth << Pieces::ANSII_END << std::endl;
 
             return result;
 
@@ -397,9 +397,9 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, Board::Move move, int dep
         result.bestMove = bestMove;
 
 
-    std::cout << indentValue << ANSII_BLUE_COUT << "Returning -> " << result.value << " Move:  Start-> "
+    std::cout << indentValue << Pieces::ANSII_BLUE_COUT << "Returning -> " << result.value << " Move:  Start-> "
               << result.bestMove.startSquare << " Move to-> " << result.bestMove.destinationSquare.at(0)
-              << " Depth-> " << depth << ANSII_END << std::endl;
+              << " Depth-> " << depth << Pieces::ANSII_END << std::endl;
 
     return result;
 }
