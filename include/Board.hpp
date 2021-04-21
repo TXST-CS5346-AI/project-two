@@ -47,9 +47,7 @@ public:
 	int getNumRegularPieces(Color color);
 	int getNumKingPieces(Color color);
 	int getNumPlayerTotalPieces(Color color);
-
-	int squareToRow(int square) const;
-	int squareToColumn(int square) const;
+	int getPieceInSquare(int square, Color color);
 
 	std::vector<Move> getJumpsForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces); 
 	std::vector<Move> getMovesForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces);
@@ -63,7 +61,6 @@ private:
 	Pieces redPieces;
 
 	static BoardMoveTable boardMoveTable[33];
-	void printHelperBoardRow(int row);
 	void getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board::Move>& totalMoves, Board board, bool wasKingPriorMove);
 
 };
