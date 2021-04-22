@@ -121,6 +121,12 @@ void Simulation::runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct,
     else 
         std::cout << "Oops, something went wrong!" << std::endl;
 
+    std::string algs[2] = {"Alpha-Beta-Search", "Minimax-Alpha-Beta"};
+    std::cout << "Red player alg: " << algs[playerOneAlg] << ", eval: " << playerOneEvalFunct << std::endl;
+    std::cout << "Black player alg: " << algs[playerTwoAlg] << ", eval: " << playerTwoEvalFunct << std::endl;
+    std::cout << "Depth: " << depth << std::endl;
+
+
     delete game; 
 }
 

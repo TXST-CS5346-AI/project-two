@@ -341,6 +341,11 @@ void Board::printBoard() const
 	// row, or to the end of it. Odd rows start with a space,
 	// Even rows end with a space.
 	bool oddRow = true;
+//system ("CLS");
+
+std::cout << "Value of RED board:  " << redPieces.pieces << std::endl;
+std::cout << "Value of BLACK board:  " << blackPieces.pieces << std::endl;
+
 
 	// A basic bar to go across the top. Cosmetic.
 	std::cout << "_________________________________" << std::endl;

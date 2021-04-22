@@ -32,12 +32,16 @@ Pieces::Pieces(Color color)
 		//pieces = 1;
 		//pieces = 19455;
 		//pieces = 1152921504875282432;
-		pieces = 4095; // Initial board state
+		//pieces = 4095; // Initial board state
+        //pieces = 131200;
+        pieces = 1152921504875686280; // RM t22 1v1
 	else // black
 		//pieces = 4291952640;
 		//pieces = 128;
 		//pieces = 16974848;
-		pieces = 4293918720; // Initial board state
+		//pieces = 4293918720; // Initial board state
+        //pieces = 2147483648;
+       pieces = 2147483648; // RM t22 1v1
 }
 
 
