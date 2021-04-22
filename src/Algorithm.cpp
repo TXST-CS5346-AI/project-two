@@ -464,7 +464,7 @@ Algorithm::Result Algorithm::alphaBetaSearch(Board state)
  * 
  * @return int utilityValue
  */
-Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, int &alpha, int &beta, Color color)
+Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, int alpha, int beta, Color color)
 {
     if (color == Color::RED)
         std::cout << "\n\nRED ";
@@ -512,7 +512,7 @@ Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, 
     for (int i = 0; i < result.bestMove.destinationSquare.size(); i++)
         std::cout << "dest: " << result.bestMove.destinationSquare.at(i) << std::endl;
 
-    result.value = alpha; 
+    //result.value = alpha; 
     result.bestMove = bestMove; 
 
     return result;
@@ -528,7 +528,7 @@ Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, 
  * 
  * @return  utilityValue
  */
-Algorithm::Result Algorithm::minValue(Board state, Board::Move move, int depth, int &alpha, int &beta, Color color)
+Algorithm::Result Algorithm::minValue(Board state, Board::Move move, int depth, int alpha, int beta, Color color)
 {
     if (color == Color::RED)
         std::cout << "\n\nRED ";
@@ -576,7 +576,7 @@ Algorithm::Result Algorithm::minValue(Board state, Board::Move move, int depth, 
     for (int i = 0; i < result.bestMove.destinationSquare.size(); i++)
         std::cout << "dest: " << result.bestMove.destinationSquare.at(i) << std::endl;
 
-    result.value = beta; 
+    //result.value = beta; 
     result.bestMove = bestMove; 
 
     return result;
