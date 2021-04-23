@@ -30,8 +30,7 @@ int Player::takeTurn(Board &state)
 	
 	if (isMinimax)
 	{
-        Board::Move move; // empty move for init call to minimax
-		result = algorithm->minimax_a_b( state, move, this->depth, this->color, 9000000, -8000000 );
+		result = algorithm->minimax_a_b( state, this->depth, this->color, 9000000, -8000000 );
 	} else {
 		result = algorithm->alphaBetaSearch(state);
 	}

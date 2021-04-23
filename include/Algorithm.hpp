@@ -44,7 +44,7 @@ public:
     };
 
     // minimax algorithm returns the position of the best move
-    Result minimax_a_b( Board board, Board::Move move, int depth, Color color, int useThresh, int passThresh );
+    Result minimax_a_b( Board board, int depth, Color color, int useThresh, int passThresh );
 
     // AB Prune algorithm
     Result alphaBetaSearch(Board state);
@@ -59,7 +59,9 @@ private:
     int evalVersion; 
     int currentDepth, maxDepth;
     Player callingPlayer; 
-    
+
+    const bool OUPUT_DEBUG_DATA = false;
+
     // plausible move generator, returns a list of positions that can be made by player
     std::vector<Board::Move> movegen(Board board, Color color);
     
