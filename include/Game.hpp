@@ -31,6 +31,7 @@ private:
     Player redPlayer;
     Player blackPlayer;
     const int MAX_ALLOWED_TURNS = 80;
+    void printNodes(Player player, std::string colorText);
 
 public:
     Game(); // constructor

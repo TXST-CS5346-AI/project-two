@@ -1,5 +1,4 @@
 #include "Simulation.hpp"
-#include "Game.hpp"
 
 #include <iostream>
 #include <stdexcept>
@@ -13,6 +12,7 @@
 
 Simulation::Simulation()
 {
+    this->numGamesPlayed = 0;
 }
 
 Simulation::~Simulation()
@@ -79,7 +79,7 @@ void Simulation::runFullSimulation()
                         Game::GameOver endGameStatus = game->startGame();
 
                         // TODO: print game status, num nodes generated, time it took, etc. 
-
+                        numGamesPlayed++; 
                         delete game; 
 
                     } // p2_eval
@@ -93,36 +93,43 @@ void Simulation::runFullSimulation()
 * @param int algorithm - If 1, minimax; if 2, AB Prune
 * @param int evalFunction - 1,2, or 3
 */
-void Simulation::runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct, int playerTwoAlg, int playerTwoEvalFunct, int depth)
+void Simulation::runSpecificSimulation(int redPlayerAlg, int redPlayerEvalFunct, int blackPlayerAlg, int blackPlayerEvalFunct, int depth)
 {
     std::cout << Pieces::ANSII_GREEN_START << "Running a SINGLE game, specific simulation!" << Pieces::ANSII_END << std::endl;
 
     // Validate algorithm selections
-    if ((playerOneAlg < 0 || playerOneAlg > 3) && (playerTwoAlg < 0 || playerTwoAlg > 3))
-        throw std::runtime_error("Error: algorithm may only be 1 (minimax-a-b) or 2 (ab-prune)!");
+    if ((redPlayerAlg < 0 || redPlayerAlg > 1) && (blackPlayerAlg < 0 || blackPlayerAlg > 1))
+        throw std::runtime_error("Error: algorithm may only be 1 (minimax-a-b) or 0 (ab-prune)!");
 
     // Validate evaluation function selections
-    if ((playerOneEvalFunct < 0 || playerOneEvalFunct > 4) && (playerTwoEvalFunct < 0 || playerTwoEvalFunct > 4))
+    if ((redPlayerEvalFunct <= 0 || redPlayerEvalFunct > 4) && (blackPlayerEvalFunct <= 0 || blackPlayerEvalFunct > 4))
         throw std::runtime_error("Error: evalFunction may only be 1, 2, 3, or 4!");
     
     // Validate depth
-    if (depth <= 0 || depth > 15)
-        throw std::runtime_error("Error: depth must be > 0 and <= 15. ");
+    if (depth <= 1 || depth > 15)
+        throw std::runtime_error("Error: depth must be > 1 and <= 15. ");
 
-    Game *game = new Game(playerOneAlg, playerOneEvalFunct, playerTwoAlg, playerTwoEvalFunct, depth);
+    Game *game = new Game(redPlayerAlg, redPlayerEvalFunct, blackPlayerAlg, blackPlayerEvalFunct, depth);
     Game::GameOver endGameStatus = game->startGame();
 
-    if (endGameStatus == Game::GameOver::BLACK_WINS)
-        printBlackWins(); 
-    else if (endGameStatus == Game::GameOver::RED_WINS)
-        printRedWins(); 
-    else if (endGameStatus == Game::GameOver::DRAW)
-        printDraw(); 
-    else 
-        std::cout << "Oops, something went wrong!" << std::endl;
+    printGameResults(endGameStatus);
+    printGameConfig(redPlayerAlg, redPlayerEvalFunct, blackPlayerAlg, blackPlayerEvalFunct, depth);
 
     delete game; 
 }
+
+void Simulation::printGameResults(Game::GameOver endGameStatus)
+{
+    if (endGameStatus == Game::GameOver::BLACK_WINS)
+        printBlackWins();
+    else if (endGameStatus == Game::GameOver::RED_WINS)
+        printRedWins();
+    else if (endGameStatus == Game::GameOver::DRAW)
+        printDraw();
+    else
+        std::cout << "Oops, something went wrong!" << std::endl;
+}
+
 
 /**
  * runPlayerVsAISimulation - play a game with a human against a computer player
@@ -185,6 +192,14 @@ void Simulation::runPlayerVsAISimulation(int playerAlg, int playerEvalFunct, int
         gameOver = didSomeoneWin(board); // if true, game will end
     }
     board.printBoard(); // print final board after someone wins
+}
+
+void Simulation::printGameConfig(int redPlayerAlg, int redPlayerEvalFunct, int blackPlayerAlg, int blackPlayerEvalFunct, int depth)
+{
+    std::string algs[2] = {"Alpha-Beta-Search", "Minimax-Alpha-Beta"};
+    std::cout << "Red player alg: " << algs[redPlayerAlg] << ", eval: " << redPlayerEvalFunct << std::endl;
+    std::cout << "Black player alg: " << algs[blackPlayerAlg] << ", eval: " << blackPlayerEvalFunct << std::endl;
+    std::cout << "Depth: " << depth << std::endl;
 }
 
 /**

@@ -22,12 +22,14 @@ private:
     int numPiecesTaken; // Player's current score based on captured enemy pieces
     int numTurnsTaken; // counter for Player's turns taken
     bool didPlayerMove;  //  EndGame Condition
-    bool isMinimax; // if false use AB Prune, if true use Minimax. Allows control over alg player uses
+    
     int depth, evalVersion; 
 
 public:
     Player(); // constructor
     ~Player(); // destructor
+
+    bool isMinimax; // if false use AB Prune, if true use Minimax. Allows control over alg player uses
 
     Player(bool minMax, Color color, int depth, int evalVersion); // overloaded constructor to set player color, which is IMMUTABLE
 
@@ -43,6 +45,19 @@ public:
 
     static void printMove(Board::Move, Color color);
 
+    int minimaxExpandedNodes; // how many nodes we expand
+    int minimaxLeafNodes; // how many nodes we expand
+    int absearchExpandedNodes; // how many nodes we expand
+    int absearchLeafNodes; // how many nodes we expand
+
+    int getMinimaxTotalNodes() {
+        return minimaxExpandedNodes + minimaxLeafNodes; 
+    }
+
+    
+    int getAbSearchTotalNodes() {
+        return absearchExpandedNodes + absearchLeafNodes; 
+    }
 };
 
 #endif // !PLAYER_H
