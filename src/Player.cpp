@@ -21,6 +21,11 @@ Player::Player( bool minMaxState, Color color, int depth, int evalVersion )
     isMinimax = minMaxState;
     this->depth = depth;
     this->evalVersion = evalVersion; 
+    
+    this->minimaxExpandedNodes = 0; 
+    this->minimaxLeafNodes = 0; 
+    this->absearchExpandedNodes = 0; 
+    this->absearchLeafNodes = 0; 
 }
 
 int Player::takeTurn(Board &state)
@@ -31,8 +36,12 @@ int Player::takeTurn(Board &state)
 	if (isMinimax)
 	{
 		result = algorithm->minimax_a_b( state, this->depth, this->color, 9000000, -8000000 );
+        this->minimaxExpandedNodes += algorithm->minimaxExpandedNodes;
+        this->minimaxLeafNodes += algorithm->minimaxLeafNodes;
 	} else {
 		result = algorithm->alphaBetaSearch(state);
+        this->absearchExpandedNodes += algorithm->absearchExpandedNodes;
+        this->absearchLeafNodes += algorithm->absearchLeafNodes;
 	}
 
 	if (result.bestMove.destinationSquare.size() == 0)
@@ -93,8 +102,10 @@ void Player::printMove(Board::Move move, Color color)
     else 
         colorStr = "Red";
 
-    std::cout << colorStr << " moves from " << move.startSquare << " to destination (in sequence): "; 
-    for (int i = 0; i < move.destinationSquare.size(); i++)
+    if(Pieces::ouputDebugData)
+    {
+        std::cout << colorStr << " moves from " << move.startSquare << " to destination (in sequence): "; 
+        for (int i = 0; i < move.destinationSquare.size(); i++)
             std::cout << "dest: " << move.destinationSquare.at(i) << std::endl;
-
+    }
 }

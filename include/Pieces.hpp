@@ -39,6 +39,8 @@ public:
     static std::string ANSII_RED_COUT;
     static std::string ANSII_GREEN_COUT;
     static std::string ANSII_YELLOW_COUT;
+    // Debug reporting level 3 == display all debug/status lines 2== important, 1 == basic, 0 == none
+    static int ouputDebugData; 
 
     bool isKing(int position) const; // takes position, adds 32 and returns if what is in position is king (or not)
     void setKing(int poisition, bool toKing); // sets member variable isKing to true. Takes position adds 32 and sets the bit it to 1

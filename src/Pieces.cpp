@@ -10,6 +10,7 @@ std::string Pieces::ANSII_BLUE_COUT      = "\033[44;1m";
 std::string Pieces::ANSII_RED_COUT       = "\033[41;1m";
 std::string Pieces::ANSII_GREEN_COUT     = "\033[42;1m";
 std::string Pieces::ANSII_YELLOW_COUT    = "\033[30;48;5;3m";
+int Pieces::ouputDebugData = 3; 
 
 Pieces::Pieces()
 {

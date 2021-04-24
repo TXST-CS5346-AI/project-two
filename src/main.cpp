@@ -58,7 +58,8 @@ int main(int argc, char *argv[])
             printHelpMenu();
             return EXIT_SUCCESS;
         }
-        else if (cliArg == "-nc")  // disable color
+        
+        if (cliArg == "-nc")  // disable color
         {
             // ANSII codes for colored text, to improve UI and readability
             Pieces::ANSII_BLUE_START     = "";
@@ -70,6 +71,10 @@ int main(int argc, char *argv[])
             Pieces::ANSII_RED_COUT       = "";
             Pieces::ANSII_GREEN_COUT     = "";
             Pieces::ANSII_YELLOW_COUT    = "";
+        }
+        else if (cliArg == "-no")  // 
+        {
+            Pieces::ouputDebugData = 0;
         }
     }
 
@@ -150,6 +155,7 @@ void executeRunBasedOnUserInput(int userInput, bool &isInputValid)
     case 1: // full sim
         isInputValid = true; 
         simulation->runFullSimulation();
+        std::cout << "# of Games Played: " << simulation->getNumGamesPlayed() << std::endl; 
         break;
     case 2: // one custom sim
         isInputValid = true; 
@@ -185,7 +191,7 @@ void getCustomSimUserInput(int &computerPlayerAlg, int &computerPlayerEval, int 
     std::cin >> computerPlayerEval;
 
     // DEPTH
-    std::cout << "Enter the depth for the search tree " << Pieces::ANSII_BLUE_START << "(2 or 4 recommended; min = 1, max = 15)" << Pieces::ANSII_END << ": ";
+    std::cout << "Enter the depth for the search tree " << Pieces::ANSII_BLUE_START << "(2 or 4 recommended; min = 2, max = 15)" << Pieces::ANSII_END << ": ";
     std::cin >> depth; 
 }
 
@@ -214,7 +220,7 @@ void getCustomSimUserInput(int &playerOneAlg, int &playerOneEvalFunct, int &play
     std::cin >> playerTwoEvalFunct;
 
     // DEPTH
-    std::cout << "Enter the depth for the search tree " << Pieces::ANSII_BLUE_START << "(2 or 4 recommended; min = 1, max = 15)" << Pieces::ANSII_END << ": ";
+    std::cout << "Enter the depth for the search tree " << Pieces::ANSII_BLUE_START << "(2 or 4 recommended; min = 2, max = 15)" << Pieces::ANSII_END << ": ";
     std::cin >> depth; 
 }
 

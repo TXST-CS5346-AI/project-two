@@ -2,6 +2,7 @@
 #define SIMULATION_H
 
 #include "Board.hpp"
+#include "Game.hpp"
 
 /**
  * Header definition for class Simulation. 
@@ -93,7 +94,10 @@ public:
 
     // creates a table with results for analysis. 
     // how many nodes were created, etc. 
-    void generateAnalysisResults(); 
+    void generateAnalysisResults();
+
+    void printGameConfig(int redPlayerAlg, int redPlayerEvalFunct, int blackPlayerAlg, int blackPlayerEvalFunct, int depth); 
+    void printGameResults(Game::GameOver endGameStatus); 
 
     // helper print methods
     static void printBlackWins(); 

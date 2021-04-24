@@ -1,14 +1,11 @@
 #ifndef ALGORITHM_H
 #define ALGORITHM_H
 
-#include <vector> 
-#include <string> 
+#include <vector>
+#include <string>
 
 #include "Player.hpp"
 #include "Board.hpp"
-
-
-
 
 /**
  * Header definition for class Algorithm. 
@@ -27,49 +24,46 @@
  * 
  * Three evaluation functions will be used in conjunction with the two search algorithms. 
  * 
- */ 
+ */
 
 class Algorithm
 {
 
-public: 
-    Algorithm(); // constructor
-    ~Algorithm(); // destructor 
+public:
+    Algorithm();  // constructor
+    ~Algorithm(); // destructor
 
     Algorithm(int evalVersion, int maxDepth, Player callingPlayer);
 
-    struct Result {
+    struct Result
+    {
         int value;
-        Board::Move bestMove; 
+        Board::Move bestMove;
     };
 
+    int minimaxExpandedNodes; // how many nodes we expand
+    int minimaxLeafNodes; // how many nodes we expand
+    int absearchExpandedNodes; // how many nodes we expand
+    int absearchLeafNodes; // how many nodes we expand
+
     // minimax algorithm returns the position of the best move
-    Result minimax_a_b( Board board, int depth, Color color, int useThresh, int passThresh );
+    Result minimax_a_b(Board board, int depth, Color color, int useThresh, int passThresh);
 
     // AB Prune algorithm
     Result alphaBetaSearch(Board state);
 
-    void setEvalVersion(int evalVersion); 
+    void setEvalVersion(int evalVersion);
     void setMaxDepth(int maxDepth);
-    int getMinimaxIterations(){ return minimaxIterations; }
 
-    void zeroMinimaxIterations(){minimaxIterations = 0;}
-
-private: 
-    
-
-    int numNodesGenerated; 
-    int evalVersion; 
+private:
+    int numNodesGenerated;
+    int evalVersion;
     int currentDepth, maxDepth;
     Player callingPlayer;
 
-    int ouputDebugData = 1 ; // Debug reporting level 3 == display all debug/status lines 2== important, 1 == basic, 0 == none
-//Global counter
-    int minimaxIterations;
-
     // plausible move generator, returns a list of positions that can be made by player
     std::vector<Board::Move> movegen(Board board, Color color);
-    
+
     /* static evaluation functions return a number representing the 
     * goodness of Position from the standpoint of Player
     * A helper function staticEval is used to determine which evalFunction to use
@@ -85,15 +79,14 @@ private:
     bool deepEnough(int currentDepth);
 
     bool terminalTest(Board state, int depth); // terminal test for alpha-beta-search
-    Result maxValue(Board state, Board::Move move, int depth, int &alpha, int &beta, Color color); 
-    Result minValue(Board state, Board::Move move, int depth, int &alpha, int &beta, Color color);
+    Result maxValue(Board state, int depth, int alpha, int beta, Color color);
+    Result minValue(Board state, int depth, int alpha, int beta, Color color);
     int utility(Board state);
     std::vector<Board::Move> actions(Board state, Color color);
 
-    Color switchPlayerColor(Color color); 
+    Color switchPlayerColor(Color color);
 
     int passSign(int passthresh);
-
 };
 
 #endif // !ALGORITHM_H
