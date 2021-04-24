@@ -51,6 +51,9 @@ public:
 
     void setEvalVersion(int evalVersion); 
     void setMaxDepth(int maxDepth);
+    int getMinimaxIterations(){ return minimaxIterations; }
+
+    void zeroMinimaxIterations(){minimaxIterations = 0;}
 
 private: 
     
@@ -58,9 +61,11 @@ private:
     int numNodesGenerated; 
     int evalVersion; 
     int currentDepth, maxDepth;
-    Player callingPlayer; 
+    Player callingPlayer;
 
-    const bool OUPUT_DEBUG_DATA = false;
+    int ouputDebugData = 1 ; // Debug reporting level 3 == display all debug/status lines 2== important, 1 == basic, 0 == none
+//Global counter
+    int minimaxIterations;
 
     // plausible move generator, returns a list of positions that can be made by player
     std::vector<Board::Move> movegen(Board board, Color color);
@@ -87,6 +92,7 @@ private:
 
     Color switchPlayerColor(Color color); 
 
+    int passSign(int passthresh);
 
 };
 
