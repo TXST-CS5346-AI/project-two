@@ -130,7 +130,7 @@ int Algorithm::evalFunctTwo(Board state, Color color)
 
     indentValue = playerColor;
 
-    if ( OUPUT_DEBUG_DATA )
+    if (ouputDebugData > 1 )
         std::cout << indentValue << Pieces::ANSII_GREEN_COUT << " Evaluating Current Player:  Pieces-> "
                   << Pieces::ANSII_END << numPieces << " Kings-> " << numKingsScore << " Opponent Pieces-> "
                   << numOponentPieces  << " Kings-> " << numOponentKingsScore << " total pieces-> "
@@ -138,7 +138,7 @@ int Algorithm::evalFunctTwo(Board state, Color color)
 
     if ( state.getNumPlayerTotalPieces(color) == 0 )  // if the player is out of pieces this is a terminal state
     {
-        if ( OUPUT_DEBUG_DATA )
+        if (ouputDebugData > 1 )
             std::cout << indentValue << Pieces::ANSII_RED_COUT << "TERMINAL STATE!! Returning -> "
                       << Pieces::ANSII_END << std::endl;
 
@@ -174,11 +174,11 @@ int Algorithm::evalFunctTwo(Board state, Color color)
     }
 
     moveScore = preservePieces + takePieces * endGameAdjust + positionAdder;
-if ( OUPUT_DEBUG_DATA )
+if (ouputDebugData > 1 )
     std::cout << indentValue << Pieces::ANSII_GREEN_COUT << " Evaluated Move:  moveScore-> " << Pieces::ANSII_END
               << moveScore << " preservePieces-> " << preservePieces << " takePieces -> "
               << takePieces * endGameAdjust << " PositionAdder-> " << positionAdder << std::endl;
-    if ( OUPUT_DEBUG_DATA )
+    if (ouputDebugData > 1 )
         std::cout << indentValue << Pieces::ANSII_YELLOW_COUT << " Checking opponent's Board " << Pieces::ANSII_END  << std::endl;
 
     return moveScore; //  Preserve pieces on the board,  this should make moves that loses a piece unfavorable
@@ -289,7 +289,7 @@ int Algorithm::staticEval(Board state, Color color, int evalVersion)
         break;
     default: {
         scoreOfGoodness = 1;  // default and debug value.  Player takes first option everytime
-        if ( OUPUT_DEBUG_DATA )
+        if (ouputDebugData > 1 )
         std::cout << Pieces::ANSII_GREEN_COUT << " TEST/DEBUG EVALUATION BRANCH RETURN VALUE = 1 " << Pieces::ANSII_END << std::endl;
         //throw std::runtime_error("Error: eval function # may only be 1, 2, or 3!");
     }
@@ -319,8 +319,8 @@ bool Algorithm::deepEnough(int currentDepth)
  * @param Board board
  * @param int depth
  * @param Color color
- * @param int passThresh = INT32_MAX
- * @param int useThresh = INT32_MIN
+ * @param int passThresh = 9000000
+ * @param int useThresh = -8000000
  * 
  * @return a Result struct, which consists of a value and a Move
  */
@@ -331,22 +331,30 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, int depth, Color color, i
     Algorithm::Result result;  // Return structure for MiniMaxAB
     std::string indentValue;  // Tracking header in cout statments.  Shows level in recursion
     std::string playerColor;  // Used for debugging ouput
+    Board::Move bestPath;  // best move struct - starts as a null board
+
+    result.value = staticEval(state, color, evalVersion);  // setting value of current board
+
+   ++this->minimaxIterations;
 
 
     if (color == Color::RED)
     {
         playerColor = Pieces::ANSII_RED_START;
-        playerColor.append("RED ");
+        playerColor.append("  RED ");
         playerColor.append(Pieces::ANSII_END);
     }
     else
+    {
         playerColor = "BLACK ";
+    }
 
-    indentValue = playerColor;
+    indentValue=playerColor;
+
     indentValue.append( "1." );
 
     //   Debug code for values passed into the function
-    if ( OUPUT_DEBUG_DATA )
+    if (ouputDebugData > 0 && depth == 0 )
     std::cout << indentValue << Pieces::ANSII_GREEN_COUT   << "Entering MINIMAX_A_B Value:  " << result.value
               << " Depth-> " << depth << " useThresh-> " << useThresh << " passThresh-> " << passThresh
               << Pieces::ANSII_END << std::endl;
@@ -358,38 +366,41 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, int depth, Color color, i
     if ( deepEnough(depth)  )  // deep enough and Terminal could be combined.  Separated for error tracking
     {
 
-        result.value = staticEval(state, color, evalVersion);
+        result.value = staticEval(state, color, evalVersion) * passSign(passThresh);
+        //result.value = passThresh;
+        result.bestMove = bestPath;  // returning a null board
 
-        if ( OUPUT_DEBUG_DATA )
+        if (ouputDebugData > 0 )
             std::cout << indentValue << Pieces::ANSII_RED_COUT << "Deep Enough, Move Evaluated.  Returning -> "
                       << result.value  << " Bestmove destination size " << result.bestMove.destinationSquare.size() << Pieces::ANSII_END << std::endl;
 
         return result;
     }
 
-
-
     indentValue.append( "3." );
 
     std::vector<Board::Move> successors = movegen(state, color);
 
+    //  Current Player has no moves.  This is the equivalent to deep enough or terminal move
     if ( successors.size()==0 )
     {
-        result.value = staticEval(state, color, evalVersion);
+        result.value = staticEval(state, color, evalVersion) * passSign(passThresh);
+        //result.value = passThresh;
+        result.bestMove = bestPath;
 
-        if ( OUPUT_DEBUG_DATA )
+        if (ouputDebugData > 0 )
             std::cout << indentValue << Pieces::ANSII_RED_COUT << "Player has no moves.  Returning -> "
-                      << result.value  << " Bestmove destination size " << result.bestMove.destinationSquare.size() << Pieces::ANSII_END << std::endl;
+                      << result.value  << Pieces::ANSII_END << std::endl;
 
         return result;
     }
 
-    if ( OUPUT_DEBUG_DATA )
-        std::cout << indentValue << Pieces::ANSII_GREEN_COUT   << "Available Moves->  " << successors.size()
+    if (ouputDebugData > 1 )
+        std::cout << indentValue << Pieces::ANSII_GREEN_COUT   << "Total Available Moves->  " << successors.size()
                   << Pieces::ANSII_END << std::endl;
 
     int newValue;
-    Board::Move preferredMove;     //  This is the best move the algorithm can find
+    //Board::Move preferredMove;     //  This is the best move the algorithm can find
 
     for ( int successorIndex = 0; successorIndex < successors.size(); successorIndex++ )
     {
@@ -398,53 +409,65 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, int depth, Color color, i
 
         indentValue.append( ">." );
 
-        if ( OUPUT_DEBUG_DATA )
+        if (ouputDebugData > 1 )
         std::cout << indentValue << Pieces::ANSII_BLUE_COUT << "Checking Moves:  Move #-> " << successorIndex + 1
                   << " Passed in parameters:  Start-> " << successors.at(successorIndex).startSquare << " Move to-> "
                   << successors.at(successorIndex).destinationSquare.back() << " Depth-> " << depth
                   << Pieces::ANSII_END << std::endl;
 
-        if ( OUPUT_DEBUG_DATA )
-            std::cout << indentValue << Pieces::ANSII_BLUE_COUT << "Making Recursive Call:  Succ start " << successors.at(successorIndex).startSquare
-            << " useThresh-> " << useThresh  << " passThresh-> "  << passThresh  << Pieces::ANSII_END << std::endl;
+        if (ouputDebugData > 0 )
+            std::cout << indentValue << Pieces::ANSII_BLUE_COUT << "Making Recursive Call:  Succ start "
+                      << successors.at(successorIndex).startSquare << " -> "
+                      << successors.at(successorIndex).destinationSquare.at(0) << " useThresh-> "
+                      << useThresh  << " passThresh-> "  << passThresh  << " depth-> "
+                      << depth << Pieces::ANSII_END << std::endl;
 
         // recursive call
         Result resultSucc = minimax_a_b( tmpState, depth-1,switchPlayerColor( color ), -passThresh, -useThresh );
 
-//        if ( OUPUT_DEBUG_DATA )
-//            std::cout << indentValue << Pieces::ANSII_GREEN_START   << "Returning to MINIMAX_A_B 'BEST START' Start-> "
-//                      << resultSucc.bestMove.startSquare << " Move to-> "
-//                      << resultSucc.bestMove.destinationSquare.back() << Pieces::ANSII_END << std::endl;
+        if (ouputDebugData > 1 )
+        {
+            std::cout << indentValue << Pieces::ANSII_GREEN_START << "Recursive Return to MINIMAX_A_B 'BEST START'";
 
-//            std::cout << indentValue << Pieces::ANSII_GREEN_START << " New Value:  " << resultSucc.value << " Depth-> "
-//                      << depth << " useThresh-> " << useThresh << " passThresh-> " << passThresh
- //                     << Pieces::ANSII_END << std::endl;
+            if (resultSucc.bestMove.destinationSquare.size() != 0)
+                std::cout << " Start-> " << resultSucc.bestMove.startSquare << " Move to-> "
+                          << resultSucc.bestMove.destinationSquare.back() << Pieces::ANSII_END << std::endl;
+            else
+                std::cout << " Max Depth Reached, best move returned is NILL " << Pieces::ANSII_END << std::endl;
+        }
+        if (ouputDebugData > 0 )
+            std::cout << indentValue << Pieces::ANSII_GREEN_START << "Recursive Return:  Just checked-> "
+                      << successors.at(successorIndex).startSquare << " -> "
+                      << successors.at(successorIndex).destinationSquare.at(0)
+                      << " New Value-> " << resultSucc.value << " Depth-> "
+                      << depth << " useThresh-> " << useThresh << " passThresh-> " << passThresh
+                      << Pieces::ANSII_END << std::endl;
+
 
         newValue = -resultSucc.value;
 
         if ( newValue > passThresh )  // Found the Best Move
         {
-            if ( OUPUT_DEBUG_DATA )
-            std::cout << indentValue << Pieces::ANSII_YELLOW_COUT << "New Best Move.  Change PassThresh  Old: " << passThresh
+            if (ouputDebugData > 0 && depth == 4 )
+            std::cout << indentValue << Pieces::ANSII_YELLOW_COUT << "New Best Move.  From-> " << successors.at(successorIndex).startSquare
+            << " to-> " << successors.at(successorIndex).destinationSquare.at(0)
+            <<" Change PassThresh  Old: " << passThresh
                       << " to  New: " << newValue << Pieces::ANSII_END << std::endl;
 
             passThresh = newValue;
-            preferredMove = successors.at(successorIndex);
+            bestPath = successors.at(successorIndex);
         }
 
         if ( passThresh >= useThresh )  // Best move on the branch.  No need to look anymore
         {
-          if ( OUPUT_DEBUG_DATA )
+          if (ouputDebugData > 0 )
             std::cout << indentValue << Pieces::ANSII_YELLOW_COUT << "AB-CUTOFF!!  Best Move on the Branch.  PassThresh -> "
-                      << Pieces::ANSII_END << passThresh << " Use-> " << useThresh << " Returning " << std::endl;
+                      << Pieces::ANSII_END << passThresh << " UseThresh-> " << useThresh << " Returning " << std::endl;
 
-            if (passThresh < 0)
-                result.value = -passThresh;
-            else
-                result.value = passThresh;
+            result.value = passThresh;
+            result.bestMove = bestPath;
 
-            result.bestMove = successors.at(successorIndex);
-            if ( OUPUT_DEBUG_DATA )
+            if (ouputDebugData > 2 )
             std::cout << indentValue << Pieces::ANSII_RED_COUT  << "Returning -> " << result.value << " Move:  Start-> "
                       << result.bestMove.startSquare << " Move to-> " << result.bestMove.destinationSquare.at(0)
                       << " Depth-> " << depth << Pieces::ANSII_END << std::endl;
@@ -453,18 +476,32 @@ Algorithm::Result Algorithm::minimax_a_b( Board state, int depth, Color color, i
 
         }
     }
-
+/*
     if (passThresh < 0)
         result.value = -passThresh;
     else
         result.value = passThresh;
+*/
+    result.value = passThresh;
+    result.bestMove = bestPath;
 
-    result.bestMove = preferredMove;
+    if (ouputDebugData > 0 && depth == 4 )
+    {
+        std::cout << indentValue << Pieces::ANSII_BLUE_COUT << "End of Loop Returning -> " << result.value ;
 
-    if ( OUPUT_DEBUG_DATA )
-    std::cout << indentValue << Pieces::ANSII_BLUE_COUT << "Returning -> " << result.value << " Move:  Start-> "
-              << result.bestMove.startSquare << " Move to-> " << result.bestMove.destinationSquare.at(0)
-              << " Depth-> " << depth << Pieces::ANSII_END << std::endl;
+        if (result.bestMove.destinationSquare.size() != 0)
+            std::cout << " Move:  Start-> " << result.bestMove.startSquare << " Move to-> "
+                      << result.bestMove.destinationSquare.at(0) << Pieces::ANSII_END << std::endl;
+        else
+            std::cout << "Max Depth Reached no best move returned " << Pieces::ANSII_END << std::endl;
+
+        std::cout << indentValue << Pieces::ANSII_BLUE_COUT << " New Value:  " << result.value << " Depth-> "
+                  << depth << " useThresh-> " << useThresh << " passThresh-> " << passThresh
+                  << Pieces::ANSII_END << std::endl;
+
+        std::cout  << std::endl;
+
+    }
 
     return result;
 }
@@ -483,7 +520,7 @@ Algorithm::Result Algorithm::alphaBetaSearch(Board state)
         std::cout << "RED ";
     else
         std::cout << "BLACK ";
-    if ( OUPUT_DEBUG_DATA )
+    if (ouputDebugData > 2 )
     std::cout << "In alphaBetaSearch...." << std::endl;
 
     int alpha = std::numeric_limits<int>::min(); // tracks best value for max, initialized to WORST case
@@ -506,7 +543,7 @@ Algorithm::Result Algorithm::alphaBetaSearch(Board state)
  */
 Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, int &alpha, int &beta, Color color)
 {
-    if ( OUPUT_DEBUG_DATA ) {
+    if (ouputDebugData > 2 ) {
         if (color == Color::RED)
             std::cout << "\n\nRED ";
         else
@@ -517,7 +554,7 @@ Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, 
 
     if (Algorithm::terminalTest(state, depth))
     {
-        if ( OUPUT_DEBUG_DATA )
+        if (ouputDebugData > 2 )
         std::cout << "At terminal state!" << std::endl; 
         result.value = std::numeric_limits<int>::max();
         result.bestMove = move; 
@@ -525,15 +562,15 @@ Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, 
     } 
     else if (deepEnough(depth)) 
     {
-        if ( OUPUT_DEBUG_DATA )
+        if (ouputDebugData > 2 )
         std::cout << "at depth" << std::endl; 
         result.value = staticEval(state, color, this->evalVersion);
-        if ( OUPUT_DEBUG_DATA )
+        if (ouputDebugData > 2 )
         std::cout << "Static eval gives us a score of " << result.value << std::endl; 
         result.bestMove = move;
         return result; 
     }
-    if ( OUPUT_DEBUG_DATA )
+    if (ouputDebugData > 2 )
     std::cout << "Not yet at a terminal state...." << std::endl; 
 
     result.value = std::numeric_limits<int>::min();
@@ -562,7 +599,7 @@ Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, 
 
         alpha = std::max(alpha, result.value);
     }
-    if ( OUPUT_DEBUG_DATA )
+    if ( ouputDebugData )
     std::cout << "alpha: " << alpha << " beta: " << beta << " val: " << result.value << " move start: " << result.bestMove.startSquare << std::endl;
 
 //    for (int i = 0; i < result.bestMove.destinationSquare.size(); i++)
@@ -583,7 +620,7 @@ Algorithm::Result Algorithm::maxValue(Board state, Board::Move move, int depth, 
  */
 Algorithm::Result Algorithm::minValue(Board state, Board::Move move, int depth, int &alpha, int &beta, Color color)
 {
-    if ( OUPUT_DEBUG_DATA ) {
+    if ( ouputDebugData ) {
         if (color == Color::RED)
             std::cout << "\n\nRED ";
         else
@@ -594,7 +631,7 @@ Algorithm::Result Algorithm::minValue(Board state, Board::Move move, int depth, 
 
     if (Algorithm::terminalTest(state, depth))
     {
-        if ( OUPUT_DEBUG_DATA )
+        if ( ouputDebugData )
         std::cout << "At terminal state!" << std::endl; 
         result.value = std::numeric_limits<int>::max();
         //result.value = 1;
@@ -603,15 +640,15 @@ Algorithm::Result Algorithm::minValue(Board state, Board::Move move, int depth, 
     }
     else if (depth <= 0) 
     {
-        if ( OUPUT_DEBUG_DATA )
+        if ( ouputDebugData )
         std::cout << "at depth" << std::endl; 
         result.value = staticEval(state, color, this->evalVersion);
-        if ( OUPUT_DEBUG_DATA )
+        if ( ouputDebugData )
         std::cout << "Static eval gives us a score of " << result.value << std::endl; 
         result.bestMove = move;
         return result; 
     }
-    if ( OUPUT_DEBUG_DATA )
+    if ( ouputDebugData )
     std::cout << "Not yet at a terminal state...." << std::endl; 
 
     result.value = std::numeric_limits<int>::max();
@@ -641,7 +678,7 @@ Algorithm::Result Algorithm::minValue(Board state, Board::Move move, int depth, 
 
         beta = std::min(beta, result.value);
     }
-    if ( OUPUT_DEBUG_DATA )
+    if ( ouputDebugData )
     std::cout << "alpha: " << alpha << " beta: " << beta << " val: " << result.value << " move start: " << result.bestMove.startSquare << std::endl;
  //   for (int i = 0; i < result.bestMove.destinationSquare.size(); i++)
  //       std::cout << "dest: " << result.bestMove.destinationSquare.at(i) << std::endl;
@@ -675,7 +712,7 @@ bool Algorithm::terminalTest(Board state, int depth)
     bool isTerminalState = false;
     std::vector<Board::Move> redMoves = state.moveGen(Color::RED);
     std::vector<Board::Move> blackMoves = state.moveGen(Color::BLACK);
-    if ( OUPUT_DEBUG_DATA )
+    if ( ouputDebugData )
     std::cout <<"Red Moves " << redMoves.size() << "  Balck Moves  " << blackMoves.size() << std::endl;
 
     if (redMoves.size() == 0 || blackMoves.size() == 0)
@@ -723,4 +760,11 @@ void Algorithm::setEvalVersion(int evalVersion)
 void Algorithm::setMaxDepth(int maxDepth)
 {
     this->maxDepth = maxDepth;
+}
+
+int Algorithm::passSign(int passThresh) {
+    if ( passThresh < 0 )
+        return -1;
+    else
+        return 1;
 }
