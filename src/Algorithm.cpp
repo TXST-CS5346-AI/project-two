@@ -526,7 +526,7 @@ Algorithm::Result Algorithm::minimax_a_b(Board state, int depth, Color color, in
     {
         result.value = staticEval(state, color, evalVersion);
 
-        if (Pieces::ouputDebugData > 0)
+        if (Pieces::ouputDebugData)
             std::cout << indentValue << Pieces::ANSII_RED_COUT << "Player has no moves.  Returning -> "
                       << result.value << Pieces::ANSII_END << std::endl;
 
@@ -539,10 +539,6 @@ Algorithm::Result Algorithm::minimax_a_b(Board state, int depth, Color color, in
         return result;
     }
 
-    if (Pieces::ouputDebugData > 1)
-        std::cout << indentValue << Pieces::ANSII_GREEN_COUT << "Total Available Moves->  " << successors.size()
-                  << Pieces::ANSII_END << std::endl;
-
     for (int successorIndex = 0; successorIndex < successors.size(); successorIndex++)
     {
         //Create a board at the current iteration of successors
@@ -552,36 +548,19 @@ Algorithm::Result Algorithm::minimax_a_b(Board state, int depth, Color color, in
 
         indentValue.append(">.");
 
-        if (Pieces::ouputDebugData > 1)
+        if (Pieces::ouputDebugData)
             std::cout << indentValue << Pieces::ANSII_BLUE_COUT << "Checking Moves:  Move #-> " << successorIndex + 1
                       << " Passed in parameters:  Start-> " << successors.at(successorIndex).startSquare << " Move to-> "
                       << successors.at(successorIndex).destinationSquare.back() << " Depth-> " << depth
                       << Pieces::ANSII_END << std::endl;
-
-        if (Pieces::ouputDebugData > 0)
-            std::cout << indentValue << Pieces::ANSII_BLUE_COUT << "Making Recursive Call:  Succ start "
-                      << successors.at(successorIndex).startSquare << " -> "
-                      << successors.at(successorIndex).destinationSquare.at(0) << " useThresh-> "
-                      << useThresh << " passThresh-> " << passThresh << " depth-> "
-                      << depth << Pieces::ANSII_END << std::endl;
     
         // recursive call
         Result resultSucc = minimax_a_b(tmpState, depth - 1, switchPlayerColor(color), -passThresh, -useThresh);
 
-        if (Pieces::ouputDebugData > 1)
-        {
-            std::cout << indentValue << Pieces::ANSII_GREEN_START << "Recursive Return to MINIMAX_A_B 'BEST START'";
-
-            if (resultSucc.bestMove.destinationSquare.size() != 0)
-                std::cout << " Start-> " << resultSucc.bestMove.startSquare << " Move to-> "
-                          << resultSucc.bestMove.destinationSquare.back() << Pieces::ANSII_END << std::endl;
-            else
-                std::cout << " Max Depth Reached, best move returned is NILL " << Pieces::ANSII_END << std::endl;
-        }
-        if (Pieces::ouputDebugData > 0)
+        if (Pieces::ouputDebugData)
             std::cout << indentValue << Pieces::ANSII_GREEN_START << "Recursive Return:  Just checked-> "
                       << successors.at(successorIndex).startSquare << " -> "
-                      << successors.at(successorIndex).destinationSquare.at(0)
+                      << successors.at(successorIndex).destinationSquare.back()
                       << " New Value-> " << resultSucc.value << " Depth-> "
                       << depth << " useThresh-> " << useThresh << " passThresh-> " << passThresh
                       << Pieces::ANSII_END << std::endl;
@@ -590,9 +569,9 @@ Algorithm::Result Algorithm::minimax_a_b(Board state, int depth, Color color, in
 
         if (newValue > passThresh) // Found the Best Move
         {
-            if (Pieces::ouputDebugData > 0 && depth == 4)
+            if (Pieces::ouputDebugData > 0 && depth == this->maxDepth)
                 std::cout << indentValue << Pieces::ANSII_YELLOW_COUT << "New Best Move.  From-> " << successors.at(successorIndex).startSquare
-                          << " to-> " << successors.at(successorIndex).destinationSquare.at(0)
+                          << " to-> " << successors.at(successorIndex).destinationSquare.back()
                           << " Change PassThresh  Old: " << passThresh
                           << " to  New: " << newValue << Pieces::ANSII_END << std::endl;
 
@@ -602,17 +581,12 @@ Algorithm::Result Algorithm::minimax_a_b(Board state, int depth, Color color, in
 
         if (passThresh >= useThresh) // Best move on the branch.  No need to look anymore
         {
-            if (Pieces::ouputDebugData > 0)
+            if (Pieces::ouputDebugData)
                 std::cout << indentValue << Pieces::ANSII_YELLOW_COUT << "AB-CUTOFF!!  Best Move on the Branch.  PassThresh -> "
                           << Pieces::ANSII_END << passThresh << " UseThresh-> " << useThresh << " Returning " << std::endl;
 
             result.value = passThresh;
             result.bestMove = successors.at(successorIndex);
-
-            if (Pieces::ouputDebugData > 2)
-                std::cout << indentValue << Pieces::ANSII_RED_COUT << "Returning -> " << result.value << " Move:  Start-> "
-                          << result.bestMove.startSquare << " Move to-> " << result.bestMove.destinationSquare.at(0)
-                          << " Depth-> " << depth << Pieces::ANSII_END << std::endl;
 
             return result;
         }
@@ -620,24 +594,6 @@ Algorithm::Result Algorithm::minimax_a_b(Board state, int depth, Color color, in
 
     result.value = passThresh;
     result.bestMove = bestPath;
-
-    if (Pieces::ouputDebugData > 0 && depth == 4)
-    {
-        std::cout << indentValue << Pieces::ANSII_BLUE_COUT << "End of Loop Returning -> " << result.value;
-
-        if (result.bestMove.destinationSquare.size() != 0)
-            std::cout << " Move:  Start-> " << result.bestMove.startSquare << " Move to-> "
-                      << result.bestMove.destinationSquare.at(0) << Pieces::ANSII_END << std::endl;
-        else
-            std::cout << "Max Depth Reached no best move returned " << Pieces::ANSII_END << std::endl;
-
-        std::cout << indentValue << Pieces::ANSII_BLUE_COUT << " New Value:  " << result.value << " Depth-> "
-                  << depth << " useThresh-> " << useThresh << " passThresh-> " << passThresh
-                  << Pieces::ANSII_END << std::endl;
-
-        std::cout << std::endl;
-    }
-
     return result;
 }
 

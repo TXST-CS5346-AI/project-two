@@ -116,7 +116,7 @@ void printHelpMenu()
     std::cout << "To use this program, please read the instructions below and re-launch." << std::endl;
     std::cout << "Additional details for building and execution are also available in the README.md file." << std::endl;
     std::cout << std::endl;
-
+    std::cout << "Run with -nc for No Color or with -no for No Debug Output." << std::endl; 
     std::cout << "When executing the program, you will be prompted to enter the algorithm and evaluation "
               << "function for the simulation." << std::endl;
     std::cout << "Please follow the instructions on the screen - if you do not care for any specific custom "

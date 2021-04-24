@@ -6,9 +6,9 @@ std::string Pieces::ANSII_RED_START      = "\033[0;31m";
 std::string Pieces::ANSII_RED_HIGH       = "\033[9;37;41m";
 std::string Pieces::ANSII_END            = "\033[0m";
 std::string Pieces::ANSII_GREEN_START    = "\033[0;32m";
-std::string Pieces::ANSII_BLUE_COUT      = "\033[44;1m";
+std::string Pieces::ANSII_BLUE_COUT      = "\033[0;30;46m";
 std::string Pieces::ANSII_RED_COUT       = "\033[41;1m";
-std::string Pieces::ANSII_GREEN_COUT     = "\033[42;1m";
+std::string Pieces::ANSII_GREEN_COUT     = "\033[0;30;42m";
 std::string Pieces::ANSII_YELLOW_COUT    = "\033[30;48;5;3m";
 int Pieces::ouputDebugData = 3; 
 
