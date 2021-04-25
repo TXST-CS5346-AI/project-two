@@ -44,10 +44,8 @@ void goodbye();
 */
 int main(int argc, char *argv[])
 {
-    printWelcomeMsg();
-
     // display help menu
-    if (argc == 2)
+    if (argc >= 2)
     {
         std::string cliArg = argv[1];
 
@@ -74,8 +72,23 @@ int main(int argc, char *argv[])
         {
             Pieces::ouputDebugData = 0;
         }
+        else if (cliArg == "-ncno")
+        {
+            // ANSII codes for colored text, to improve UI and readability
+            Pieces::ANSII_BLUE_START = "";
+            Pieces::ANSII_RED_START = "";
+            Pieces::ANSII_RED_HIGH = "";
+            Pieces::ANSII_END = "";
+            Pieces::ANSII_GREEN_START = "";
+            Pieces::ANSII_BLUE_COUT = "";
+            Pieces::ANSII_RED_COUT = "";
+            Pieces::ANSII_GREEN_COUT = "";
+            Pieces::ANSII_YELLOW_COUT = "";
+            Pieces::ouputDebugData = 0;
+        }
     }
 
+    printWelcomeMsg();
     printMainMenuOptions();
 
     bool isInputValid = false;
@@ -112,9 +125,9 @@ void printWelcomeMsg()
 void printHelpMenu()
 {
     std::cout << "To use this program, please read the instructions below and re-launch." << std::endl;
-    std::cout << "Additional details for building and execution are also available in the README.md file." << std::endl;
+    std::cout << "Additional details for building and execution are also available in the README file." << std::endl;
     std::cout << std::endl;
-    std::cout << "Run with -nc for No Color or with -no for No Debug Output." << std::endl;
+    std::cout << "Run with -nc for No Color, with -no for No Debug Output, or with -ncno for both No Color AND No Debug Output." << std::endl;
     std::cout << "When executing the program, you will be prompted to enter the algorithm and evaluation "
               << "function for the simulation." << std::endl;
     std::cout << "Please follow the instructions on the screen - if you do not care for any specific custom "
