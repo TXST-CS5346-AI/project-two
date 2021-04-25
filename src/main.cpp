@@ -131,6 +131,7 @@ void printMainMenuOptions()
 {
     std::cout << "NOTE: If 1 is selected below, you will NOT be prompted further for any eval function or algorithm. "
               << "All will be simulated in order." << std::endl;
+    std::cout << "For RED player, r = MAN and R = KING; for BLACK player, b = MAN and B = KING." << std::endl;
     std::cout << std::endl;
 
     std::cout << "Choose a game mode below: " << std::endl;
@@ -283,25 +284,6 @@ void runManualGame()
         {
             while (!isSelectionValid)
             {
-                std::cout << "Select RED move: ";
-                std::cin >> moveSelection;
-                if (moveSelection > redMoves.size() || moveSelection < 0)
-                {
-                    std::cerr << "Out of range; please enter a valid choice!" << std::endl;
-                }
-                else
-                {
-                    board = board.updateBoard(redMoves.at(moveSelection - 1), Color::RED);
-                    currentPlayer = Color::BLACK;
-                    isSelectionValid = true;
-                }
-            }
-        }
-        else
-        {
-            isSelectionValid = false;
-            while (!isSelectionValid)
-            {
                 std::cout << "Select BLACK move: ";
                 std::cin >> moveSelection;
                 if (moveSelection > blackMoves.size() || moveSelection < 0)
@@ -312,6 +294,25 @@ void runManualGame()
                 {
                     board = board.updateBoard(blackMoves.at(moveSelection - 1), Color::BLACK);
                     currentPlayer = Color::RED;
+                    isSelectionValid = true;
+                }
+            }
+        }
+        else
+        {
+            isSelectionValid = false;
+            while (!isSelectionValid)
+            {
+                std::cout << "Select RED move: ";
+                std::cin >> moveSelection;
+                if (moveSelection > redMoves.size() || moveSelection < 0)
+                {
+                    std::cerr << "Out of range; please enter a valid choice!" << std::endl;
+                }
+                else
+                {
+                    board = board.updateBoard(redMoves.at(moveSelection - 1), Color::RED);
+                    currentPlayer = Color::BLACK;
                     isSelectionValid = true;
                 }
             }
