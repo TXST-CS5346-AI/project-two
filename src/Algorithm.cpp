@@ -584,9 +584,9 @@ int Algorithm::evalFunctThree(Board state, Color color)
 
     // CHECK TERMINAL STATE
     if (enemyMoves.size() == 0)
-        return 9000000; // good for us if enemy has no moves left!
+        return 8999999; // good for us if enemy has no moves left!
     else if (playerMoves.size() == 0)
-        return -8000000; // bad for us if we're out of moves!
+        return -7999999; // bad for us if we're out of moves!
 
     // MAIN LOOP FOR SCORING POSITION
     for (int piece = 0; piece < 32; piece++)
