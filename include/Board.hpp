@@ -55,12 +55,14 @@ public:
 	Pieces getPlayerPieces(Color color);
 	Pieces getOpponentPieces(Color color);
 
+	static BoardMoveTable boardMoveTable[33];
+
 private:
 
 	Pieces blackPieces;
 	Pieces redPieces;
 
-	static BoardMoveTable boardMoveTable[33];
+	
 	void getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board::Move>& totalMoves, Board board, bool wasKingPriorMove);
 
 };
