@@ -2,26 +2,28 @@
 #define BOARD_H
 
 #include <vector>
-#include <queue>
 #include <string> 
 
 #include "Pieces.hpp"
 
 
 /**
- * Header definition for class Board. 
- * 
- * This class represents a virtual checkers board. 
- * Each player should have a white square on the bottom right corner. 
- * Each player puts pieces on the 12 dark squares in the first three closest rows. 
- * Each of the three rows should have 4 pieces. 
+ * Class board is used to represent the entire board and its current state.
+ * It is based on an 8 x 8 grid, with 32 possible spaces. Two piece data
+ * types are the primary memory consumers of this class. This class also includes 
+ * a static member that acts as a move guide. This move guide determines the possible
+ * moves for a square on the board, not for a piece. 
  */
-
 class Board
 {
 
 public:
 
+	/**
+	* Struct Nove is used to track moves made on the board. It contains
+	* a single starting location, a vector of steps to a move, 
+	* as well as all of the pieces to remove when this move is made.
+	*/
 	struct Move
 	{
 		int startSquare;
@@ -29,6 +31,11 @@ public:
 		std::vector<int> removalSquare;
 	};
 
+	/**
+	* Struct BoardMoveTable is a static data type that is used to speed
+	* up searching for moves for each position. It is shared among all
+	* boards.
+	*/
 	struct BoardMoveTable
 	{
 		std::vector<int> jumps;
@@ -55,12 +62,14 @@ public:
 	Pieces getPlayerPieces(Color color);
 	Pieces getOpponentPieces(Color color);
 
+	static BoardMoveTable boardMoveTable[33];
+
 private:
 
 	Pieces blackPieces;
 	Pieces redPieces;
 
-	static BoardMoveTable boardMoveTable[33];
+
 	void getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board::Move>& totalMoves, Board board, bool wasKingPriorMove);
 
 };

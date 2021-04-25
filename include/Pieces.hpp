@@ -3,30 +3,30 @@
 
 #include <string> 
 
+
+
 /**
- * Header definition for class Piece. 
- * A "piece" is a checker piece used in the game of checkers. 
- * It may be either red or black. Color is an immutable property. 
- * It is set only once when the piece is created and placed on the board. 
- * 
- * A standard checkers piece may move only forwards in a diagonal manner. If the piece reaches the 
- * opposite end of the board, it becomes a "king" piece. This means it may now move backwards diagonally. 
- * 
- * A piece from player A may take a piece from player B by "jumping" over it diagonally if the square 
- * on the opposite side is empty. Jumps are MANDATORY - a player must make a jump if one is available to them. 
- * If multiple jumps are available, the player simply selects among the choices. 
- * 
- * A jump may be continuous - the piece must continue capturing enemy pieces if more are available for capture. 
- */
+* The Color enumerator is used in place of values 1 and -1 
+* in order to make the code easier to read. Note the values 
+* of 1 and -1. This allows for alternating play by multiplying the current 
+* by 1. 
 
-
+*/
 enum class Color { RED = 1, BLACK = -1 };
 
+
+/**
+* The Pieces class represents all pieces for a particular player. Each object
+* of the class contains a single instance of pieces. In addition to this,
+* ANSII code strings were included here in order to make the output
+* of the code easier to read. These codes serve no functional purpose
+* aside from changing text color.
+*/
 class Pieces 
 {
 public: 
     
-    Pieces(); // constructor
+    Pieces();
     Pieces(Color color);
 
     // ANSII codes for colored text, to improve UI and readability
@@ -39,12 +39,14 @@ public:
     static std::string ANSII_RED_COUT;
     static std::string ANSII_GREEN_COUT;
     static std::string ANSII_YELLOW_COUT;
+
     // Debug reporting level 3 == display all debug/status lines 2== important, 1 == basic, 0 == none
     static int ouputDebugData; 
 
-    bool isKing(int position) const; // takes position, adds 32 and returns if what is in position is king (or not)
-    void setKing(int poisition, bool toKing); // sets member variable isKing to true. Takes position adds 32 and sets the bit it to 1
+    bool isKing(int position) const; 
+    void setKing(int poisition, bool toKing);
     
+    // This contains 64 bits to represent the entire piece set and king status for one side.
     long long pieces;
 };
 

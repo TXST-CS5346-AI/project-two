@@ -6,20 +6,53 @@
 // Forward declare the static data member.
 Board::BoardMoveTable Board::boardMoveTable[33];
 
+ /**
+  * Constructor | Board | Board
+  * 
+  * Summary	: Creates both the red player and black player
+  *				 piece list. If not already done, it also
+  *				instantiates the static move table.
+  *
+  * @author : David Torrente
+  * 
+  */
 Board::Board()
 {
+	// Guarded internally to prevent from having moves added to it.
 	InitializeMoveTable();
+
 	// Assign the proper pieces to the player, either red or black.
 	redPieces = Pieces(Color::RED);
 	blackPieces = Pieces(Color::BLACK);
 }
 
+ 
+/**
+ * Destructor | Board | ~Board
+ *
+ * Summary : Class destructor. No special code required.
+ * 
+ * @author : David Torrente
+ * 
+ */
 Board::~Board()
 {
 
 }
 
 
+/**
+ * Member Function | Board | getPlayerPieces
+ *
+ * Summary :	Gets the pieces that belong to a particular player. 
+ *
+ * @author : David Torrente
+ * 
+ * @param Color color :	 The player color of pieces to get.
+ *
+ * @return Pieces :	The pieces belonging to the player.
+ * 
+ */
 Pieces Board::getPlayerPieces(Color color)
 {
 	if (color == Color::RED)
@@ -32,6 +65,22 @@ Pieces Board::getPlayerPieces(Color color)
 	}
 }
 
+
+/**
+ * Member Function | Board | getOpponentPieces
+ *
+ * Summary :	Gets the pieces that belong to the 
+ *				opposing player.
+ *
+ * @author : David Torrente
+ * 
+ * @param Color color :	 The player color of pieces to
+ *						 get the opponent of.
+ *
+ * @return Pieces :	The pieces belonging to the 
+ *						opposing player.
+ *
+ */
 Pieces Board::getOpponentPieces(Color color)
 {
 	if (color == Color::RED)
@@ -44,11 +93,43 @@ Pieces Board::getOpponentPieces(Color color)
 	}
 }
 
+
+/**
+ * Member Function | Board | getNumRegularPieces
+ *
+ * Summary :	Gets the count of man pieces that belong 
+ *				to the player.
+ *
+ * @author : David Torrente
+
+ * @param Color color :	 The player color of pieces to
+ *						 get the count for.
+ *
+ * @return int :	A value 0 to 12 which is the count
+ *					of man pieces.
+ *
+ */
 int Board::getNumRegularPieces(Color color)
 {
 	return getNumPlayerTotalPieces(color) - getNumKingPieces(color);
 }
 
+
+/**
+ * Member Function | Board | getNumKingPieces
+ *
+ * Summary :	Gets the count of king pieces that belong
+ *				to the player.
+ *
+ * @author : David Torrente
+ * 
+ * @param Color color :	 The player color of pieces to
+ *						 get the count for.
+ *
+ * @return int :	A value 0 to 12 which is the count
+ *					of king pieces.
+ *
+ */
 int Board::getNumKingPieces(Color color)
 {
 	{
@@ -77,6 +158,22 @@ int Board::getNumKingPieces(Color color)
 	}
 }
 
+
+/**
+ * Member Function | Board | getNumPlayerTotalPieces
+ *
+ * Summary :	Gets the count of total pieces that belong
+ *				to the player.
+ *
+ * @author : David Torrente
+ *
+ * @param Color color :	 The player color of pieces to
+ *						 get the count for.
+ *
+ * @return int :	A value 0 to 12 which is the count
+ *					of total pieces.
+ *
+ */
 int Board::getNumPlayerTotalPieces(Color color) 
 {
 	int totalPieceCount = 0;
@@ -104,6 +201,27 @@ int Board::getNumPlayerTotalPieces(Color color)
 	return totalPieceCount;
 }
 
+
+/**
+ * Member Function | Board | moveGen
+ *
+ * Summary :	Gets all of the possible moves for the player
+ *				based on the color parameter. Note that this
+ *				is bound by the mandatory jump rule, meaning
+ *				that a player who can jump will not be given
+ *				the option to move to a adjacent space. These
+ *				adjacent space moves will not even be computed
+ *				if there is a jump possible.
+ *
+ * @author : David Torrente
+ *
+ * @param Color color :			The player color to get the moves
+ *								for.
+ * 
+ * @return vector<Board::Move> :	A vector of possible moves
+ *									for the player.
+ *
+ */
 std::vector<Board::Move> Board::moveGen(Color color)
 {
 	std::vector<Move> totalMoves;
@@ -145,7 +263,9 @@ std::vector<Board::Move> Board::moveGen(Color color)
 
 	// Go through all 32 squares and see if it is one
 	// of the appropriate pieces belonging to player.
-	// Do this only if no jumps are possible.
+	// Do this only if no jumps are possible. This is controlled
+	// by the if condition here. No need to get moves if there are
+	// jumps already found.
 	if (totalMoves.size() == 0)
 	{
 		for (int pieceIter = 1; pieceIter <= 32; pieceIter++)
@@ -167,6 +287,36 @@ std::vector<Board::Move> Board::moveGen(Color color)
 	return totalMoves;
 }
 
+
+/**
+ * Member Function | Board | getJumpsForPiece
+ *
+ * Summary :	Gets all of the possible jumps for the specific
+ *				piece based on the color parameter and location.
+ *				This is only called after confirming that the player
+ *				has a piece in the proper location.
+ *
+ * @author : David Torrente
+ *
+ * @param Color color :				The player color of pieces to
+ *									get the jumps for.
+ * 
+ * @param int piece	  :				The board location to get the jumps
+ *									for.
+ * 
+ * @param Pieces *playerPieces :	A pointer to the player pieces.
+ *									Needed since these can block a possible
+ *									jump.
+ *
+ * @param Pieces *opponentPieces :	A pointer to the opponent pieces.
+ *									Needed since these can block a possible
+ *									jump as well as to confirm that a jump
+ *									can happen.
+ *
+ * @return vector<Board::Move> :	A vector of possible jumps
+ *									for the particular piece.
+ *
+ */
 std::vector<Board::Move> Board::getJumpsForPiece(Color color, int piece, Pieces* playerPieces, Pieces* opponentPieces)
 {
 	// The returned vector of all possible jumps carried out completely
@@ -196,6 +346,37 @@ std::vector<Board::Move> Board::getJumpsForPiece(Color color, int piece, Pieces*
 	return finalMoves;
 }
 
+
+/**
+ * Member Function | Board | getJumpsForPieceRec
+ *
+ * Summary :	Gets all of the possible jumps in a single jump attempt.
+ *				Often called "double" jumping. This creates a full
+ *				jump chain. a recursive call.
+ *
+ * @author : David Torrente
+ * 
+ * @param Color color :			The player color of pieces to
+ *								get the jump chain for.
+ *
+ * @param Move move	  :			A starter move. Contains a starting
+ *								space, with an empty destination vector.
+ *								when passed in to a recursive call,
+ *								this destination vector may contain
+ *								moves, signifying that it is in the middle
+ *								of a jump chain.
+ * 
+ * @param vector<Board> & totalMovesAccumulator : Accumulates all possible
+ *										jumps at the end of each jump chain. Passed
+ *										in by reference and returned to calling 
+ *										function.
+ * 
+ * @param Board board :			The current state of the board, updated for each jump.
+ * 
+ * @param bool wasKingPriorMove	: A value used to determine if the king was a king prior 
+ *								  to this move. Becoming a king stops a jump chain.
+ *
+ */
 void Board::getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board::Move>& totalMovesAccumulator,  Board board, bool wasKingPriorMove)
 {
 
@@ -288,8 +469,36 @@ void Board::getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board
 
 }
 
-// Knows it has a proper piece by the time it gets here. It will return the moves
-// for the piece in this square.
+
+/**
+ * Member Function | Board | getMovesForPiece
+ *
+ * Summary :	Gets all of the possible moves for a piece. This call knows that the
+ *				piece is a proper piece for this color to play on prior to this call.
+ *				Also note that prior to this call, jumps should be checked. If there
+ *				are jumps, do not allow these moves.
+ *
+ * @author : David Torrente 
+ * 
+ * @param Color color :				The player color of pieces to
+ *									get the moves for.
+ *
+ * @param int piece	  :				The board location to get the moves
+ *									for.
+ *
+ * @param Pieces *playerPieces :	A pointer to the player pieces.
+ *									Needed since these can block a possible
+ *									jump.
+ *
+ * @param Pieces *opponentPieces :	A pointer to the opponent pieces.
+ *									Needed since these can block a possible
+ *									jump as well as to confirm that a jump
+ *									can happen.
+ *
+ * @return vector<Board::Move> :	A vector of possible moves
+ *									for the particular piece.
+ *
+ */
 std::vector<Board::Move> Board::getMovesForPiece(Color color, int piece, Pieces* playerPieces, Pieces* opponentPieces)
 {
 	std::vector<Move> moves;
@@ -331,7 +540,14 @@ std::vector<Board::Move> Board::getMovesForPiece(Color color, int piece, Pieces*
 }
 
 
-
+/**
+ * Member Function | Board | printBoard
+ *
+ * Summary :	Prints the current state of the board. It is a constant function.
+ *
+ * @author : David Torrente 
+ * 
+ */
 void Board::printBoard() const
 {
 	int squareOffset = 0;
@@ -423,7 +639,26 @@ void Board::printBoard() const
 
 }
 
-
+/**
+ * Member Function | Board | getPieceInSquare
+ *
+ * Summary :	Gets the type of piece at a particular location for a particular color.
+ *				Note that the position does not need to be checked for a piece prior to this
+ *				call. If the position does not contain a piece of the matching color type, 
+ *				it will report as empty for that color.
+ *
+ * @author : David Torrente 
+ * 
+ * @param int piece	  :				The board location to get the piece type
+ *									for.
+ * 
+ * @param Color color :				The player color to get the piece type for.
+ *
+ * @return int	:					a value, 0 to 2, specifying the piece type of the given 
+ *									color. 0 = no piece for this color. 1 = man piece
+ *									for this color. 2 = king piece for this color.
+ *
+ */
 int Board::getPieceInSquare(int position, Color color)
 {
 	int pieceType = 0;
@@ -452,8 +687,27 @@ int Board::getPieceInSquare(int position, Color color)
 }
 
 
-// Note that this updates the complete board for both sides.
-// This will always only be a single move. It will need to be processed before this.
+
+/**
+ * Member Function | Board | updateBoard
+ *
+ * Summary :	Updates the entire board based on a given move. Note that this updates the complete
+ *				board for both sides. This will always operate on a single properly formatted move.
+ *				It will also convert pieces into kings if they reach the back row of the opposing 
+ *				player.
+ *
+ * @author : David Torrente 
+ * 
+ * @param Move move	  :				The move to apply to the board. Includes the destination 
+ *									and pieces to remove.
+ *
+ * @param Color color :				The player color that is applying this move. Needed primarily 
+ *									to determine if a piece needs to be kinged.
+ *
+ * @return Board	:				Returns a new copy of the board. Note that this is only 
+ *									two bitfields (small).
+ *
+ */
 Board Board::updateBoard(Move move, Color color)
 {
 
@@ -481,8 +735,8 @@ Board Board::updateBoard(Move move, Color color)
 	playerPieces->pieces = playerPieces->pieces | (1LL << (move.destinationSquare.back() - 1));
 	if (playerPieces->isKing(move.startSquare))
 	{
-		playerPieces->setKing(move.destinationSquare.back(), true);
 		playerPieces->setKing(move.startSquare, false);
+		playerPieces->setKing(move.destinationSquare.back(), true);
 	}
 	else
 	{
@@ -494,8 +748,11 @@ Board Board::updateBoard(Move move, Color color)
 	}
 
 	// Remove start pos
-	playerPieces->pieces = playerPieces->pieces & ~(1LL << (move.startSquare - 1));
-	
+	if (move.startSquare != move.destinationSquare.back())
+	{
+		playerPieces->pieces = playerPieces->pieces & ~(1LL << (move.startSquare - 1));
+	}
+
 	// Remove all jumped spots and set them back to not a king.
 	for (int jumpedSpaceIter = 0; jumpedSpaceIter < move.removalSquare.size(); jumpedSpaceIter++)
 	{
@@ -506,6 +763,20 @@ Board Board::updateBoard(Move move, Color color)
 	return updatedBoard;
 }
 
+
+/**
+ * Member Function | Board | InitializeMoveTable
+ *
+ * Summary :	Sets up the static move table which is shared among all
+ *				boards. Note that it is a move table, not a piece tracker.
+ *				pieces are stored in the board. In order to prevent adding 
+ *				moves each time a constructor is called, the move table
+ *				will not add any additional values after it is set up 
+ *				the first time.
+ *
+ * @author : David Torrente 
+ * 
+ */
 void Board::InitializeMoveTable()
 {
 
