@@ -102,10 +102,10 @@ void Player::printMove(Board::Move move, Color color)
     else 
         colorStr = "Red";
 
-    if(Pieces::ouputDebugData)
-    {
+    // if(Pieces::ouputDebugData)
+    // {
         std::cout << colorStr << " moves from " << move.startSquare << " to destination (in sequence): "; 
         for (int i = 0; i < move.destinationSquare.size(); i++)
             std::cout << "dest: " << move.destinationSquare.at(i) << std::endl;
-    }
+    // }
 }

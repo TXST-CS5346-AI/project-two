@@ -58,20 +58,17 @@ int Algorithm::evalFunctOne(Board state, Color color)
 {
     bool criticalPoint = false;
     Color opponentColor;
-    if (Color::RED == color)
-    {
-        opponentColor = Color::BLACK;
-    }
-    else
-    {
-        opponentColor = Color::RED;
-    }
+    int backRowDefense = 0;
+    int runAwayKing = 0;
+    int opponentBackRowDefense = 0;
+    int opponentRunAwayKing = 0;
     int gameTurn = callingPlayer.getNumTurns();
     int manWeight;
     int kingWeight;
     int mobilityWeight;
     int backRowDefenseWeight;
     int runAwayKingWeight;
+    int playerScore = 0;
     int playerBonus = 0;
     int opponentManWeight;
     int opponentKingWeight;
@@ -79,8 +76,33 @@ int Algorithm::evalFunctOne(Board state, Color color)
     int opponentBackRowDefenseWeight;
     int opponentRunAwayKingWeight;
     int opponentBonus = 0;
-    int playerScore = 0;
     int opponentScore = 0;
+    //=======================================================================
+    // Set up a few items based on the player color. Opponent and player
+    // defense row.
+    if (Color::RED == color)
+    {
+        opponentColor = Color::BLACK;
+        // Calculate back row defense
+        for (int redIter = 1; redIter <= 4; redIter++)
+        {
+            if (state.getPieceInSquare(redIter, color) == 1)
+            {
+                backRowDefense++;
+            }
+        }
+    }
+    else
+    {
+        opponentColor = Color::RED;
+        for (int blackIter = 29; blackIter <= 32; blackIter++)
+        {
+            if (state.getPieceInSquare(blackIter, color) == 1)
+            {
+                backRowDefense++;
+            }
+        }
+    }
     //=======================================================================
     // Check for the two obvious ones, a winning state or a losing state.
     // Used to simply exit out of the eval function qithout calculating
@@ -108,6 +130,48 @@ int Algorithm::evalFunctOne(Board state, Color color)
     if (!criticalPoint)
     {
         //=======================================================================
+        // Set some values based on the current turn to adjust play styles.
+        //=======================================================================
+        if (gameTurn <= 80)
+        {
+            manWeight = 40;
+            kingWeight = 90;
+            mobilityWeight = 4;
+            backRowDefenseWeight = 2;
+            runAwayKingWeight = 2;
+            opponentManWeight = 6;
+            opponentKingWeight = 16;
+            opponentMobilityWeight = 4;
+            opponentBackRowDefenseWeight = 2;
+            opponentRunAwayKingWeight = 2;
+        }
+        else if (gameTurn <= 32)
+        {
+            manWeight = 20;
+            kingWeight = 80;
+            mobilityWeight = 3;
+            backRowDefenseWeight = 2;
+            runAwayKingWeight = 1;
+            opponentManWeight = 20;
+            opponentKingWeight = 80;
+            opponentMobilityWeight = 3;
+            opponentBackRowDefenseWeight = 2;
+            opponentRunAwayKingWeight = 1;
+        }
+        else
+        {
+            manWeight = 20;
+            kingWeight = 80;
+            mobilityWeight = 3;
+            backRowDefenseWeight = 2;
+            runAwayKingWeight = 1;
+            opponentManWeight = 20;
+            opponentKingWeight = 80;
+            opponentMobilityWeight = 1;
+            opponentBackRowDefenseWeight = 2;
+            opponentRunAwayKingWeight = 1;
+        }
+        //=======================================================================
         // Check for pretty bad states, such as a large difference in the number
         // of pieces between players. This typically means multiple jumps.
         // Intended to avoid fine tuning specific calculations.
@@ -117,13 +181,25 @@ int Algorithm::evalFunctOne(Board state, Color color)
         int opponentManCount = state.getNumRegularPieces(opponentColor);
         int opponentKingCount = state.getNumKingPieces(opponentColor);
         int totalPieceDisparityCount = ((manCount + kingCount) - (opponentManCount + opponentKingCount));
+        // This means attempt to reduce the opponent
+        // at almost any price. Even if it means losing
+        // a few pieces.
         if (totalPieceDisparityCount >= 6)
         {
             playerBonus = 10000;
+            opponentManWeight = 6000;
+            opponentKingWeight = 16000;
+            manWeight = 1;
+            kingWeight = 1;
         }
+        // This means that you are trailing in pieces.
+        // The objective is to now set up a more defensive
+        // mode of play. Typically it is bad to get here.
         else if (totalPieceDisparityCount <= -6)
         {
             opponentBonus = 10000;
+            manWeight = 60;
+            kingWeight = 160;
         }
         if ((kingCount - opponentKingCount) >= 4)
         {
@@ -133,54 +209,6 @@ int Algorithm::evalFunctOne(Board state, Color color)
         {
             opponentBonus = 10000;
         }
-        //=======================================================================
-        // Check for pretty bad states, such as a large difference in the number
-        // of pieces between players. This typically means multiple jumps.
-        // Intended to avoid fine tuning specific calculations.
-        //=======================================================================
-        if (gameTurn <= 8)
-        {
-            manWeight = 30;
-            kingWeight = 800;
-            mobilityWeight = 4;
-            backRowDefenseWeight = 2;
-            runAwayKingWeight = 2;
-            opponentManWeight = 30;
-            opponentKingWeight = 800;
-            opponentMobilityWeight = 4;
-            opponentBackRowDefenseWeight = 2;
-            opponentRunAwayKingWeight = 2;
-        }
-        else if (gameTurn <= 16)
-        {
-            manWeight = 20;
-            kingWeight = 800;
-            mobilityWeight = 3;
-            backRowDefenseWeight = 2;
-            runAwayKingWeight = 1;
-            opponentManWeight = 20;
-            opponentKingWeight = 800;
-            opponentMobilityWeight = 3;
-            opponentBackRowDefenseWeight = 2;
-            opponentRunAwayKingWeight = 1;
-        }
-        else
-        {
-            manWeight = 20;
-            kingWeight = 8000;
-            mobilityWeight = 3;
-            backRowDefenseWeight = 2;
-            runAwayKingWeight = 1;
-            opponentManWeight = 20;
-            opponentKingWeight = 800;
-            opponentMobilityWeight = 3;
-            opponentBackRowDefenseWeight = 2;
-            opponentRunAwayKingWeight = 1;
-        }
-        int backRowDefense = 0;
-        int runAwayKing = 0;
-        int opponentBackRowDefense = 0;
-        int opponentRunAwayKing = 0;
         playerScore =
             (manCount * manWeight) +
             (kingCount * kingWeight) +
@@ -217,15 +245,20 @@ int Algorithm::evalFunctTwo(Board state, Color color)
         numOponentPieces = state.getNumRegularPieces(switchPlayerColor(color)),  //  how many opponent pieces are on the board
         numOponentKingsScore = state.getNumKingPieces(switchPlayerColor(color)), // How many opponent Kings are on the board
         totalPieces = numPieces + numKingsScore + numOponentPieces + numOponentKingsScore,
-
-        // This places a high value on the current player's pieces.  If a player's leads to the losing of a piece
+        // This places a high value on the current player's pieces.  If a player's turn leads to the losing of a piece
         // a lower value for the evaluation will be returned
-        preservePieces = numPieces * 50 + numKingsScore * 500,
-
+        pieceValue =500,
+        kingValue = 5000,
+        preservePlayersPieces = numPieces * pieceValue + numKingsScore * kingValue,
+        preserveOpponentsPieces = numOponentPieces * pieceValue + numOponentKingsScore * kingValue,
         //  This places a value on taking opponent pieces,  if a move removes an opponent piece this results in
         // a higher return value for the move
-        takePieces = 1200 - (numOponentPieces * 10 + numOponentKingsScore * 100),
-
+        oponentValue = 100,
+        oponentKingValue = 1000,
+        opponentPieces = (numOponentPieces * oponentValue + numOponentKingsScore * oponentKingValue),  // Value of all opponent's pieces
+        opponentPieceValue = (opponentPieces - numOponentKingsScore * oponentKingValue ) / oponentValue,  // value of each man
+        opponentKingValue = opponentPieces - opponentPieceValue,  // value of each king
+        crossOfPainValue = 50,  //This is the square immediately above, below, to the right or left of the king
         // When in end game (less than 8 pieces) this value is used to alter strategy between taking pieces
         // and preserving pieces
         endGameAdjust = 1,
@@ -233,38 +266,34 @@ int Algorithm::evalFunctTwo(Board state, Color color)
         playerPiece,
         opponentPiece,
         positionAdder = 0,
+        opponentPositionAdder = 0,
         moveScore = 0;
-
     const int KING = 2,
               MAN = 1;
-
     int squareValuesForRed[] = {1, 1, 1, 1,
                                 2, 2, 2, 2,
                                 3, 3, 3, 3,
                                 5, 5, 5, 5,
                                 8, 8, 8, 8,
-                                11, 11, 11, 11,
                                 15, 15, 15, 15,
-                                50, 50, 50, 50};
-
-    int squareValuesForBlack[] = {50, 50, 50, 50,
+                                25, 25, 25, 25,
+                                75, 75, 75, 75};
+    int squareValuesForBlack[] = {75, 75, 75, 75,
+                                  25, 25, 25, 25,
                                   15, 15, 15, 15,
-                                  11, 11, 11, 11,
                                   8, 8, 8, 8,
                                   5, 5, 5, 5,
                                   3, 3, 3, 3,
                                   2, 2, 2, 2,
                                   1, 1, 1, 1};
-
     int squareValuesForKing[] = {1, 1, 1, 1,
-                                 2, 3, 3, 2,
-                                 3, 4, 4, 3,
-                                 4, 5, 5, 4,
-                                 4, 5, 5, 4,
-                                 3, 4, 4, 3,
-                                 2, 3, 3, 2,
+                                 3, 5, 5, 3,
+                                 7, 9, 9, 7,
+                                 11, 13, 13, 11,
+                                 11, 13, 13, 11,
+                                 7, 9, 9, 7,
+                                 3, 5, 5, 3,
                                  1, 1, 1, 1};
-
     if (color == Color::RED)
     {
         playerColor = Pieces::ANSII_RED_START;
@@ -273,25 +302,20 @@ int Algorithm::evalFunctTwo(Board state, Color color)
     }
     else
         playerColor = "BLACK ";
-
     indentValue = playerColor;
-
     if (Pieces::ouputDebugData > 1)
         std::cout << indentValue << Pieces::ANSII_GREEN_COUT << " Evaluating Current Player:  Pieces-> "
                   << Pieces::ANSII_END << numPieces << " Kings-> " << numKingsScore << " Opponent Pieces-> "
                   << numOponentPieces << " Kings-> " << numOponentKingsScore << " total pieces-> "
                   << totalPieces << std::endl;
-
     if (state.getNumPlayerTotalPieces(color) == 0) // if the player is out of pieces this is a terminal state
     {
         if (Pieces::ouputDebugData > 1)
             std::cout << indentValue << Pieces::ANSII_RED_COUT << "TERMINAL STATE!! Returning -> "
                       << Pieces::ANSII_END << std::endl;
-
         return 777775; //  returning a high value.  If this is the opponent's move then the current plauer wants this
                        //  if this is the current player, this is not a move the player wants to take
     }
-
     // Piece preservation and the taking of opponent pieces are  global values. In other words, if no pieces are lost
     // or taken, all moves that have this result will have the same evaluation value.
     // This loop looks at each player's piece and the board generates a value that will separate certain moves from
@@ -299,10 +323,23 @@ int Algorithm::evalFunctTwo(Board state, Color color)
     for (int i = 1; i <= 32; ++i)
     {
         playerPiece = state.getPieceInSquare(i, color);
+        opponentPiece = state.getPieceInSquare(i, switchPlayerColor(color));
+        // get value of current player's board
         if (playerPiece == KING) // piece is a King
         {
             // this encourages a king to move towards the center of the board
             positionAdder += squareValuesForKing[i - 1] * 10;
+            //std::cout << i << "  (i-1)%4 " << (i-1)%4 << " (i+1)%4 "  << (i+1)%4 << " i - 8 " << i -8 << " i + 8 " << i + 8 << std::endl;
+            // look for opponents in + or - 1 or + or - 8.  if true this is a good place to be
+            // look -1 (to the right)
+            if ( (i-1)%4 != 0 && state.getPieceInSquare((i-1)%4, switchPlayerColor(color)) != 0 )   // not a right edge piece and an opponent piece is here!
+                positionAdder += crossOfPainValue;
+            if ( ((i-1)/4+1) == ( i/4 + 1) && state.getPieceInSquare((i+1)%4, switchPlayerColor(color)) != 0 )   // not a left edge piece and an opponent piece is here!
+                positionAdder += crossOfPainValue;
+            if ( i - 8 > 0 && state.getPieceInSquare( (i-8), switchPlayerColor(color)) != 0 )
+                positionAdder += crossOfPainValue;
+            if ( i + 8 < 33 && state.getPieceInSquare( (i+8), switchPlayerColor(color)) != 0 )
+                positionAdder += crossOfPainValue;
         }
         else if (playerPiece == MAN) // Regular pieces are encouraged to move towards the opponent's back row.
         {
@@ -315,18 +352,34 @@ int Algorithm::evalFunctTwo(Board state, Color color)
                 positionAdder += squareValuesForBlack[i - 1];
             }
         }
-
-        //       opponentPiece = state.getPieceInSquare(i,switchPlayerColor(color));
+        //Get value of opponent player's board
+        if (opponentPiece == KING) // piece is a King
+        {
+            // this encourages a king to move towards the center of the board
+            opponentPositionAdder += squareValuesForKing[i - 1] * 10;
+        }
+        else if (playerPiece == MAN) // Regular pieces are encouraged to move towards the opponent's back row.
+        {
+            if (color == Color::RED)
+            {
+                opponentPositionAdder += squareValuesForRed[i - 1];
+            }
+            else if (color == Color::BLACK)
+            {
+                opponentPositionAdder += squareValuesForBlack[i - 1];
+            }
+        }
     }
-
-    moveScore = preservePieces + takePieces * endGameAdjust + positionAdder;
-    if (Pieces::ouputDebugData > 1)
+    moveScore = preservePlayersPieces + opponentPieceValue + opponentKingValue + positionAdder;
+    moveScore -= (preserveOpponentsPieces + opponentPositionAdder + opponentKingValue) * .9;
+    // Increase square value around opponent's location.
+    // the squares above and below plus right to left have a higher value
+   if (Pieces::ouputDebugData > 1)
         std::cout << indentValue << Pieces::ANSII_GREEN_COUT << " Evaluated Move:  moveScore-> " << Pieces::ANSII_END
-                  << moveScore << " preservePieces-> " << preservePieces << " takePieces -> "
-                  << takePieces * endGameAdjust << " PositionAdder-> " << positionAdder << std::endl;
+                  << moveScore << " preservePlayersPieces-> " << preservePlayersPieces << " opponentPieces -> "
+                  << opponentPieces * endGameAdjust << " PositionAdder-> " << positionAdder << std::endl;
     if (Pieces::ouputDebugData > 1)
         std::cout << indentValue << Pieces::ANSII_YELLOW_COUT << " Checking opponent's Board " << Pieces::ANSII_END << std::endl;
-
     return moveScore; //  Preserve pieces on the board,  this should make moves that loses a piece unfavorable
 }
 
@@ -341,49 +394,59 @@ int Algorithm::evalFunctTwo(Board state, Color color)
  */
 int Algorithm::evalFunctThree(Board state, Color color)
 {
-    int squareValuesForRed[] = {  100, 100, 100, 100,
-                                2, 1, 1, 2,
-                                  1, 1, 1, 2,
-                                2, 3, 3, 1,
-                                  2, 4, 4, 5,
-                                2, 5, 5, 1,
-                                  3, 6, 6, 4,
-                                110, 110, 110, 110};
+    /*  Declaration of "boards" with a weight for each square
+        Two for regular pieces of each color and two for kings of each color
+        Encourage player to keep two pieces in the back for defense
+        leaving 10 pieces for offense. Advance to the center
+        but somewhat in waves as a cluster, to avoid suicidal pieces that expose themselves
+    */
+    int squareValuesForRed[] = {  150, 150, 150,  150,
+                                100, 125, 125, 125,
+                                  100, 100, 100, 75,
+                                50,  75,  75,  75,
+                                  50, 50, 50, 45,
+                                40,  45, 45, 45,
+                                   40,  40,  40, 35,
+                                50, 110, 110, 110};
 
-    int squareValuesForBlack[] = {  110, 110, 110, 110,
-                                  4, 6, 6, 3,
-                                    1, 5, 5, 2,
-                                  5, 4, 4, 2,
-                                    1, 3, 3, 2,
-                                  2, 1, 1, 1,
-                                    2, 1, 1, 2,
-                                  100, 100, 100, 100};
+    int squareValuesForBlack[] = {  110, 110, 110, 50,
+                                  35, 40, 40, 40,
+                                    45, 45, 45, 40,
+                                  45, 50, 50, 50,
+                                    75,  75, 75,  50,
+                                  75,  100, 100, 100,
+                                    125, 125, 125, 100,
+                                  150, 150, 150, 150};
 
-    int squareValuesForRedKing[] = {  3, 1, 1, 5,
-                                    5, 2, 2, 3,
-                                      3, 1, 1, 5,
-                                    5, 1, 1, 3,
-                                      3, 1, 1, 5,
-                                    5, 1, 1, 1,
-                                      3, 2, 2, 5,
-                                    5, 1, 1, 3};
+    // Traveling kings 
+    int squareValuesForRedKing[] = {  35, 35, 35, 35,
+                                    30, 40, 30, 40,
+                                      25, 50, 50, 25,
+                                    20, 20, 60, 20,
+                                      15, 15, 70, 15,
+                                    10, 10, 10, 80,
+                                      5, 5,  5, 15,
+                                    1, 1,  1,  1};
 
-    int squareValuesForBlackKing[] = {  3, 1, 1, 5,
-                                      5, 2, 2, 3,
-                                        3, 1, 1, 5,
-                                      5, 1, 1, 3,
-                                        3, 1, 1, 5,
-                                      5, 1, 1, 3,
-                                        3, 2, 2, 5,
-                                      5, 1, 1, 3};
+    int squareValuesForBlackKing[] = {  1,  1,  1,  1,
+                                      5,  5,  5,  15,
+                                        10, 10, 80, 10,
+                                      15, 15, 70, 15,
+                                        20, 60, 20, 20,
+                                      25, 50, 25, 25,
+                                        40, 30, 30, 30,
+                                      35, 35, 35, 35,};
     
 
-    const int KING = 2, MAN = 1;
+    std::string colorTxt = (color == Color::RED) ? " (RED is Friendly) " : " (BLACK is Friendly) "; 
+    // KING has 4 moves max, so value is 4; MAN has 2 moves max so values is 2
+    const int KING = 2, MAN = 1, KING_VALUE = 4, MAN_VALUE = 2; 
 
-    int numPieces = state.getNumPlayerTotalPieces(color);
-    int numKingsScore = state.getNumKingPieces(color);
+    int numKingsScore = state.getNumKingPieces(color) * KING_VALUE;
+    int numMenScore = (state.getNumPlayerTotalPieces(color) - state.getNumKingPieces(color)) * MAN_VALUE;
 
     int casualtyScore = 0, captureScore = 0, positionScore = 0, playerPiece = 0, enemyPiece = 0; 
+    int preventOverflow = 100; 
 
     std::vector<Board::Move> playerMoves = state.moveGen(color);
     std::vector<Board::Move> enemyMoves = state.moveGen(switchPlayerColor(color));
@@ -396,69 +459,128 @@ int Algorithm::evalFunctThree(Board state, Color color)
     std::vector<Board::Move> playerJumpsForPiece;
     std::vector<Board::Move> opponentJumpsForPiece;
 
+    // helper values to quickly check if a piece is in a certain notable location
+    // back rows for each color player to determine KING-ing
+    // sides inidcate limited moves
     const long long redBackRowGrp = (1LL << 1) | (1LL << 2) | (1LL << 3) | (1LL << 4);
     const long long blackBackRowGrp = (1LL << 29) | (1LL << 30) | (1LL << 31) | (1LL << 32);
     const long long sideColumnGrp = (1LL << 5) | (1LL << 13) | (1LL << 21) | (1LL << 12) | (1LL << 20) | (1LL << 28); 
 
-    // CHECK TERMINAL STATE - Enemy is out of moves, this is a game ending move
+    // CHECK TERMINAL STATE
     if (enemyMoves.size() == 0)
-        return std::numeric_limits<int>::max() - 1000; // 
-    
-    // BEGIN ADVANCEMENT SCORE SECTION
-    int advancementScore = 0;
-    for (int move = 0; move < playerMoves.size(); move++)
+        return std::numeric_limits<int>::max() - preventOverflow; // good for us if enemy has no moves left! 
+    else if (playerMoves.size() == 0)
+        return std::numeric_limits<int>::min() + preventOverflow; // bad for us if we're out of moves! 
+
+    // MAIN LOOP FOR SCORING POSITION
+    for (int piece = 0; piece < 32; piece++)
     {
+        // BEGIN POSITION SCORE SECTION
         if (color == Color::RED)
-            advancementScore += squareValuesForRed[playerMoves.at(move).destinationSquare.back()];
+        {
+            playerPiece = state.getPieceInSquare(piece, color); 
+            if (playerPiece == MAN)
+                positionScore += (squareValuesForRed[piece] * MAN_VALUE);
+            else if (playerPiece == KING)
+                positionScore += (squareValuesForRedKing[piece] * KING_VALUE);
+        }
         else if (color == Color::BLACK)
-            advancementScore += squareValuesForBlack[playerMoves.at(move).destinationSquare.back()];
+        {
+            playerPiece = state.getPieceInSquare(piece, color); 
+            if (playerPiece == MAN)
+                positionScore += (squareValuesForBlack[piece] * MAN_VALUE);
+            else if (playerPiece == KING)
+                positionScore += (squareValuesForBlackKing[piece] * KING_VALUE);
+        }
+        // END POSITION SCORE SECTION        
     }
 
-    for (int enemyMove = 0; enemyMove < enemyMoves.size(); enemyMove++)
-    {
-        if (color == Color::RED)
-            advancementScore -= squareValuesForBlack[enemyMoves.at(enemyMove).destinationSquare.back()];
-        else if (color == Color::BLACK)
-            advancementScore -= squareValuesForRed[enemyMoves.at(enemyMove).destinationSquare.back()];
-    }
-    // END ADVANCEMENT SCORE SECTION
-
-    /*  BEGIN CAPTURES SECTION
+    /*  BEGIN CAPTURES AND ADVANCEMENT SECTION
         If for any given piece we can make more than one capture, we are done. 
         That is a very good move and we prioritize it. 
 
         Otherwise if we can make at least one capture, we give this state a high score 
         but we still want to examine others to see if they may be bettr
     */    
+    int advancementScore = (playerMoves.size() >= enemyMoves.size()) ? 100 : -100; // do we have as many or more moves than enemy?
+    
     for (int i = 0; i < playerMoves.size(); i++)
-    {
+    {   
+        // int playerDestinationSqr = playerMoves.at(i).destinationSquare.back(); 
+        // if (color == Color::RED)
+        // {
+        //     advancementScore += squareValuesForRed[playerDestinationSqr];
+        //     if ((1 << playerDestinationSqr) & blackBackRowGrp)
+        //         advancementScore *= 100; 
+        // }
+        // else if (color == Color::BLACK)
+        // {
+        //     advancementScore += squareValuesForBlack[playerDestinationSqr];
+        //     if ((1 << playerDestinationSqr) & redBackRowGrp)
+        //         advancementScore *= 100; 
+        // }
+
         if (playerMoves.at(i).removalSquare.size() > 1)
         {
-            if (Pieces::ouputDebugData)
-                std::cout << "We can capture multiple pieces!" << std::endl;
+            //if (Pieces::ouputDebugData)
+                std::cout << " INSIDE EVAL-3: We " << colorTxt << " can capture multiple pieces on this state!  " 
+                          << "Start: " << playerMoves.at(i).startSquare << "End: " << playerMoves.at(i).destinationSquare.back() 
+                          << " " << std::endl;
             
-            return std::numeric_limits<int>::max() - 10; // great move! 
+            return std::numeric_limits<int>::max() - preventOverflow; // good move! 
         }
         else if (playerMoves.at(i).removalSquare.size() == 1)
         {
-            return std::numeric_limits<int>::max() / 2; // great move but can we do better? 
+            int enemyCaptureSqr = playerMoves.at(i).removalSquare.back(); 
+            int enemyCaptureType = state.getPieceInSquare(enemyCaptureSqr, switchPlayerColor(color)); // it's an enemy piece, what is it's type?
+
+            if (enemyCaptureType == KING) 
+            {
+                //if (Pieces::ouputDebugData)
+                    std::cout << " INSIDE EVAL-3: We can capture enemy KING! " << colorTxt << std::endl; 
+                
+                return std::numeric_limits<int>::max() - preventOverflow;
+            }
+
+            Board newBoardAfterCapture = state.updateBoard(playerMoves.at(i), color);
+            std::vector<Board::Move> newEnemyMovesGivenOurCapture = newBoardAfterCapture.moveGen(switchPlayerColor(color)); 
+            
+            for (int y = 0; y < newEnemyMovesGivenOurCapture.size(); y++)
+            {
+                if (newEnemyMovesGivenOurCapture.at(y).removalSquare.size() > 1)
+                {
+                    //if (Pieces::ouputDebugData)
+                        std::cout << " INSIDE EVAL-3: We " << colorTxt << "capture 1 piece but lose 2, avoid!" << std::endl;
+            
+                    return std::numeric_limits<int>::min() + preventOverflow; // we capture one piece only to lose 2, do not do this
+                }
+            }
         }
     }
+    // END CAPTURES SECTION
 
+    // BEGIN CASUALTY SECTION
     for (int j = 0; j < enemyMoves.size(); j++)
     {
+        //std::cout << "we are here" << std::endl; 
         if (enemyMoves.at(j).removalSquare.size() > 1)
         {
-            if (Pieces::ouputDebugData)
-                std::cout << "Enemy can capture multiple pieces!" << std::endl;
+            //if (Pieces::ouputDebugData)
+                std::cout << " INSIDE EVAL-3: Enemy can capture multiple pieces, avoid!" << colorTxt << std::endl;
             
-            return 0; // bad move! 
+            return std::numeric_limits<int>::min() + preventOverflow; // bad move! 
         }
         else if (enemyMoves.at(j).removalSquare.size() == 1)
         {
+            // friendly piece may is captured, what is it's type?
             int capturedPieceType = state.getPieceInSquare(enemyMoves.at(j).removalSquare.at(0), color);
             if (capturedPieceType == KING)
-                return 0; // bad move!
+            {
+                //if (Pieces::ouputDebugData)
+                    std::cout << " INSIDE EVAL-3: Enemy can capture a KING, avoid!" << colorTxt << std::endl;
+
+                return -10000; // bad move!
+            }
             else if (capturedPieceType == MAN)
             {
                 int opponentDestinationSqr = enemyMoves.at(j).destinationSquare.at(0);
@@ -468,121 +590,81 @@ int Algorithm::evalFunctThree(Board state, Color color)
                     // if we are RED, opponent is Black; if BLACK enemy lands on our back row, avoid at all cost
                     // we are therefore trying to minimize the chance of an enemy getting a KING
                     if ((1 << opponentDestinationSqr) & redBackRowGrp)
-                        return 0; 
+                        return -5000; 
                     // opponent lands on their own back row; not so bad but we can't retaliate so avoid
                     else if ((1 << opponentDestinationSqr) & blackBackRowGrp)
-                        return 0;
+                        return -50;
                     // opponent lands on one of the side squares, where we cannot retaliate. Avoid as well
                     else if ((1 << opponentDestinationSqr) & sideColumnGrp)
-                        return 0; 
-                    // finally, we exhaust negative scenarios and are where we want to be
-                    else 
-                    {
-                        // get the square numbers around the enemy
-                        int playerTopLeftSqr = opponentDestinationSqr - 4;  
-                        int playerTopRightSqr = opponentDestinationSqr - 3; 
-                        int playerBottomLeftSqr = opponentDestinationSqr + 4; 
-                        int playerBottomRightSqr = opponentDestinationSqr + 5; 
-                        
-                        // get our pieces in those squares, if we have any
-                        int playerTopLeftPiece = state.getPieceInSquare(playerTopLeftSqr, Color::RED);
-                        int playerTopRightPiece = state.getPieceInSquare(playerTopRightSqr, Color::RED);
-                        int playerBottomLeftPiece = state.getPieceInSquare(playerBottomLeftSqr, Color::RED);
-                        int playerBottomRightPiece = state.getPieceInSquare(playerBottomRightSqr, Color::RED);
-
-                        // Since we are RED, our MEN can only advance forward top to bottom. Top pieces adjacent to where the opponent 
-                        // landed can be MAN or KING. Bottom pieces however must be KING, otherwise we can't move backwards
-                        if (playerTopLeftPiece == MAN || playerTopRightPiece == MAN ||
-                            playerTopLeftPiece == KING || playerTopRightPiece == KING ||
-                            playerBottomLeftPiece == KING || playerBottomRightPiece == KING)
-                        {
-                            casualtyScore += 500; 
-                        } 
-                        else 
-                            return 0; // we lost a piece and there is nothing we can do about it, avoid this state
-                    }
-                }
+                        return -50; 
+                } 
                 else 
                 {
                     // if we are BLACK, opponent is Red; if RED enemy lands on our back row, avoid at all cost
                     // we are therefore trying to minimize the chance of an enemy getting a KING
                     if ((1 << opponentDestinationSqr) & blackBackRowGrp)
-                        return 0;
+                        return -5000;
                         // opponent lands on their own back row; not so bad but we can't retaliate so avoid
                     else if ((1 << opponentDestinationSqr) & redBackRowGrp)
-                        return 0;
+                        return -50;
                     // opponent lands on one of the side squares, where we cannot retaliate. Avoid as well
                     else if ((1 << opponentDestinationSqr) & sideColumnGrp)
-                        return 0; 
-                    // finally, we exhaust negative scenarios and are where we want to be
-                    else 
+                        return -50; 
+                    
+                }
+
+                Board boardAfterEnemyJump = state.updateBoard(enemyMoves.at(j), switchPlayerColor(color));  //. simulate enemy captured one of our MEN
+                std::vector<Board::Move> newPlayerMoves = boardAfterEnemyJump.moveGen(color); // available moves after enemy makes capture
+
+                /*  Go through our new available moves if we sacrifice a MAN
+                    If we trade 2 for 1, do it
+                    If we trade 1 for 1 and land on opponent back row, do it
+                    If we just trade 1 for 1, maybe do it as it can advance our position
+                */ 
+                for (int x = 0; x < newPlayerMoves.size(); x++)
+                {
+                    if (newPlayerMoves.at(x).removalSquare.size() > 1)
                     {
-                        // get the square numbers around the enemy
-                        int playerTopLeftSqr = opponentDestinationSqr - 4;  
-                        int playerTopRightSqr = opponentDestinationSqr - 3; 
-                        int playerBottomLeftSqr = opponentDestinationSqr + 4; 
-                        int playerBottomRightSqr = opponentDestinationSqr + 5; 
+                        //if (Pieces::ouputDebugData)
+                            std::cout << colorTxt << " INSIDE EVAL-3: Sacrificed one MAN but can take two pieces!" << std::endl; 
 
-                        // get our pieces in those squares, if we have any
-                        int playerTopLeftPiece = state.getPieceInSquare(playerTopLeftSqr, Color::RED);
-                        int playerTopRightPiece = state.getPieceInSquare(playerTopRightSqr, Color::RED);
-                        int playerBottomLeftPiece = state.getPieceInSquare(playerBottomLeftSqr, Color::RED);
-                        int playerBottomRightPiece = state.getPieceInSquare(playerBottomRightSqr, Color::RED);
+                        return std::numeric_limits<int>::max() - preventOverflow; // we sacrificed one piece for two, good! 
+                    } 
+                    else if (newPlayerMoves.at(x).removalSquare.size() == 1)
+                    {
+                        int playerDestinationSqrAfterCapture = newPlayerMoves.at(x).destinationSquare.back(); 
+                        captureScore += 500; 
 
-                        // Since we are BLACK, our MEN can only advance forward bottom to top. Top pieces adjacent to where the opponent 
-                        // landed can KING only or we cannot move backwards. Bottom pieces can be either MAN or KING
-                        if (playerTopLeftPiece == KING || playerTopRightPiece == KING ||
-                            playerBottomLeftPiece == MAN || playerBottomRightPiece == MAN ||
-                            playerBottomLeftPiece == KING || playerBottomRightPiece == KING)
-                        {
+                        if (color == Color::RED)
+                        {   
+                            if ((1 << playerDestinationSqrAfterCapture) & blackBackRowGrp)
+                            {
+                                //if (Pieces::ouputDebugData)
+                                    std::cout << colorTxt << " INSIDE EVAL-3: Sacrificed one MAN but got a KING!" << std::endl; 
+
+                                return std::numeric_limits<int>::max() - preventOverflow; // we trade 1 for 1 but get a KING! 
+                            }
                             casualtyScore += 500; 
                         } 
-                        else 
-                            return 0; // we lost a piece and there is nothing we can do about it, avoid this state
+                        else // BLACK
+                        {
+                            if ((1 << playerDestinationSqrAfterCapture) & redBackRowGrp)
+                            {
+                                //if (Pieces::ouputDebugData)
+                                    std::cout << colorTxt << " INSIDE EVAL-3: Sacrificed one MAN but got a KING!" << std::endl; 
+
+                                return std::numeric_limits<int>::max() - preventOverflow; // we trade 1 for 1 but get a KING! 
+                            }
+                            casualtyScore += 500;
+                        }
                     }
                 }
             }
         }
     }
+    //END CASUALTY SECTION
 
-    // MAIN LOOP FOR SCORING CALCULATIONS
-    for (int piece = 0; piece < 32; piece++)
-    {
-        // BEGIN POSITION SCORE SECTION
-        if (color == Color::RED)
-        {
-            playerPiece = state.getPieceInSquare(piece, color); 
-            if (playerPiece == MAN)
-                positionScore += squareValuesForRed[piece];
-            else if (playerPiece == KING)
-                positionScore += squareValuesForRedKing[piece];
-
-            enemyPiece = state.getPieceInSquare(piece, Color::BLACK);
-            if (enemyPiece == MAN)
-                positionScore -= squareValuesForBlack[piece];
-            else if (enemyPiece == KING)
-                positionScore -= squareValuesForBlackKing[piece];
-
-        }
-        else if (color == Color::BLACK)
-        {
-            playerPiece = state.getPieceInSquare(piece, color); 
-            if (playerPiece == MAN)
-                positionScore += squareValuesForBlack[piece];
-            else if (playerPiece == KING)
-                positionScore += squareValuesForBlackKing[piece];
-
-            // enemyPiece = state.getPieceInSquare(piece, Color::RED);
-            // if (enemyPiece == MAN)
-            //     positionScore -= squareValuesForRed[piece];
-            // else if (enemyPiece == KING)
-            //     positionScore -= squareValuesForRedKing[piece];
-
-        }
-        // END POSITION SCORE SECTION        
-    }
-
-    int compositeScore = numPieces + numKingsScore + advancementScore + positionScore + captureScore + casualtyScore;
+    int compositeScore = numMenScore + numKingsScore + advancementScore + positionScore + captureScore + casualtyScore;
 
     return compositeScore;
 }
