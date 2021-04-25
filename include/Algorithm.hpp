@@ -41,10 +41,10 @@ public:
         Board::Move bestMove;
     };
 
-    int minimaxExpandedNodes; // how many nodes we expand
-    int minimaxLeafNodes; // how many nodes we expand
+    int minimaxExpandedNodes;  // how many nodes we expand
+    int minimaxLeafNodes;      // how many nodes we expand
     int absearchExpandedNodes; // how many nodes we expand
-    int absearchLeafNodes; // how many nodes we expand
+    int absearchLeafNodes;     // how many nodes we expand
 
     // minimax algorithm returns the position of the best move
     Result minimax_a_b(Board board, int depth, Color color, int useThresh, int passThresh);

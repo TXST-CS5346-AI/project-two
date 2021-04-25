@@ -58,52 +58,51 @@
  *   15. Alpha-Beta with Evl. Function #2  Verses Alpha-Beta with Evl. Function #3
  *
  * TOTAL 30 RUNS/GAMES WILL BE SIMULATED. 
- */ 
+ */
 
-class Simulation 
+class Simulation
 {
 
-private: 
-    int numGamesPlayed; 
+private:
+    int numGamesPlayed;
 
     // runs only games using Minimax algorithm
     void runMinimaxOnly();
-   
+
     // runs only games using AB Prune algorithm
     void runABPruneOnly();
 
-public: 
-    Simulation(); // constructor
+public:
+    Simulation();  // constructor
     ~Simulation(); // destructor
 
     // runs all games runs as delineated above
     void runFullSimulation();
-    
+
     // public method for specific simulations
     void runSpecificSimulation(int playerOneAlg, int playerOneEvalFunct, int playerTwoAlg, int PlayerTwoEvalFunct, int depth);
 
     // public method for player vs AI simulation
-    void runPlayerVsAISimulation(int playerAlg, int playerEvalFunct, int depth); 
+    void runPlayerVsAISimulation(int playerAlg, int playerEvalFunct, int depth);
 
     // helper function to determine winner and break out of game loop
     static bool didSomeoneWin(Board board);
-    
+
     // returns a count of the number of games played in a simulation
-    // each of the 3 run functions. 
+    // each of the 3 run functions.
     int getNumGamesPlayed();
 
-    // creates a table with results for analysis. 
-    // how many nodes were created, etc. 
+    // creates a table with results for analysis.
+    // how many nodes were created, etc.
     void generateAnalysisResults();
 
-    void printGameConfig(int redPlayerAlg, int redPlayerEvalFunct, int blackPlayerAlg, int blackPlayerEvalFunct, int depth); 
-    void printGameResults(Game::GameOver endGameStatus); 
+    void printGameConfig(int redPlayerAlg, int redPlayerEvalFunct, int blackPlayerAlg, int blackPlayerEvalFunct, int depth);
+    void printGameResults(Game::GameOver endGameStatus);
 
     // helper print methods
-    static void printBlackWins(); 
-    static void printRedWins(); 
-    static void printDraw(); 
-
+    static void printBlackWins();
+    static void printRedWins();
+    static void printDraw();
 };
 
 #endif // !SIMULATION_H

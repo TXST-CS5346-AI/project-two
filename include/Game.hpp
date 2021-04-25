@@ -34,11 +34,12 @@ private:
     void printNodes(Player player, std::string colorText);
 
 public:
-    Game(); // constructor
-    ~Game(); // destructor
-    Game( bool, int, bool, int, int); // player1 algo, eval version, player2 algo, eval version, depth
+    Game();                          // constructor
+    ~Game();                         // destructor
+    Game(bool, int, bool, int, int); // player1 algo, eval version, player2 algo, eval version, depth
 
-    enum class GameOver {
+    enum class GameOver
+    {
         BLACK_WINS = 0,
         RED_WINS = 1,
         DRAW = 2,
@@ -54,7 +55,7 @@ public:
     // E.g., if currentPlayer is RED (1), function returns BLACK (-1)
     Color changePlayer(Color currentPlayer);
 
-    GameOver gameOver();  // Have end game conditions been met?
+    GameOver gameOver(); // Have end game conditions been met?
     bool doesRedWin();
     bool doesBlackWin();
     bool isItADraw();

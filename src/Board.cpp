@@ -6,7 +6,7 @@
 // Forward declare the static data member.
 Board::BoardMoveTable Board::boardMoveTable[33];
 
- /**
+/**
   * Constructor | Board | Board
   * 
   * Summary	: Creates both the red player and black player
@@ -26,7 +26,6 @@ Board::Board()
 	blackPieces = Pieces(Color::BLACK);
 }
 
- 
 /**
  * Destructor | Board | ~Board
  *
@@ -37,9 +36,7 @@ Board::Board()
  */
 Board::~Board()
 {
-
 }
-
 
 /**
  * Member Function | Board | getPlayerPieces
@@ -64,7 +61,6 @@ Pieces Board::getPlayerPieces(Color color)
 		return blackPieces;
 	}
 }
-
 
 /**
  * Member Function | Board | getOpponentPieces
@@ -93,7 +89,6 @@ Pieces Board::getOpponentPieces(Color color)
 	}
 }
 
-
 /**
  * Member Function | Board | getNumRegularPieces
  *
@@ -113,7 +108,6 @@ int Board::getNumRegularPieces(Color color)
 {
 	return getNumPlayerTotalPieces(color) - getNumKingPieces(color);
 }
-
 
 /**
  * Member Function | Board | getNumKingPieces
@@ -135,7 +129,7 @@ int Board::getNumKingPieces(Color color)
 	{
 		int kingPieceCount = 0;
 
-		long long* playerPieces;
+		long long *playerPieces;
 
 		if (color == Color::RED)
 		{
@@ -148,7 +142,7 @@ int Board::getNumKingPieces(Color color)
 
 		for (int iter = 32; iter < 64; iter++)
 		{
-			if(((*playerPieces >> iter) & 1) == 1)
+			if (((*playerPieces >> iter) & 1) == 1)
 			{
 				kingPieceCount++;
 			}
@@ -157,7 +151,6 @@ int Board::getNumKingPieces(Color color)
 		return kingPieceCount;
 	}
 }
-
 
 /**
  * Member Function | Board | getNumPlayerTotalPieces
@@ -174,11 +167,11 @@ int Board::getNumKingPieces(Color color)
  *					of total pieces.
  *
  */
-int Board::getNumPlayerTotalPieces(Color color) 
+int Board::getNumPlayerTotalPieces(Color color)
 {
 	int totalPieceCount = 0;
 
-	long long* playerPieces;
+	long long *playerPieces;
 
 	if (color == Color::RED)
 	{
@@ -200,7 +193,6 @@ int Board::getNumPlayerTotalPieces(Color color)
 
 	return totalPieceCount;
 }
-
 
 /**
  * Member Function | Board | moveGen
@@ -226,9 +218,9 @@ std::vector<Board::Move> Board::moveGen(Color color)
 {
 	std::vector<Move> totalMoves;
 	std::vector<Move> returnedMoves;
-	
-	Pieces* playerPieces;
-	Pieces* opponentPieces;
+
+	Pieces *playerPieces;
+	Pieces *opponentPieces;
 
 	int bitOffset = 0;
 
@@ -248,11 +240,11 @@ std::vector<Board::Move> Board::moveGen(Color color)
 	// of the appropriate pieces belonging to player.
 	for (int pieceIter = 1; pieceIter <= 32; pieceIter++)
 	{
-		// The offset is used to align to 0 - 31, but 
+		// The offset is used to align to 0 - 31, but
 		// the board in checkers is 1 - 32. Use an offset
 		// here to align to the position bits properly.
 		bitOffset = pieceIter - 1;
-		
+
 		if ((((playerPieces->pieces) >> bitOffset) & 1) == 1)
 		{
 			// Check for possible jump mpves first.
@@ -270,7 +262,7 @@ std::vector<Board::Move> Board::moveGen(Color color)
 	{
 		for (int pieceIter = 1; pieceIter <= 32; pieceIter++)
 		{
-			// The offset is used to align to 0 - 31, but 
+			// The offset is used to align to 0 - 31, but
 			// the board in checkers is 1 - 32. Use an offset
 			// here to align to the position bits properly.
 			bitOffset = pieceIter - 1;
@@ -286,7 +278,6 @@ std::vector<Board::Move> Board::moveGen(Color color)
 	}
 	return totalMoves;
 }
-
 
 /**
  * Member Function | Board | getJumpsForPiece
@@ -317,7 +308,7 @@ std::vector<Board::Move> Board::moveGen(Color color)
  *									for the particular piece.
  *
  */
-std::vector<Board::Move> Board::getJumpsForPiece(Color color, int piece, Pieces* playerPieces, Pieces* opponentPieces)
+std::vector<Board::Move> Board::getJumpsForPiece(Color color, int piece, Pieces *playerPieces, Pieces *opponentPieces)
 {
 	// The returned vector of all possible jumps carried out completely
 	std::vector<Move> finalMoves;
@@ -345,7 +336,6 @@ std::vector<Board::Move> Board::getJumpsForPiece(Color color, int piece, Pieces*
 
 	return finalMoves;
 }
-
 
 /**
  * Member Function | Board | getJumpsForPieceRec
@@ -377,7 +367,7 @@ std::vector<Board::Move> Board::getJumpsForPiece(Color color, int piece, Pieces*
  *								  to this move. Becoming a king stops a jump chain.
  *
  */
-void Board::getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board::Move>& totalMovesAccumulator,  Board board, bool wasKingPriorMove)
+void Board::getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board::Move> &totalMovesAccumulator, Board board, bool wasKingPriorMove)
 {
 
 	int piece;
@@ -388,7 +378,6 @@ void Board::getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board
 
 	int bitOffset = 0;
 	int squareJumped = 0;
-
 
 	// This determines if we are starting the jump sequence or in the middle of it.
 	if (move.destinationSquare.size() == 0)
@@ -413,7 +402,7 @@ void Board::getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board
 		{
 			// Get the position of the jump, reduce it by one for an offset. Note
 			// that while it is one less than the position, the direction check still works
-			// since a jump will always be greater than the distance needed to determine 
+			// since a jump will always be greater than the distance needed to determine
 			// direction.
 			bitOffset = (Board::boardMoveTable[piece].jumps.at(jumpIter) - 1);
 
@@ -460,15 +449,13 @@ void Board::getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board
 		// that we became a king due to this jump.
 		// We add it to the list at that point.
 		// It will rise back up the chain when the stack unwinds.
-		
+
 		if (move.destinationSquare.size() != 0)
 		{
 			totalMovesAccumulator.push_back(move);
 		}
 	}
-
 }
-
 
 /**
  * Member Function | Board | getMovesForPiece
@@ -499,7 +486,7 @@ void Board::getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board
  *									for the particular piece.
  *
  */
-std::vector<Board::Move> Board::getMovesForPiece(Color color, int piece, Pieces* playerPieces, Pieces* opponentPieces)
+std::vector<Board::Move> Board::getMovesForPiece(Color color, int piece, Pieces *playerPieces, Pieces *opponentPieces)
 {
 	std::vector<Move> moves;
 	Move move;
@@ -514,31 +501,30 @@ std::vector<Board::Move> Board::getMovesForPiece(Color color, int piece, Pieces*
 	// are valid for this piece/player. Move either up/down at first.
 	if (playerPieces->isKing(piece))
 	{
-	isKing = true;
+		isKing = true;
 	}
 	else
 	{
 		isKing = false;
 	}
 
-		for (int moveIter = 0; moveIter < Board::boardMoveTable[piece].moves.size(); moveIter++)
+	for (int moveIter = 0; moveIter < Board::boardMoveTable[piece].moves.size(); moveIter++)
+	{
+		bitOffset = Board::boardMoveTable[piece].moves.at(moveIter) - 1;
+		if (isKing || ((piece - bitOffset) < 0 && color == Color::RED) || ((piece - bitOffset) > 0 && color == Color::BLACK))
 		{
-			bitOffset = Board::boardMoveTable[piece].moves.at(moveIter) - 1;
-			if (isKing || ((piece - bitOffset) < 0 && color == Color::RED) || ((piece - bitOffset) > 0 && color == Color::BLACK))
+			if ((((playerPieces->pieces | opponentPieces->pieces) >> bitOffset) & 1) == 0)
 			{
-				if ((((playerPieces->pieces | opponentPieces->pieces) >> bitOffset) & 1) == 0)
-				{
-					move.startSquare = piece;
-					move.destinationSquare.push_back(bitOffset + 1);
-					moves.push_back(move);
-					move.destinationSquare.clear();
-				}
+				move.startSquare = piece;
+				move.destinationSquare.push_back(bitOffset + 1);
+				moves.push_back(move);
+				move.destinationSquare.clear();
 			}
 		}
+	}
 
 	return moves;
 }
-
 
 /**
  * Member Function | Board | printBoard
@@ -552,8 +538,8 @@ void Board::printBoard() const
 {
 	int squareOffset = 0;
 
-	// The board toggles back and forth in regards to the positioning 
-	// of pieces. This either adds the offset to the beginning of the 
+	// The board toggles back and forth in regards to the positioning
+	// of pieces. This either adds the offset to the beginning of the
 	// row, or to the end of it. Odd rows start with a space,
 	// Even rows end with a space.
 	bool oddRow = true;
@@ -565,17 +551,16 @@ void Board::printBoard() const
 	{
 		std::cout << "|";
 
-
 		for (int colIter = 0; colIter <= 3; colIter++)
 		{
 			if (oddRow)
 			{
 				std::cout << "   |";
 			}
-			
+
 			squareOffset = (rowIter * 4 + colIter);
 
-			if (((redPieces.pieces >> squareOffset) & 1) ==1)
+			if (((redPieces.pieces >> squareOffset) & 1) == 1)
 			{
 				if (redPieces.isKing(squareOffset + 1))
 				{
@@ -583,7 +568,7 @@ void Board::printBoard() const
 				}
 				else
 				{
-					std::cout << Pieces::ANSII_RED_HIGH << " r "<< Pieces::ANSII_END << "|";
+					std::cout << Pieces::ANSII_RED_HIGH << " r " << Pieces::ANSII_END << "|";
 				}
 			}
 			else if (((blackPieces.pieces >> squareOffset) & 1) == 1)
@@ -594,9 +579,8 @@ void Board::printBoard() const
 				}
 				else
 				{
-					std::cout << Pieces::ANSII_BLUE_START <<" b "<< Pieces::ANSII_END <<"|";
+					std::cout << Pieces::ANSII_BLUE_START << " b " << Pieces::ANSII_END << "|";
 				}
-				
 			}
 			else
 			{
@@ -608,7 +592,6 @@ void Board::printBoard() const
 				std::cout << "   |";
 			}
 		}
-
 
 		// Now print the numeric values of the squares.
 		std::cout << std::endl;
@@ -623,20 +606,18 @@ void Board::printBoard() const
 			}
 
 			squareOffset = (rowIter * 4 + colIterNum);
-			std::cout << std::setfill('_') << std::setw(3) << squareOffset + 1 <<"|";
-		
+			std::cout << std::setfill('_') << std::setw(3) << squareOffset + 1 << "|";
+
 			if (!oddRow)
 			{
 				std::cout << "___|";
 			}
-
 		}
 
 		// Toggle between even and odd rows for the offset.
 		oddRow = !oddRow;
 		std::cout << std::endl;
 	}
-
 }
 
 /**
@@ -672,21 +653,19 @@ int Board::getPieceInSquare(int position, Color color)
 	{
 		playerPieces = blackPieces;
 	}
-	
-	if (((playerPieces.pieces >> (position -1)) & 1) == 1)
+
+	if (((playerPieces.pieces >> (position - 1)) & 1) == 1)
 	{
 		pieceType = 1;
-		
+
 		if (playerPieces.isKing(position))
 		{
 			pieceType = 2;
 		}
 	}
-	
+
 	return pieceType;
 }
-
-
 
 /**
  * Member Function | Board | updateBoard
@@ -715,9 +694,8 @@ Board Board::updateBoard(Move move, Color color)
 	updatedBoard.blackPieces = blackPieces;
 	updatedBoard.redPieces = redPieces;
 
-	Pieces * playerPieces;
-	Pieces * opponentPieces;
-
+	Pieces *playerPieces;
+	Pieces *opponentPieces;
 
 	if (color == Color::RED)
 	{
@@ -731,7 +709,7 @@ Board Board::updateBoard(Move move, Color color)
 	}
 
 	// Position in final destination spot - probably check if it needs to be kinged here.
-	// Do this first since you will need to clear the king flag. 
+	// Do this first since you will need to clear the king flag.
 	playerPieces->pieces = playerPieces->pieces | (1LL << (move.destinationSquare.back() - 1));
 	if (playerPieces->isKing(move.startSquare))
 	{
@@ -763,7 +741,6 @@ Board Board::updateBoard(Move move, Color color)
 	return updatedBoard;
 }
 
-
 /**
  * Member Function | Board | InitializeMoveTable
  *
@@ -780,7 +757,7 @@ Board Board::updateBoard(Move move, Color color)
 void Board::InitializeMoveTable()
 {
 
-	// In order to support faster look up, 
+	// In order to support faster look up,
 	// The index of the position is used as
 	// the initial key to an index. Each
 	// position has only a few moves,

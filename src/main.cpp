@@ -17,11 +17,9 @@
  * Available options are: 
  *    1. a full simulation, 
  *    2. partial (single game) simulation, 
- *    3. player vs. player, or 
+ *    3. player vs. player, or
  *    4. player vs. AI. 
  */
-
-
 
 // helper functions to make main() more readable and conscise
 void printWelcomeMsg();
@@ -51,28 +49,28 @@ int main(int argc, char *argv[])
     // display help menu
     if (argc == 2)
     {
-        std::string cliArg = argv[1]; 
+        std::string cliArg = argv[1];
 
         if (cliArg == "-h" || cliArg == "-help")
         {
             printHelpMenu();
             return EXIT_SUCCESS;
         }
-        
-        if (cliArg == "-nc")  // disable color
+
+        if (cliArg == "-nc") // disable color
         {
             // ANSII codes for colored text, to improve UI and readability
-            Pieces::ANSII_BLUE_START     = "";
-            Pieces::ANSII_RED_START      = "";
-            Pieces::ANSII_RED_HIGH       = "";
-            Pieces::ANSII_END            = "";
-            Pieces::ANSII_GREEN_START    = "";
-            Pieces::ANSII_BLUE_COUT      = "";
-            Pieces::ANSII_RED_COUT       = "";
-            Pieces::ANSII_GREEN_COUT     = "";
-            Pieces::ANSII_YELLOW_COUT    = "";
+            Pieces::ANSII_BLUE_START = "";
+            Pieces::ANSII_RED_START = "";
+            Pieces::ANSII_RED_HIGH = "";
+            Pieces::ANSII_END = "";
+            Pieces::ANSII_GREEN_START = "";
+            Pieces::ANSII_BLUE_COUT = "";
+            Pieces::ANSII_RED_COUT = "";
+            Pieces::ANSII_GREEN_COUT = "";
+            Pieces::ANSII_YELLOW_COUT = "";
         }
-        else if (cliArg == "-no")  // 
+        else if (cliArg == "-no") //
         {
             Pieces::ouputDebugData = 0;
         }
@@ -90,7 +88,7 @@ int main(int argc, char *argv[])
         executeRunBasedOnUserInput(userInput, isInputValid);
     }
 
-    goodbye(); 
+    goodbye();
 
     return EXIT_SUCCESS;
 }
@@ -116,7 +114,7 @@ void printHelpMenu()
     std::cout << "To use this program, please read the instructions below and re-launch." << std::endl;
     std::cout << "Additional details for building and execution are also available in the README.md file." << std::endl;
     std::cout << std::endl;
-    std::cout << "Run with -nc for No Color or with -no for No Debug Output." << std::endl; 
+    std::cout << "Run with -nc for No Color or with -no for No Debug Output." << std::endl;
     std::cout << "When executing the program, you will be prompted to enter the algorithm and evaluation "
               << "function for the simulation." << std::endl;
     std::cout << "Please follow the instructions on the screen - if you do not care for any specific custom "
@@ -133,6 +131,7 @@ void printMainMenuOptions()
 {
     std::cout << "NOTE: If 1 is selected below, you will NOT be prompted further for any eval function or algorithm. "
               << "All will be simulated in order." << std::endl;
+    std::cout << "For RED player, r = MAN and R = KING; for BLACK player, b = MAN and B = KING." << std::endl;
     std::cout << std::endl;
 
     std::cout << "Choose a game mode below: " << std::endl;
@@ -153,30 +152,40 @@ void executeRunBasedOnUserInput(int userInput, bool &isInputValid)
     switch (userInput)
     {
     case 1: // full sim
-        isInputValid = true; 
+        isInputValid = true;
         simulation->runFullSimulation();
-        std::cout << "# of Games Played: " << simulation->getNumGamesPlayed() << std::endl; 
+        std::cout << "# of Games Played: " << simulation->getNumGamesPlayed() << std::endl;
         break;
     case 2: // one custom sim
-        isInputValid = true; 
+        isInputValid = true;
         int playerOneAlg, playerOneEvalFunct, playerTwoAlg, playerTwoEvalFunct, depth;
         getCustomSimUserInput(playerOneAlg, playerOneEvalFunct, playerTwoAlg, playerTwoEvalFunct, depth);
         simulation->runSpecificSimulation(playerOneAlg, playerOneEvalFunct, playerTwoAlg, playerTwoEvalFunct, depth);
         break;
     case 3: // player vs. player
-        isInputValid = true; 
+        isInputValid = true;
         runManualGame();
         break;
     case 4: // player vs. ai
-        isInputValid = true; 
-        getCustomSimUserInput(playerOneAlg, playerOneEvalFunct, depth); 
-        simulation->runPlayerVsAISimulation(playerOneAlg, playerOneEvalFunct, depth); 
+        isInputValid = true;
+        getCustomSimUserInput(playerOneAlg, playerOneEvalFunct, depth);
+        simulation->runPlayerVsAISimulation(playerOneAlg, playerOneEvalFunct, depth);
         break;
     default:
         std::cerr << "Invalid option selected! Valid choices are 1, 2, 3, and 4" << std::endl;
     }
 }
 
+/**
+ * For a custom simulation, obtains user input and returns via parameters
+ * @param int &computerPlayerAlg
+ * @param int &computerPlayerEval
+ * @param int &depth
+ * 
+ * @return int &computerPlayerAlg passed in by reference
+ * @return int &computerPlayerEval passed in by reference
+ * @return int &depth passed in by reference
+ */
 void getCustomSimUserInput(int &computerPlayerAlg, int &computerPlayerEval, int &depth)
 {
     std::cout << "Please select the type of simulation you wish to run by entering in it's number." << std::endl;
@@ -192,7 +201,7 @@ void getCustomSimUserInput(int &computerPlayerAlg, int &computerPlayerEval, int 
 
     // DEPTH
     std::cout << "Enter the depth for the search tree " << Pieces::ANSII_BLUE_START << "(2 or 4 recommended; min = 2, max = 15)" << Pieces::ANSII_END << ": ";
-    std::cin >> depth; 
+    std::cin >> depth;
 }
 
 /**
@@ -221,7 +230,7 @@ void getCustomSimUserInput(int &playerOneAlg, int &playerOneEvalFunct, int &play
 
     // DEPTH
     std::cout << "Enter the depth for the search tree " << Pieces::ANSII_BLUE_START << "(2 or 4 recommended; min = 2, max = 15)" << Pieces::ANSII_END << ": ";
-    std::cin >> depth; 
+    std::cin >> depth;
 }
 
 /**
@@ -234,19 +243,19 @@ void runManualGame()
 {
     bool gameOver = false;
     int moveSelection;
-    Color currentPlayer = Color::RED;
+    Color currentPlayer = Color::BLACK;
     std::vector<Board::Move> redMoves;
     std::vector<Board::Move> blackMoves;
     Board board;
-    board.printBoard(); 
+    board.printBoard();
 
     while (!gameOver)
     {
         std::vector<Board::Move> redMoves = board.moveGen(Color::RED);
-        std::vector<Board::Move> blackMoves = board.moveGen(Color::BLACK); 
+        std::vector<Board::Move> blackMoves = board.moveGen(Color::BLACK);
         std::cout << std::endl;
-        std::cout << "Red(X) moves: ";
-        
+        std::cout << "Red (r = MAN / R = KING) moves: ";
+
         for (int redMoveIter = 0; redMoveIter < redMoves.size(); redMoveIter++)
         {
             std::cout << "<" << redMoveIter + 1 << "> " << redMoves.at(redMoveIter).startSquare;
@@ -258,7 +267,7 @@ void runManualGame()
         }
         std::cout << std::endl;
 
-        std::cout << "Black(O) moves: ";
+        std::cout << "Black (b = MAN / B = KING) moves: ";
         for (int blackMoveIter = 0; blackMoveIter < blackMoves.size(); blackMoveIter++)
         {
             std::cout << "<" << blackMoveIter + 1 << "> " << blackMoves.at(blackMoveIter).startSquare;
@@ -270,37 +279,41 @@ void runManualGame()
         }
         std::cout << std::endl;
 
-        bool isSelectionValid = false; 
+        bool isSelectionValid = false;
         if (currentPlayer == Color::RED)
         {
             while (!isSelectionValid)
             {
                 std::cout << "Select RED move: ";
                 std::cin >> moveSelection;
-                if (moveSelection > redMoves.size() || moveSelection < 0) 
+                if (moveSelection > redMoves.size() || moveSelection < 0)
                 {
                     std::cerr << "Out of range; please enter a valid choice!" << std::endl;
-                } else {
+                }
+                else
+                {
                     board = board.updateBoard(redMoves.at(moveSelection - 1), Color::RED);
                     currentPlayer = Color::BLACK;
-                    isSelectionValid = true; 
+                    isSelectionValid = true;
                 }
             }
         }
-        else
+        else  // BLACK's turn
         {
-            isSelectionValid = false; 
+            isSelectionValid = false;
             while (!isSelectionValid)
             {
                 std::cout << "Select BLACK move: ";
                 std::cin >> moveSelection;
-                if (moveSelection > blackMoves.size() || moveSelection < 0) 
+                if (moveSelection > blackMoves.size() || moveSelection < 0)
                 {
                     std::cerr << "Out of range; please enter a valid choice!" << std::endl;
-                } else {
+                }
+                else
+                {
                     board = board.updateBoard(blackMoves.at(moveSelection - 1), Color::BLACK);
                     currentPlayer = Color::RED;
-                    isSelectionValid = true; 
+                    isSelectionValid = true;
                 }
             }
         }
@@ -310,12 +323,15 @@ void runManualGame()
     }
 }
 
+/**
+ * Displays a compatible, pleasant graphic to the user as a goodbye
+ */
 void goodbye()
 {
-    std::cout << std::endl; 
+    std::cout << std::endl;
     std::cout << Pieces::ANSII_BLUE_START << " __  __  __  __  __     __  " << Pieces::ANSII_END << std::endl;
     std::cout << Pieces::ANSII_BLUE_START << "/ _ /  \\/  \\|  \\|__)\\_/|_ | " << Pieces::ANSII_END << std::endl;
     std::cout << Pieces::ANSII_BLUE_START << "\\__)\\__/\\__/|__/|__) | |__. " << Pieces::ANSII_END << std::endl;
     std::cout << Pieces::ANSII_BLUE_START << "                            " << Pieces::ANSII_END << std::endl;
-    std::cout << std::endl; 
+    std::cout << std::endl;
 }

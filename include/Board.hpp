@@ -2,10 +2,9 @@
 #define BOARD_H
 
 #include <vector>
-#include <string> 
+#include <string>
 
 #include "Pieces.hpp"
-
 
 /**
  * Class board is used to represent the entire board and its current state.
@@ -18,7 +17,6 @@ class Board
 {
 
 public:
-
 	/**
 	* Struct Nove is used to track moves made on the board. It contains
 	* a single starting location, a vector of steps to a move, 
@@ -47,7 +45,7 @@ public:
 	~Board();
 	static void InitializeMoveTable();
 	std::vector<Move> moveGen(Color color);
-	
+
 	void printBoard() const;
 	Board updateBoard(Move move, Color color);
 
@@ -56,8 +54,8 @@ public:
 	int getNumPlayerTotalPieces(Color color);
 	int getPieceInSquare(int square, Color color);
 
-	std::vector<Move> getJumpsForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces); 
-	std::vector<Move> getMovesForPiece(Color color, int square, Pieces* playerPieces, Pieces* opponentPieces);
+	std::vector<Move> getJumpsForPiece(Color color, int square, Pieces *playerPieces, Pieces *opponentPieces);
+	std::vector<Move> getMovesForPiece(Color color, int square, Pieces *playerPieces, Pieces *opponentPieces);
 
 	Pieces getPlayerPieces(Color color);
 	Pieces getOpponentPieces(Color color);
@@ -65,13 +63,10 @@ public:
 	static BoardMoveTable boardMoveTable[33];
 
 private:
-
 	Pieces blackPieces;
 	Pieces redPieces;
 
-
-	void getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board::Move>& totalMoves, Board board, bool wasKingPriorMove);
-
+	void getJumpsForPieceRec(Color color, Board::Move move, std::vector<Board::Move> &totalMoves, Board board, bool wasKingPriorMove);
 };
 
 #endif
