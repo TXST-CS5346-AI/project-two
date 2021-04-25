@@ -287,7 +287,7 @@ int Algorithm::evalFunctOne(Board state, Color color)
     }
     if (finalScore >= 9000000)
     {
-        finalScore = 8999999;
+        finalScore = 7999999;
     }
     return finalScore;
 }
@@ -484,6 +484,18 @@ int Algorithm::evalFunctTwo(Board state, Color color)
     if (Pieces::ouputDebugData > 1)
         std::cout << indentValue << Pieces::ANSII_GREEN_COUT << " Evaluated Move:  moveScore-> " << Pieces::ANSII_END
                   << moveScore << std::endl;
+
+    // Clamp the final score based on the current scoring
+    // system. Note that these values can later be adjusted
+    // to use a wider range.
+    if (moveScore <= -8000000)
+    {
+        moveScore = -7999999;
+    }
+    if (moveScore >= 9000000)
+    {
+        moveScore = 7999999;
+    }
     return moveScore;
 }
 
@@ -584,9 +596,9 @@ int Algorithm::evalFunctThree(Board state, Color color)
 
     // CHECK TERMINAL STATE
     if (enemyMoves.size() == 0)
-        return 9000000; // good for us if enemy has no moves left!
+        return 7999999; // good for us if enemy has no moves left!
     else if (playerMoves.size() == 0)
-        return -8000000; // bad for us if we're out of moves!
+        return -7999999; // bad for us if we're out of moves!
 
     // MAIN LOOP FOR SCORING POSITION
     for (int piece = 0; piece < 32; piece++)
