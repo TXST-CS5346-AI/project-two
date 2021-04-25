@@ -21,15 +21,16 @@ Simulation::~Simulation()
 
 /**
 * Runs all games runs as delineated in Simulation.hpp
+* R = redundant game simulated 
 * 
-* 1.  p1_alg: 1 p1_eval: 1 p2_alg: 1 p2_eval: 1
+* 1.  p1_alg: 1 p1_eval: 1 p2_alg: 1 p2_eval: 1  R
 * 2.  p1_alg: 1 p1_eval: 1 p2_alg: 1 p2_eval: 2
 * 3.  p1_alg: 1 p1_eval: 1 p2_alg: 1 p2_eval: 3
-* 4.  p1_alg: 1 p1_eval: 2 p2_alg: 1 p2_eval: 1
-* 5.  p1_alg: 1 p1_eval: 2 p2_alg: 1 p2_eval: 2
+* 4.  p1_alg: 1 p1_eval: 2 p2_alg: 1 p2_eval: 1  R
+* 5.  p1_alg: 1 p1_eval: 2 p2_alg: 1 p2_eval: 2  R
 * 6.  p1_alg: 1 p1_eval: 2 p2_alg: 1 p2_eval: 3
-* 7.  p1_alg: 1 p1_eval: 3 p2_alg: 1 p2_eval: 1
-* 8.  p1_alg: 1 p1_eval: 3 p2_alg: 1 p2_eval: 2
+* 7.  p1_alg: 1 p1_eval: 3 p2_alg: 1 p2_eval: 1  R
+* 8.  p1_alg: 1 p1_eval: 3 p2_alg: 1 p2_eval: 2  R
 * 9.  p1_alg: 1 p1_eval: 3 p2_alg: 1 p2_eval: 3
 * 10. p1_alg: 1 p1_eval: 1 p2_alg: 2 p2_eval: 1
 * 11. p1_alg: 1 p1_eval: 1 p2_alg: 2 p2_eval: 2
@@ -40,15 +41,15 @@ Simulation::~Simulation()
 * 16. p1_alg: 1 p1_eval: 3 p2_alg: 2 p2_eval: 1
 * 17. p1_alg: 1 p1_eval: 3 p2_alg: 2 p2_eval: 2
 * 18. p1_alg: 1 p1_eval: 3 p2_alg: 2 p2_eval: 3
-* 19. p1_alg: 2 p1_eval: 1 p2_alg: 2 p2_eval: 1
-* 20. p1_alg: 2 p1_eval: 1 p2_alg: 2 p2_eval: 2
+* 19. p1_alg: 2 p1_eval: 1 p2_alg: 2 p2_eval: 1  R
+* 20. p1_alg: 2 p1_eval: 1 p2_alg: 2 p2_eval: 2  R
 * 21. p1_alg: 2 p1_eval: 1 p2_alg: 2 p2_eval: 3
 * 22. p1_alg: 2 p1_eval: 2 p2_alg: 2 p2_eval: 1
 * 23. p1_alg: 2 p1_eval: 2 p2_alg: 2 p2_eval: 2
 * 24. p1_alg: 2 p1_eval: 2 p2_alg: 2 p2_eval: 3
-* 25. p1_alg: 2 p1_eval: 3 p2_alg: 2 p2_eval: 1
-* 26. p1_alg: 2 p1_eval: 3 p2_alg: 2 p2_eval: 2
-* 27. p1_alg: 2 p1_eval: 3 p2_alg: 2 p2_eval: 3
+* 25. p1_alg: 2 p1_eval: 3 p2_alg: 2 p2_eval: 1  R
+* 26. p1_alg: 2 p1_eval: 3 p2_alg: 2 p2_eval: 2  
+* 27. p1_alg: 2 p1_eval: 3 p2_alg: 2 p2_eval: 3  R
 * 
 */
 void Simulation::runFullSimulation()

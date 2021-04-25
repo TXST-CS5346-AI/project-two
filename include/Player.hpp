@@ -17,16 +17,16 @@ class Player
 {
 
 private:
-    Color color; // represents player's color in the game, either RED or BLACK
-    int numPieces; // how many pieces does Player have left
+    Color color;        // represents player's color in the game, either RED or BLACK
+    int numPieces;      // how many pieces does Player have left
     int numPiecesTaken; // Player's current score based on captured enemy pieces
-    int numTurnsTaken; // counter for Player's turns taken
-    bool didPlayerMove;  //  EndGame Condition
-    
-    int depth, evalVersion; 
+    int numTurnsTaken;  // counter for Player's turns taken
+    bool didPlayerMove; //  EndGame Condition
+
+    int depth, evalVersion;
 
 public:
-    Player(); // constructor
+    Player();  // constructor
     ~Player(); // destructor
 
     bool isMinimax; // if false use AB Prune, if true use Minimax. Allows control over alg player uses
@@ -39,24 +39,25 @@ public:
     int getNumTurns();
     bool getDidPlayerMove();
     Color getColor();
-    
+
     void decreaseNumPieces(int numPiecesToDecreaseCount);
     void increaseNumPiecesTaken(int numPiecesToIncreaseScore);
 
-    static void printMove(Board::Move, Color color);
+    static void printMove(Board::Move, Color color, bool willPrintAlways);
 
-    int minimaxExpandedNodes; // how many nodes we expand
-    int minimaxLeafNodes; // how many nodes we expand
+    int minimaxExpandedNodes;  // how many nodes we expand
+    int minimaxLeafNodes;      // how many nodes we expand
     int absearchExpandedNodes; // how many nodes we expand
-    int absearchLeafNodes; // how many nodes we expand
+    int absearchLeafNodes;     // how many nodes we expand
 
-    int getMinimaxTotalNodes() {
-        return minimaxExpandedNodes + minimaxLeafNodes; 
+    int getMinimaxTotalNodes()
+    {
+        return minimaxExpandedNodes + minimaxLeafNodes;
     }
 
-    
-    int getAbSearchTotalNodes() {
-        return absearchExpandedNodes + absearchLeafNodes; 
+    int getAbSearchTotalNodes()
+    {
+        return absearchExpandedNodes + absearchLeafNodes;
     }
 };
 

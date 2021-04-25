@@ -1,9 +1,7 @@
 #ifndef PIECES_H
 #define PIECES_H
 
-#include <string> 
-
-
+#include <string>
 
 /**
 * The Color enumerator is used in place of values 1 and -1 
@@ -12,8 +10,11 @@
 * by 1. 
 
 */
-enum class Color { RED = 1, BLACK = -1 };
-
+enum class Color
+{
+    RED = 1,
+    BLACK = -1
+};
 
 /**
 * The Pieces class represents all pieces for a particular player. Each object
@@ -22,10 +23,9 @@ enum class Color { RED = 1, BLACK = -1 };
 * of the code easier to read. These codes serve no functional purpose
 * aside from changing text color.
 */
-class Pieces 
+class Pieces
 {
-public: 
-    
+public:
     Pieces();
     Pieces(Color color);
 
@@ -41,15 +41,13 @@ public:
     static std::string ANSII_YELLOW_COUT;
 
     // Debug reporting level 3 == display all debug/status lines 2== important, 1 == basic, 0 == none
-    static int ouputDebugData; 
+    static int ouputDebugData;
 
-    bool isKing(int position) const; 
+    bool isKing(int position) const;
     void setKing(int poisition, bool toKing);
-    
+
     // This contains 64 bits to represent the entire piece set and king status for one side.
     long long pieces;
 };
 
 #endif // !PIECES_H
-
-
