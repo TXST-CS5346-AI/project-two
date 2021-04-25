@@ -30,3 +30,43 @@
 *.exe
 *.out
 *.app
+/.vs
+/out/build/x64-Debug (default)
+
+cmake-build-debug
+cmake-build-*
+.vscode
+.idea
+# File-based project format
+*.iws
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+
+#project specific
+*.log
+*.tlog
+all
+
+# object files current and previous (in case of pollution from past project) 
+VehicleRepairAndDiagnosis
+CheckersAI
+a.out 
+
+Debug/*
+Debug 
+*.vcxproj
+*.pdb
+*.user
+*.sln
+*.db 
+
+*.h 
+*.c 
+*.cd
+
+*.txt 
