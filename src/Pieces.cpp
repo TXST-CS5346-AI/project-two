@@ -10,13 +10,37 @@ std::string Pieces::ANSII_BLUE_COUT      = "\033[0;30;46m";
 std::string Pieces::ANSII_RED_COUT       = "\033[41;1m";
 std::string Pieces::ANSII_GREEN_COUT     = "\033[0;30;42m";
 std::string Pieces::ANSII_YELLOW_COUT    = "\033[30;48;5;3m";
+
+
 int Pieces::ouputDebugData = 3; 
 
+
+/**
+ * Constructor | Pieces | Pieces
+ *
+ * Summary :	Unused. Constructor with
+ *				a parameter is always required.
+ * 
+ * @author : David Torrente 
+ * 
+ */
 Pieces::Pieces()
 {
 
 }
 
+
+/**
+ * Constructor | Pieces | Pieces
+ *
+ * Summary :	Sets up the player pieces depending on
+ *				the color passed in.
+ * 
+ * @author : David Torrente
+ * 
+ * @param Color color	: The color to assign the pieces to.
+ * 
+ */
 Pieces::Pieces(Color color)
 {
 
@@ -29,6 +53,10 @@ Pieces::Pieces(Color color)
 	// but in spaces 21 - 32, hence, the large number. Neither start with
 	// kings, so bits 33 - 64 are all zeros on both sides.
 
+
+	// Note that the commented out values are primarily for debugging
+	// special move cases or interesting situations. They are retained here as
+	// pairs. If used, each pair must be uncommented.
 	if (color == Color::RED) // red
 		//pieces = 1;
 		//pieces = 19455;
@@ -42,6 +70,23 @@ Pieces::Pieces(Color color)
 }
 
 
+/**
+ * Member Function | Pieces | isKing
+ *
+ * Summary :	Determines if the piece in a given position is
+ *				a king or not. Prior to calling this, the position
+ *				must be checked to see if the position is occupied
+ *				by a player.
+ *
+ * @author : David Torrente 
+ * 
+ * @param int position	:	The position on the board to
+							check to see if it is a king.
+ *
+ * @return bool			:	Returns true if it is a king piece,
+ *							false otherwise.
+ *
+ */
 bool Pieces::isKing(int position) const
 {
 	// NOTE: it is 31, since the offset is 0 - 31
@@ -60,6 +105,24 @@ bool Pieces::isKing(int position) const
 	return isKing;
 }
 
+
+/**
+ * Member Function | Pieces | setKing
+ *
+ * Summary :	Sets the king bit for a given position to either
+ *				be on or off. 
+ *
+ * @author : David Torrente 
+ * 
+ * @param int position	:	The position on the board to
+ *							toggle to a king or not king.
+ * 
+ * @param bool toKing	:	True if the piece is to become
+ *							a king, false if it is to be reduced 
+ *							to not a king. Reducing the piece type
+ *							is primarily done to keep the board clean.
+ *
+ */
 void Pieces::setKing(int position, bool toKing)
 {
 	int kingBit = position + 31;
