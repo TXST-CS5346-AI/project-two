@@ -3236,11 +3236,10 @@ void Simulation::runFullSimulation()
                         std::cout << "p1_alg: " << p1_alg << " p1_eval: " << p1_eval << " p2_alg: "
                                   << p2_alg << " p2_eval: " << p2_eval << std::endl;
 
-                        Game *game = new Game(p1_alg, p1_eval, p2_alg, p2_eval, 4);
+                        Game *game = new Game(p1_alg, p1_eval, p2_alg, p2_eval, depth);
                         Game::GameOver endGameStatus = game->startGame();
-
-                        // TODO: print game status, num nodes generated, time it took, etc.
                         numGamesPlayed++;
+                        printGameResults(endGameStatus); 
                         delete game;
 
                     } // p2_eval
