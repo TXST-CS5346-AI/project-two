@@ -1,5 +1,7 @@
 #include "Simulation.hpp"
 
+
+
 #include <iostream>
 #include <stdexcept>
 
@@ -220,6 +222,8 @@ void Simulation::printGameConfig(int redPlayerAlg, int redPlayerEvalFunct, int b
     std::cout << "Red player alg: " << algs[redPlayerAlg] << ", eval: " << redPlayerEvalFunct << std::endl;
     std::cout << "Black player alg: " << algs[blackPlayerAlg] << ", eval: " << blackPlayerEvalFunct << std::endl;
     std::cout << "Depth: " << depth << std::endl;
+    std::cout << "Minimax-a-b took: " << Player::mini_time.count() << "ms" << std::endl; 
+    std::cout << "ABSearch took: " << Player::abs_time.count() << "ms" << std::endl; 
 }
 
 /**

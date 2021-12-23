@@ -3,6 +3,7 @@
 
 #include <string>
 
+
 /**
 * The Color enumerator is used in place of values 1 and -1 
 * in order to make the code easier to read. Note the values 

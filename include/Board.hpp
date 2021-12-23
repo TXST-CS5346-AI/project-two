@@ -3,6 +3,16 @@
 
 #include <vector>
 #include <string>
+#include <chrono>
+
+using std::chrono::high_resolution_clock;
+using std::chrono::duration_cast;
+using std::chrono::duration;
+using std::chrono::milliseconds;
+
+
+
+
 
 #include "Pieces.hpp"
 
@@ -61,6 +71,8 @@ public:
 	Pieces getOpponentPieces(Color color);
 
 	static BoardMoveTable boardMoveTable[33];
+
+
 
 private:
 	Pieces blackPieces;

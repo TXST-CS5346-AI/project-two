@@ -3,6 +3,10 @@
 
 #include <iostream>
 
+
+duration<double, std::milli> Player::abs_time; 
+duration<double, std::milli> Player::mini_time;
+
 Player::Player()
 {
 }
@@ -33,13 +37,23 @@ int Player::takeTurn(Board &state)
 
     if (isMinimax)
     {
+        auto t1 = high_resolution_clock::now();
         result = algorithm->minimax_a_b(state, this->depth, this->color, 9000000, -8000000);
+        auto t2 = high_resolution_clock::now();
+
+        Player::mini_time += (t2 - t1); 
+        
         this->minimaxExpandedNodes += algorithm->minimaxExpandedNodes;
         this->minimaxLeafNodes += algorithm->minimaxLeafNodes;
     }
     else
     {
+        auto t1 = high_resolution_clock::now();
         result = algorithm->alphaBetaSearch(state);
+        auto t2 = high_resolution_clock::now();
+
+        Player::abs_time += (t2 - t1); 
+
         this->absearchExpandedNodes += algorithm->absearchExpandedNodes;
         this->absearchLeafNodes += algorithm->absearchLeafNodes;
     }

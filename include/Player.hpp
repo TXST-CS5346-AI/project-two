@@ -59,6 +59,11 @@ public:
     {
         return absearchExpandedNodes + absearchLeafNodes;
     }
+
+static duration<double, std::milli> abs_time; 
+static duration<double, std::milli> mini_time;
+static double getAbsTime() { return abs_time.count();}
+static double getMinTime() { return mini_time.count();}
 };
 
 #endif // !PLAYER_H
